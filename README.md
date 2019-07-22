@@ -1,11 +1,13 @@
 # MD Davis
-This page is still under construction
+
 ## Dependencies:
 plotly, biopython, pymol, mdtraj
 
 Following external software are required as well:
 [Delphi](http://compbio.clemson.edu/delphi)
 [MSMS](http://mgltools.scripps.edu/downloads#msms)
+
+This page is still under construction. Visit [https://djmaity.github.io/md_davis/](https://djmaity.github.io/md_davis/) to know more.
 
 <!-- ## Plot .xvg file
 To use this script type the following command in a terminal or command prompt and press 'Enter':
