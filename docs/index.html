@@ -11,6 +11,37 @@
 
 <body>
   <h1>MD Davis</h1>
-  <img src="2GV1_100frames.gif">
+  <p>A Python package to perform preliminary analysis of molecular dynamics trajectories. The source code can be found at: <a href="https://github.com/djmaity/md_davis">https://github.com/djmaity/md_davis</a> </p>
+  <h2>What can MD Davis do?</h2>
+  <ol>
+    <li>Create dynamic visualization of eletric field around the molecule unsing PyMOL.</li>
+    <br>
+    <img src="2GV1_100frames.gif">
+    <li>Create interactive plot for time seires data: root mean squared deviation (RMSD) and radius of gyration
+    <iframe src="acylphosphatase_rmsg_rg.html" width="1200px" height="700px"></iframe>
+    </li>
+    <li>Create interactive plot of containing the following residue level properties:</li>
+    <ul>
+      <li>root mean squared fluctutation (RMSF)</li>
+      <li>circular standard deviation of backbone dihedral angles</li>
+      <li>Secondary structure</li>
+      <li>Mean and standard deviation for the total surface electrostatic potential per residue</li>
+      <li>Mean and standard deviation for the mean surface electrostatic potential per residue</li>
+    </ul>
+    It can also use an alignmet to align the residue level data from different proteins along the x-axis.
+    The interactive plot shown below is the data from 1 μs molecular dynamics simulations of acylphosphatase from the follwoing organisms:
+    Human (2VH7), Bovine (2ACY), Horse (1APS), Fruit Fly (1URR), <i>E. coli</i> (2GV1), <!--<i>T. thermophilus</i> (1ULR),--> <i>B. subtilis</i> (3BR8) and <i>C. burnetii</i> (3TRG)
+    <br>
+    <br>
+    <iframe src="acylphosphatase_residue_wise_data_aligned.html" height="1100px" width="1200px"></iframe>
+  </ol>
+  <br>
+  <h2>Future Versions</h2>
+  <ol>
+  <li>Use <a href="http://nglviewer.org/">NGL Viewer</a> to improve the performance of visualizing the elecric field lines.</li>
+  <li>Use <a href="https://plot.ly/dash/">Plotly Dash</a> for improved performance and better user interface.
+  </ol>
+  <br>
+  This page and the documentation is still under construction
 </body>
 </html>

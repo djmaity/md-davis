@@ -1,9 +1,13 @@
-# gromacs_analysis_scripts
-
+# MD Davis
+This page is still under construction
 ## Dependencies:
-python 3 with numpy and matplotlib modules installed.
+plotly, biopython, pymol, mdtraj
 
-## Plot .xvg file
+Following external software are required as well:
+[Delphi](http://compbio.clemson.edu/delphi)
+[MSMS](http://mgltools.scripps.edu/downloads#msms)
+
+<!-- ## Plot .xvg file
 To use this script type the following command in a terminal or command prompt and press 'Enter':
 ```
 python plot_xvg.py <path/to/file.xvg>
@@ -28,4 +32,4 @@ Providing **-h** option to each python script will print out its help message.
 ```
 python <script_name.py> -h
 ```
-NOTE: _Please replace the text wtih angular brackets < > by the respective filename or path._
+NOTE: _Please replace the text wtih angular brackets < > by the respective filename or path._ -->
