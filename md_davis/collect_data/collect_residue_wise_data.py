@@ -21,6 +21,12 @@ def parse_potential(potential_file):
         names=['name', 'resName', 'chainID', 'resSeq', 'potential',
             'reaction', 'coulomb', 'Ex', 'Ey', 'Ez'],
     )
+    df = pandas.read_fwf(potential_file, skiprows=12, skipfooter=2,
+        dtype={'resSeq': int}, engine='python',
+        names=['name', 'resName', 'chainID', 'resSeq', 'potential',
+            'reaction', 'coulomb', 'Ex', 'Ey', 'Ez'],
+        widths=[5, 3, 3, 9, 10, 10, 10, 10, 10, 10]
+    )
     output = {}
     chain = 0
     for _, data in df.groupby(['chainID'], as_index=False):

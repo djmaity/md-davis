@@ -34,4 +34,34 @@ Providing **-h** option to each python script will print out its help message.
 ```
 python <script_name.py> -h
 ```
-NOTE: _Please replace the text wtih angular brackets < > by the respective filename or path._ -->
+NOTE: _Please replace the text wtih angular brackets < > by the respective filename or path._ 
+
+# README #
+
+These scripts extract dihedral angles from GROMACS (molecular dynamics) trajectory and analyse enregy landscapes.
+
+### What is this repository for? ###
+
+* Analysing GROMACS trajectories
+* 0.1
+
+### How do I get set up? ###
+
+* Summary of set up
+* Configuration
+* Dependencies
+* Database configuration
+* How to run tests
+* Deployment instructions
+
+### Contribution guidelines ###
+
+* Writing tests
+* Code review
+* Other guidelines
+
+### Who do I talk to? ###
+
+* Author: Dibyajyoti Maity (djmaity@ssl.serc.iisc.in)
+
+-->

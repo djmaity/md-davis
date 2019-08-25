@@ -2,9 +2,21 @@ import argparse
 import numpy
 import h5py
 import mdtraj
+import scipy.stats as statistics
 
 
-def add_dihedrals(group, trajectory, structure, chunk=1000, atoms=None):
+def split_chains(array, lengths):
+    """ """
+    assert sum(lengths) == len(array)
+    start = 0
+    for end in lengths:
+        end = start + end
+        sub_array = array[start:end]
+        start = end
+        yield sub_array
+
+
+def get_dihedrals(group, trajectory, structure, chunk=1000, atoms=None):
     """ Evaluate the dihedral angles using MDTraj and store it as HDF5 dataset """
     # if atoms:
     #     trj_iterator = mdtraj.iterload(trajectory, top=structure, chunk=chunk, atom_indices=atoms)
@@ -29,11 +41,47 @@ def add_dihedrals(group, trajectory, structure, chunk=1000, atoms=None):
     psi_dset = group.create_dataset( 'psi', data=numpy.vstack( psi_array ) )
     omega_dset = group.create_dataset( 'omega', data=numpy.vstack( omega_array ) )
 
-    phi_dset.attrs['indices'] = phi_indices
-    psi_dset.attrs['indices'] = psi_indices
-    omega_dset.attrs['indices'] = omega_indices
-
+    phi_dset.attrs['indices'] = phi_indices.astype(numpy.int32)
+    psi_dset.attrs['indices'] = psi_indices.astype(numpy.int32)
+    omega_dset.attrs['indices'] = omega_indices.astype(numpy.int32)
     return numpy.hstack( time )
+
+
+def get_dihedral_sd(hdf5_file, begin=0, end=1000, step=200):
+    """
+        hdf5_file must contain dihedrals and sequence
+
+        begin = Start frame in ns
+        end = End frame in ns
+        step = Number of frames per ns
+    """
+    start = int(begin * step)
+    end = int(end * step)
+
+    dih_sd_group = hdf5_file.create_group('dihedral_standard_deviation')
+    dih_sd_group.attrs['unit'] = 'radians'
+    dih_sd_group.attrs['begin'] = f'{begin} ns'
+    dih_sd_group.attrs['end'] = f'{end} ns'
+
+    lengths = [len(_) - 1  for _ in hdf5_file.attrs['sequence'].split('/')]
+    data_type =  numpy.dtype([("phi", numpy.float),
+                              ("psi", numpy.float),
+                              ("omega", numpy.float)
+                            ])
+
+    for ch, length in enumerate(lengths):
+        dih_sd_group.create_dataset(f'chain {ch}', (length + 1,), dtype=data_type)
+
+    for angle in ['phi', 'psi', 'omega']:
+        _, num_angles = numpy.shape(hdf5_file[f'/dihedrals/{angle}'])
+        assert sum(lengths) == num_angles
+        circ_sd = statistics.circstd(hdf5_file[f'/dihedrals/{angle}'][start:end], axis=0, high=numpy.pi)
+        for ch, chain_dih_sd in enumerate(split_chains(circ_sd, lengths)):
+            dset = hdf5_file[f'/dihedral_standard_deviation/chain {ch}']
+            if angle == 'phi':
+                dset[f'{angle}', 1:] = chain_dih_sd
+            else:
+                dset[f'{angle}', :-1] = chain_dih_sd
 
 
 def main():
@@ -52,7 +100,7 @@ def main():
 
     with h5py.File(args.output, 'a') as datafile:
         dih_grp = datafile.create_group('dihedrals')
-        time = add_dihedrals(dih_grp,
+        time = get_dihedrals(dih_grp,
                              trajectory=args.trajectory,
                              structure=args.structure,
                              chunk=args.chunk,
@@ -60,6 +108,8 @@ def main():
         )
         datafile.attrs['time'] = time
         datafile.attrs['time_unit'] = 'picosecond'
+
+        get_dihedral_sd(datafile)
 
 
 if __name__ == "__main__":
