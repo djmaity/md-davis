@@ -4,7 +4,7 @@
 Plot dipole moment from hdf5 files
 
 Usage:
-  md_davis plot_dipoles [options] [(--3d | --both)] FILES...
+  md_davis plot dipoles [options] [(--3d | --both)] FILES...
 
 Options:
   -t, --title <string>      Title for the plot
@@ -26,7 +26,8 @@ from plotly.offline import plot
 import plotly
 from plotly.colors import DEFAULT_PLOTLY_COLORS
 
-import md_davis.polar
+# Local imports
+from ..utils import polar
 
 
 def sample(array, size=None):
@@ -57,7 +58,7 @@ def plot_dipoles(dictionary, filename=None, title=None):
             ),
         )
         fig.append_trace(trace, 1, 1)
-        
+
         trace = go.Scatter(
             x=x_data,
             y=numpy.degrees(azimuth),
@@ -84,10 +85,10 @@ def plot_dipoles(dictionary, filename=None, title=None):
             showlegend=False,
         )
         fig.append_trace(trace, 3, 1)
-    
+
     if title:
         fig['layout'].update(title=title)
-    
+
     fig['layout']['xaxis3'].update(range=[0, 1000], title='Time (ns)')
     fig['layout']['yaxis1'].update(title='Dipole Moment Magnitude (Debye)')
     fig['layout']['yaxis2'].update(title='Azimuth (degrees)', range=[-181, 181],
@@ -159,7 +160,12 @@ def plot_dipoles3d(dictionary, filename=None, title=None, centroid=False):
 
 
 
-def main(args):
+def main(argv):
+    """ Plot dipole moment from HDF5 files """
+    if argv:
+        args = docopt.docopt(__doc__, argv=argv)
+    else:
+        args = docopt.docopt(__doc__)
     size = int(args['--size'])
     output = args['--output']
     title = args['--title']
@@ -175,7 +181,7 @@ def main(args):
         if args['--3d']:
             dipoles_dict[ hdf_file.attrs['short_html'] ] = dipoles
         else:
-            polar_dipoles[ hdf_file.attrs['short_html'] ] = md_davis.polar.spherical_numpy(xyz=dipoles.T).T
+            polar_dipoles[ hdf_file.attrs['short_html'] ] = polar.spherical_numpy(xyz=dipoles.T).T
 
         if args['--both']:
             dipoles_dict[ hdf_file.attrs['short_html'] ] = dipoles
@@ -184,11 +190,10 @@ def main(args):
         plot_dipoles3d(dipoles_dict, filename=output, title=title, centroid=args['--center'])
     else:
         plot_dipoles(polar_dipoles, filename=output, title=title)
-    
+
     if args['--both']:
         plot_dipoles3d(dipoles_dict, filename='3D_' + output, title=title, centroid=args['--center'])
 
 
 if __name__ == '__main__':
-    arguments = docopt.docopt(__doc__)
-    main(arguments)
+    main()

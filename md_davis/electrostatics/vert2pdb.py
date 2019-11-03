@@ -22,7 +22,10 @@ parser.add_argument('-o', '--output',  metavar='surface.pdb', default=None, type
                     help='Output PDB file with the surface')
 args = parser.parse_args()
 
-vertices = numpy.loadtxt(args.vert, usecols=(0, 1, 2), skiprows=3)
+# Some Input files for hemoglobin simulation were raising UnicodeDecodeError
+vertex_file = open(args.vert, 'r', errors='replace')
+vertices = numpy.loadtxt(vertex_file, usecols=(0, 1, 2), skiprows=3)
+
 pdb_parser = Bio.PDB.PDBParser()
 structure = pdb_parser.get_structure("structure", args.pdb)
 model = structure[0]    # Use the first model

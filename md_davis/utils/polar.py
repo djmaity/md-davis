@@ -1,6 +1,6 @@
 """ This module converts cartesian coordinates to spherical polar coordinates
     of a structure or trajectory and plots them. """
-
+# TODO: Convert this module to docopt and figure out its utility
 from Bio.PDB.PDBParser import PDBParser
 from Bio.PDB import DSSP
 import numpy as np

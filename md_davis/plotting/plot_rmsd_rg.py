@@ -44,7 +44,7 @@ def window_std(data, window=100):
 
 
 def continuous_errorbar(x, y, err, name, hover_text=None,
-        line_color=None, fill_color=None, dash=None):
+        line_color=None, fill_color=None, dash=None, showlegend=True):
     """ return continuous errorbar plotly trace """
     if not line_color:
         line_color = 'rgb(31,119,180)'
@@ -55,7 +55,8 @@ def continuous_errorbar(x, y, err, name, hover_text=None,
         line=dict(width=0), legendgroup=name, showlegend=False, hoverinfo='none',
         fillcolor=fill_color, fill='tonexty')
     trace = go.Scatter(name=name, x=x, y=y, mode='lines',
-        line=dict(color=line_color, dash=dash), legendgroup=name, text=hover_text,
+        line=dict(color=line_color, dash=dash), showlegend=showlegend,
+        legendgroup=name, text=hover_text,
         hoverinfo='text+y', fillcolor=fill_color, fill='tonexty')
     lower_bound = go.Scatter(name=name, x=x, y=y - err, mode='lines',
         line=dict(width=0), legendgroup=name, showlegend=False, hoverinfo='none')

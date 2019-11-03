@@ -26,7 +26,8 @@ secondary_structure = collections.OrderedDict([
 
 
 
-def plot_secondary_structure(data, name, figure, twin_axis, row=1, column=1, height=100):
+# def plot_secondary_structure(data, name, figure, twin_axis, row=1, column=1, height=100):
+def plot_secondary_structure(data, name, figure, axis=None, row=1, column=1, height=100, showlegend=True):
     """ Plot secondary structure stacked bar graph """
     if isinstance(data, pandas.DataFrame):
         frames = data.sum(axis=1).max()
@@ -34,12 +35,6 @@ def plot_secondary_structure(data, name, figure, twin_axis, row=1, column=1, hei
         frames = sum(data[0])
     else:
         raise TypeError
-        
-    """ Add secondary structure stacked bar chart trace to a figure """
-    if twin_axis != '':
-        figure['layout'].update({f'yaxis{twin_axis}': dict(anchor='x',
-            overlaying='y', side='left', showgrid=False, ticks='',
-            showticklabels=False) })
 
     for code, structure in secondary_structure.items():
         if isinstance(data, pandas.DataFrame):
@@ -59,8 +54,10 @@ def plot_secondary_structure(data, name, figure, twin_axis, row=1, column=1, hei
             hoverinfo='none',
         )
         figure.append_trace(trace, row=row, col=column)
-        figure['data'][-1].update(yaxis=f'y{twin_axis}')
-    figure['data'][-1]['showlegend']=True
+        if axis:
+            figure['data'][-1].update(yaxis=axis)
+    if showlegend:
+        figure['data'][-1]['showlegend']=True
     figure['layout']['barmode'] = 'stack'
 
 
@@ -136,7 +133,7 @@ def main():
              xref='paper', yref='paper', font=dict(size=24), ax=0, ay=50),
     ]
     fig['layout']['annotations'] = annotations
-    
+
     fig['layout']['legend'].update(x=0, y=-0.1, xanchor='left', yanchor='top')
     fig['layout'].update(title='Comparison of HbA and HbS in MD simulation of crystal',
         autosize=False, width=1200, height=1200,

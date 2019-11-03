@@ -1,13 +1,32 @@
 # MD Davis
 
-## Dependencies:
-plotly, biopython, pymol, mdtraj
+## Installation
+Clone this repository using:
+```
+git clone git@github.com:djmaity/md_davis.git
+```
+Optional: I recommend installing this package in a virtual environment. Create a virtual enviroment in Anaconda or Miniconda distribution using:
+```
+conda create --name md_davis python=3
+```
+Activate the environment before running the install command
+```
+conda activate md_davis
+```
+Install this package using pip:
+```
+pip install path/to/md_davis
+```
+### Dependencies:
+pip should automatically install the dependencies
 
-Following external software are required as well:
+In addtion the following external software are required as well:
+[PyMOL] (https://pymol.org/2/)
 [Delphi](http://compbio.clemson.edu/delphi)
 [MSMS](http://mgltools.scripps.edu/downloads#msms)
 
 This page is still under construction. Visit [https://djmaity.github.io/md_davis/](https://djmaity.github.io/md_davis/) to know more.
+
 
 <!-- ## Plot .xvg file
 To use this script type the following command in a terminal or command prompt and press 'Enter':
@@ -45,11 +64,7 @@ These scripts extract dihedral angles from GROMACS (molecular dynamics) trajecto
 * Analysing GROMACS trajectories
 * 0.1
 
-### How do I get set up? ###
 
-* Summary of set up
-* Configuration
-* Dependencies
 * Database configuration
 * How to run tests
 * Deployment instructions

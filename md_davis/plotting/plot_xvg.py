@@ -6,39 +6,23 @@ Gromacs. Although xmgrace can show .xvg plots; it is outdated, the
 plots are not pretty and are difficult to customize
 
 Usage:
-  md_davis plot_xvg [options] XVG_FILE
-  md_davis plot_xvg -h | --help
-  md_davis plot_xvg -v | --version
+  md_davis plot xvg [options] XVG_FILE
+  md_davis plot xvg -h | --help
+  md_davis plot xvg -v | --version
 
 Options:
   -h --help                     Show this screen
   -v --version                  Show version
   -o, --output FILENAME         Output filename
   -c, --columns <columns>       Columns to use (start from second column = 1)')
-  -p, --plotly HTML_FILENAME    Use plotly for plotting. 
+  -p, --plotly HTML_FILENAME    Use plotly for plotting.
                                 By default plots are created using matplotlib.
 
 """
 
 import docopt
-# import argparse
 import numpy
 import re
-
-
-# def get_arguments():
-#     """ Get filename and arguments from the commandline """
-#     parser = argparse.ArgumentParser(description='Parse .xvg files created by Gromacs')
-#     parser.add_argument('file', help='Input file',
-#                         metavar='filename.xvg')
-#     parser.add_argument('-o', '--output', dest='output',
-#                         help='Output filename', metavar='output.npy')
-#     parser.add_argument('-c', '--columns', dest='columns', type=int,
-#                         nargs='+', metavar='int',
-#                         help='Columns to use (start from second column = 1)')
-#     parser.add_argument('-p', dest='plotly', help='Use plotly for plotting.'
-#                         ' By default plots are created using matplotlib')
-#     return parser.parse_args()
 
 
 def parse_header(in_file):
@@ -169,8 +153,13 @@ def plotly_xvg(filename, data_arrays, header=None, labels=None):
     plot(figure, filename=filename)
 
 
-def main(args):
+def main(argv=None):
     """ Plot .xvg files genrated by Gromacs """
+    if argv:
+        args = docopt.docopt(__doc__, argv=argv)
+    else:
+        args = docopt.docopt(__doc__)
+
     if args['--columns']:
         columns = args['--columns'].strip().split()
     else:
@@ -186,5 +175,4 @@ def main(args):
 
 
 if __name__ == '__main__':
-    arguments = docopt.docopt(__doc__)
-    main(arguments)
+    main()

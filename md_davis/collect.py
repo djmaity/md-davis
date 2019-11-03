@@ -14,7 +14,7 @@ Usage:
                    HDF_FILE
 
   md_davis collect -h | --help
-  md_davis collect -v | --version
+
 
 Arguments:
   <begin>               Starting time for RMSF calculation in nanoseconds
@@ -36,9 +36,8 @@ Options:
   -a, --atoms <list>        Atoms to use for dihedral calculation
   --ss FILE                 Add secondary sctructure information from
                             'gmx do_dssp' into HDF_FILE
-  
+
   -h, --help                 Show this screen
-  -v, --version              Show version
 
   -i, --info JSON           Add labels and other information as attributes
                             in the HDF_FILE
@@ -56,7 +55,7 @@ The attributes resuired as JSON with '--info' are given in the example below:
     "sequence": "ACDEFGHIKLMNPQRSTVWY"
 }
 
-This information is primarily parsed to create labels for plots with 
+This information is primarily parsed to create labels for plots with
 this data file. 'sequence' is required to split the data into
 chains. A JSON file can also be supplied instead of a string
 """
@@ -135,7 +134,7 @@ def add_rmsd_rg(hdf_file, rmsd, rg, dataset='all_atom',
     rg_data = numpy.loadtxt(rg, comments=('#', '@'), dtype=numpy.single)
     assert numpy.array_equal(rmsd_data[:, 0], rg_data[:, 0]), \
         "The times in RMSD file do not match those in radius of gyration file"
-    data = numpy.core.records.fromarrays(numpy.hstack([rmsd_data, rg_data[:, 1:]]).T, 
+    data = numpy.core.records.fromarrays(numpy.hstack([rmsd_data, rg_data[:, 1:]]).T,
         names='time, rmsd, rg, rg_x, rg_y, rg_z')
     dset = group.create_dataset(dataset, data=data)
     dset.attrs['time_unit'] = time_unit
@@ -275,7 +274,12 @@ def add_dipoles(hdf_file, dipoles):
     dset.attrs['unit'] = 'Debye'
 
 
-def main(args):
+def main(argv):
+    if argv:
+        args = docopt.docopt(__doc__, argv=argv)
+    else:
+        args = docopt.docopt(__doc__)
+
     if not os.path.exists(args['HDF_FILE']):
         print(f"The file {args['HDF_FILE']} does not exist and will be created.")
 
@@ -283,19 +287,19 @@ def main(args):
         if args['--info']:
             add_info(hdf_file=hdf_file, info=args['--info'])
         if args['--all_atom_rmsd'] and args['--all_atom_rg']:
-            add_rmsd_rg(hdf_file=hdf_file, 
+            add_rmsd_rg(hdf_file=hdf_file,
                         rmsd=args['--all_atom_rmsd'],
                         rg=args['--all_atom_rg'],
                         dataset='all_atom',
             )
         if args['--backbone_rmsd'] and args['--backbone_rg']:
-            add_rmsd_rg(hdf_file=hdf_file, 
+            add_rmsd_rg(hdf_file=hdf_file,
                         rmsd=args['--backbone_rmsd'],
                         rg=args['--backbone_rg'],
                         dataset='backbone',
             )
         if args['--c_alpha_rmsd'] and args['--c_alpha_rg']:
-            add_rmsd_rg(hdf_file=hdf_file, 
+            add_rmsd_rg(hdf_file=hdf_file,
                         rmsd=args['--c_alpha_rmsd'],
                         rg=args['--c_alpha_rg'],
                         dataset='c-alpha',
@@ -328,5 +332,4 @@ def main(args):
 
 
 if __name__ == '__main__':
-    arguments = docopt.docopt(__doc__)
-    main(arguments)
+    main()

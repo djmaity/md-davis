@@ -81,7 +81,7 @@ def main():
     cmd.set('retain_order', 1)
 
     cmd.load(args.pdb_file, object='molecule')
-    cmd.run('axes.py')
+    # cmd.run('axes.py')
 
     rot_mat, com = inertia_tensor('molecule')
 

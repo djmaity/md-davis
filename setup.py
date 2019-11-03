@@ -1,27 +1,63 @@
-import setuptools
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+"""The setup script."""
 
-setuptools.setup(
-    name="md_davis",
-    version="0.0.2",
+from setuptools import setup, find_packages
+
+with open('README.rst') as readme_file:
+    readme = readme_file.read()
+
+with open('HISTORY.rst') as history_file:
+    history = history_file.read()
+
+requirements = ['Click>=6.0',
+                'biopython',
+                'docopt',
+                'matplotlib',
+                'mdtraj',
+                'plotly',
+                'numpy',
+                'pandas',
+                'scipy',
+]
+
+setup_requirements = ['pytest-runner', ]
+
+test_requirements = ['pytest', ]
+
+setup(
     author="Dibyajyoti Maity",
-    author_email="djdibs@gmail.com",
-    description="A package to analyze and visuazlize molecular dynamics simulations of proteins.",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
-    url="https://djmaity.github.io/md_davis/",
-    packages=setuptools.find_packages(),
-    install_requires=['biopython','docopt','matplotlib','mdtraj','plotly','pymol'],
+    author_email='djdibs@gmail.com',
+    classifiers=[
+        'Development Status :: 2 - Pre-Alpha',
+        'Environment :: Console',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: MIT License',
+        'Natural Language :: English',
+        "Operating System :: OS Independent",
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+    ],
+    description="A package to analyze and visualize molecular dynamics simulations of proteins.",
     entry_points={
         'console_scripts': [
-            'md_davis=md_davis.cli:main'
+            'md_davis=md_davis.cli:main',
         ],
     },
-    classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-    ],
+    install_requires=requirements,
+    license="MIT license",
+    long_description=readme + '\n\n' + history,
+    long_description_content_type="text/x-rst",
+    include_package_data=True,
+    keywords='md_davis analysis data visualization molecular dynamics protein',
+    name='md_davis',
+    packages=find_packages(include=['md_davis']),
+    setup_requires=setup_requirements,
+    test_suite='tests',
+    tests_require=test_requirements,
+    url='https://github.com/djmaity/md_davis',
+    version='1.0.0',
+    zip_safe=False,
+    python_requires='>=3.6',
 )
