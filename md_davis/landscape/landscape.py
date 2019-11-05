@@ -83,10 +83,10 @@ class Landscape(object):
             ref_dtype = h5py.special_dtype(ref=h5py.Reference)
             t_dset = grp.create_dataset('time_bins', dset.shape, dtype=ref_dtype)
             time_grp = grp.create_group('time_group')
-            for i, rows in enumerate(self.time_bins):
-                for j, time in enumerate(rows):
+            for y, rows in enumerate(self.time_bins):
+                for x, time in enumerate(rows):
                     if len(time) > 0:
-                        t = time_grp.create_dataset(f'({i}, {j})',
+                        t = time_grp.create_dataset(f'({self.xBins[x]}, {self.yBins[y]})',
                             data=numpy.array(time),
                         )
                         t_dset[i, j] = t.ref
@@ -193,7 +193,7 @@ class Landscape(object):
         dimensions['z'] = cls.minmax(numpy.array(z_range).flatten())
         # Update the range for the 3 directions for each landscape
         for ls in landscapes:
-            ls.dims = dimensions 
+            ls.dims = dimensions
         return landscapes
 
     @staticmethod

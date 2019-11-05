@@ -10,4 +10,5 @@ __all__ = ["collect_data",
            "plotting",
            "structure",
            "utils",
+           "landscape",
 ]
