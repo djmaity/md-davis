@@ -9,8 +9,8 @@ MD DaVis
 .. image:: https://img.shields.io/travis/djmaity/md_davis.svg
         :target: https://travis-ci.org/djmaity/md_davis
 
-.. image:: https://readthedocs.org/projects/md-davis/badge/?version=latest
-        :target: https://md-davis.readthedocs.io/en/latest/?badge=latest
+.. image:: https://readthedocs.org/projects/md_davis/badge/?version=latest
+        :target: https://md_davis.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
 
@@ -20,7 +20,7 @@ A package to analyze and visualize molecular dynamics simulations of proteins.
 
 
 * Free software: MIT license
-* Documentation: https://md-davis.readthedocs.io.
+* Documentation: https://md_davis.readthedocs.io.
 
 
 Features

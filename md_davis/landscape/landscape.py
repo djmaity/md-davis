@@ -71,25 +71,25 @@ class Landscape(object):
                         dims_grp.create_dataset(axis, data=self.dims[axis])
 
             grp.create_dataset('xBins', data=self.xBins)
-            dset.dims.create_scale(grp['xBins'], xlabel)
+            grp['xBins'].make_scale(xlabel)
             dset.dims[0].attach_scale(grp['xBins'])
             dset.dims[0].label = xlabel
 
             grp.create_dataset('yBins', data=self.yBins)
-            dset.dims.create_scale(grp['yBins'], ylabel)
+            grp['yBins'].make_scale(ylabel)
             dset.dims[1].attach_scale(grp['yBins'])
             dset.dims[1].label = ylabel
 
             ref_dtype = h5py.special_dtype(ref=h5py.Reference)
             t_dset = grp.create_dataset('time_bins', dset.shape, dtype=ref_dtype)
             time_grp = grp.create_group('time_group')
-            for i, rows in enumerate(self.time_bins):
-                for j, time in enumerate(rows):
+            for x, rows in enumerate(self.time_bins):
+                for y, time in enumerate(rows):
                     if len(time) > 0:
-                        t = time_grp.create_dataset(f'({i}, {j})',
+                        t = time_grp.create_dataset(f'({self.xBins[x]}, {self.yBins[y]})',
                             data=numpy.array(time),
                         )
-                        t_dset[i, j] = t.ref
+                        t_dset[x, y] = t.ref
         return
 
     @classmethod
@@ -140,6 +140,10 @@ class Landscape(object):
 
     @classmethod
     def landscape(cls, name, time, x_data, y_data, shape=(100, 100), temperature=None, label=None):
+        if len(time) < 1 or len(x_data) < 1 or len(y_data) < 1:
+            raise ValueError('Empty array provided in input')
+        if len(time) != len(x_data) != len(y_data):
+            raise ValueError('Unequal length of arrays: time, x_data and/or y_data')
         dimensions = dict(x=cls.minmax(x_data),
                           y=cls.minmax(y_data),
         )
@@ -193,7 +197,7 @@ class Landscape(object):
         dimensions['z'] = cls.minmax(numpy.array(z_range).flatten())
         # Update the range for the 3 directions for each landscape
         for ls in landscapes:
-            ls.dims = dimensions 
+            ls.dims = dimensions
         return landscapes
 
     @staticmethod
@@ -214,7 +218,7 @@ class Landscape(object):
 
     @classmethod
     def plot_landscapes(cls, landscapes, title='Landscapes', filename='landscape.html',
-                        xlabel='x', ylabel='y', zlabel='z'):
+                        xlabel='x', ylabel='y', zlabel='z', othrographic=False):
         """ Make 2 subplots """
         subtitles = [ls.label for ls in landscapes]
         columns, rows = cls.get_layout(len(landscapes))
@@ -231,16 +235,16 @@ class Landscape(object):
             x, y = numpy.meshgrid(landscape.xBins, landscape.yBins)
             z = landscape.zValues
             current_trace = dict(type='surface', x=x, y=y, z=z,
-                                    colorscale='Cividis',
-                                    cmin=landscape.dims['z'][0],
-                                    cmax=landscape.dims['z'][1],
+                                 colorscale='Cividis',
+                                 cmin=landscape.dims['z'][0],
+                                 cmax=landscape.dims['z'][1],
                                 #  showscale=False,
             )
             fig.append_trace(current_trace, current_row, current_column)
         # Show contour lines
         fig.update_traces(contours_z=dict(show=True, usecolormap=True,
-                        highlightcolor="limegreen", project_z=True))
-        fig['layout'].update(title=title)
+                          highlightcolor="limegreen", project_z=True))
+        fig.layout.update(title=title)
 
         for i, ls in enumerate(landscapes, start=1):
             fig['layout'][f'scene{i}'].update(
@@ -248,6 +252,8 @@ class Landscape(object):
                 yaxis_title=ylabel,
                 zaxis_title=zlabel,
             )
+            if othrographic:
+                fig.layout[f'scene{i}'].camera.projection.update(type='orthographic')
             for axis in ['x', 'y', 'z']:
                 if axis in ls.dims:
                     fig['layout'][f'scene{i}'][axis + 'axis'].update(range=ls.dims[axis])
@@ -257,34 +263,68 @@ class Landscape(object):
         div_id = div.split('=')[1].split()[0].replace("'", "").replace('"', '')
 
         # Custom JS code to sync the view of the plots
-        js = '''
-            <script>
-            var gd = document.getElementById('{div_id}');
-            var isUnderRelayout = false;
-            var oldCamera, newCamera;
-            var scenes = [];
-            for (propertyName in gd.layout) {{
-                if ( propertyName.startsWith('scene') ) {{
-                    scenes.push(propertyName);
-                }}
-            }}
-            gd.on('plotly_relayout', () => {{
-            if ( !isUnderRelayout ) {{
-                for (i = 0; i < scenes.length; i++) {{
-                    if (gd.layout[scenes[i]].camera != oldCamera && !undefined) {{
-                        newCamera = gd.layout[scenes[i]].camera
+        if othrographic:
+            js = '''
+                <script>
+                var gd = document.getElementById('{div_id}');
+                var isUnderRelayout = false;
+                var oldCamera, newCamera;
+                var oldZoom, newZoom;
+                var scenes = [];
+                for (propertyName in gd.layout) {{
+                    if ( propertyName.startsWith('scene') ) {{
+                        scenes.push(propertyName);
                     }}
                 }}
-                for (j = 0; j < scenes.length; j++) {{
-                    Plotly.relayout(gd, scenes[j] + '.camera', newCamera)
-                    .then(() => {{ isUnderRelayout = false }}  );
+                gd.on('plotly_relayout', () => {{
+                if ( !isUnderRelayout ) {{
+                    for (i = 0; i < scenes.length; i++) {{
+                        if (gd.layout[scenes[i]].camera != oldCamera && !undefined) {{
+                            newCamera = gd.layout[scenes[i]].camera
+                        }}
+                        if (gd.layout[scenes[i]].aspectratio != oldZoom && !undefined) {{
+                            newZoom = gd.layout[scenes[i]].aspectratio
+                        }}
+                    }}
+                    for (j = 0; j < scenes.length; j++) {{
+                        Plotly.relayout(gd, scenes[j] + '.camera', newCamera)
+                        Plotly.relayout(gd, scenes[j] + '.aspectratio', newZoom)
+                        .then(() => {{ isUnderRelayout = false }}  );
+                    }}
+                    oldCamera = newCamera
+                    oldZoom = newZoom
                 }}
-                oldCamera = newCamera
-            }}
-            isUnderRelayout = true;
-            }})
-            </script>'''.format(div_id=div_id)
-
+                isUnderRelayout = true;
+                }})
+                </script>'''.format(div_id=div_id)
+        else:
+            js = '''
+                <script>
+                var gd = document.getElementById('{div_id}');
+                var isUnderRelayout = false;
+                var oldCamera, newCamera;
+                var scenes = [];
+                for (propertyName in gd.layout) {{
+                    if ( propertyName.startsWith('scene') ) {{
+                        scenes.push(propertyName);
+                    }}
+                }}
+                gd.on('plotly_relayout', () => {{
+                if ( !isUnderRelayout ) {{
+                    for (i = 0; i < scenes.length; i++) {{
+                        if (gd.layout[scenes[i]].camera != oldCamera && !undefined) {{
+                            newCamera = gd.layout[scenes[i]].camera
+                        }}
+                    }}
+                    for (j = 0; j < scenes.length; j++) {{
+                        Plotly.relayout(gd, scenes[j] + '.camera', newCamera)
+                        .then(() => {{ isUnderRelayout = false }}  );
+                    }}
+                    oldCamera = newCamera
+                }}
+                isUnderRelayout = true;
+                }})
+                </script>'''.format(div_id=div_id)
         # merge everything
         div = '<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>' + div + js
         print(div, file=open(filename, "w"))

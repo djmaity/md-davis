@@ -19,7 +19,7 @@ requirements = ['Click>=6.0',
                 'plotly',
                 'numpy',
                 'pandas',
-                'scipy',
+                'h5py',
 ]
 
 setup_requirements = ['pytest-runner', ]
@@ -38,6 +38,7 @@ setup(
         "Operating System :: OS Independent",
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
     ],
     description="A package to analyze and visualize molecular dynamics simulations of proteins.",
     entry_points={
@@ -50,14 +51,14 @@ setup(
     long_description=readme + '\n\n' + history,
     long_description_content_type="text/x-rst",
     include_package_data=True,
-    keywords='md_davis analysis data visualization molecular dynamics protein',
+    keywords='analysis data visualization molecular dynamics protein',
     name='md_davis',
     packages=find_packages(include=['md_davis']),
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
-    url='https://github.com/djmaity/md_davis',
-    version='1.0.0',
+    url='https://djmaity.github.io/md_davis/',
+    version='0.1.0',
     zip_safe=False,
     python_requires='>=3.6',
 )
