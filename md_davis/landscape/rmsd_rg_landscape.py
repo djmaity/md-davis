@@ -26,7 +26,7 @@ Options:
                                 [default: 0]
   -e, --end int                 Last index for the data to include
   -p, --plot                    Plot the precomputed energy landscape
-
+  --ortho                       Orthographic projection for 3D plots
 """
 
 import numpy
@@ -67,6 +67,8 @@ def main(argv=None):
                 time = group['time'][start:end]
                 rmsd = group['rmsd'][start:end] * 10  # Convert from nm to Å
                 rg = group['rg'][start:end] * 10    # Convert from nm to Å
+                if len(time) < 1 or len(rmsd) < 1 or len(rg) < 1:
+                    raise ValueError('Invalid value for --begin or --end')
                 if args['--common']:
                     input_data[name] = [time, rmsd, rg, label]
                 else:
@@ -99,6 +101,7 @@ def main(argv=None):
                     xlabel='RMSD (in  Å)',
                     ylabel='Radius of Gyration (in  Å)',
                     zlabel='Energy (kJ/mol)',
+                    othrographic=args['--ortho'],
                     )
 
 
