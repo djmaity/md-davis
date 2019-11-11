@@ -27,6 +27,7 @@ Options:
   -e, --end int                 Last index for the data to include
   -p, --plot                    Plot the precomputed energy landscape
   --ortho                       Orthographic projection for 3D plots
+  -d, --dict                    Dictionary containing input data
 """
 
 import numpy
@@ -58,31 +59,35 @@ def main(argv=None):
         for filename in args['HDF_FILES']:
             landscapes += Landscape.open(filename)
     else:
-        input_data = {}
-        for filename in args['HDF_FILES']:
-            with h5py.File(filename, 'r') as hdf_file:
-                name = hdf_file.attrs['short_label']
-                label = hdf_file.attrs['short_html']
-                group = hdf_file['/rmsd_rg/all_atom']
-                time = group['time'][start:end]
-                rmsd = group['rmsd'][start:end] * 10  # Convert from nm to Å
-                rg = group['rg'][start:end] * 10    # Convert from nm to Å
-                if len(time) < 1 or len(rmsd) < 1 or len(rg) < 1:
-                    raise ValueError('Invalid value for --begin or --end')
-                if args['--common']:
-                    input_data[name] = [time, rmsd, rg, label]
-                else:
-                    print(f'Generating Landscape for {name}')
-                    landscape = Landscape.landscape(
-                        name=name,
-                        time=time,
-                        x_data=rmsd,
-                        y_data=rg,
-                        shape=shape,
-                        label=label,
-                        temperature=temperature,
-                    )
-                    landscapes.append(landscape)
+        if args['--dict']:
+            landscapes = Landscape.common_landscapes(data=args['--dict'],
+                shape=shape, temperature=temperature)
+        else:
+            input_data = {}
+            for filename in args['HDF_FILES']:
+                with h5py.File(filename, 'r') as hdf_file:
+                    name = hdf_file.attrs['short_label']
+                    label = hdf_file.attrs['short_html']
+                    group = hdf_file['/rmsd_rg/all_atom']
+                    time = group['time'][start:end]
+                    rmsd = group['rmsd'][start:end] * 10  # Convert from nm to Å
+                    rg = group['rg'][start:end] * 10    # Convert from nm to Å
+                    if len(time) < 1 or len(rmsd) < 1 or len(rg) < 1:
+                        raise ValueError('Invalid value for --begin or --end')
+                    if args['--common']:
+                        input_data[name] = [time, rmsd, rg, label]
+                    else:
+                        print(f'Generating Landscape for {name}')
+                        landscape = Landscape.landscape(
+                            name=name,
+                            time=time,
+                            x_data=rmsd,
+                            y_data=rg,
+                            shape=shape,
+                            label=label,
+                            temperature=temperature,
+                        )
+                        landscapes.append(landscape)
 
         if args['--common'] and len(input_data) > 0:
             landscapes = Landscape.common_landscapes(data=input_data,
