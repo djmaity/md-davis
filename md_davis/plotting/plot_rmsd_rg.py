@@ -89,7 +89,8 @@ def main():
     for fname in args.files:
         print(fname)
         with h5py.File(fname, 'r') as datafile:
-            dset = datafile['rmsd_rg/backbone'][1:]
+            # dset = datafile['rmsd_rg/backbone'][1:]
+            dset = datafile['rmsd_rg/all_atom'][1:]
             time = window_mean(dset['time'], window=args.window) / 1000
             rmsd_traces += continuous_errorbar(
                 x=time,
