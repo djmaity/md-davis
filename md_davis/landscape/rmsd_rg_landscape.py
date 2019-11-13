@@ -28,6 +28,10 @@ Options:
   -p, --plot                    Plot the precomputed energy landscape
   --ortho                       Orthographic projection for 3D plots
   -d, --dict                    Dictionary containing input data
+  --order <string>              Specify the order of landscapes in the plot
+  --width <int>                 Width of the plot
+  --height <int>                Height of the plot
+  --font_size <int>             Size of text and labels in the plot
 """
 
 import numpy
@@ -58,6 +62,16 @@ def main(argv=None):
     if args['--plot']:
         for filename in args['HDF_FILES']:
             landscapes += Landscape.open(filename)
+        if args['--order']:
+            landscape_dict = {}
+            for landscape in landscapes:
+                landscape_dict[landscape.name] = landscape
+            landscapes = []
+            for key in eval(args['--order']):
+                if key in landscape_dict:
+                    landscapes.append(landscape_dict[key])
+                    del landscape_dict[key]
+            landscapes += landscape_dict.values()
     else:
         if args['--dict']:
             landscapes = Landscape.common_landscapes(data=args['--dict'],
@@ -100,14 +114,18 @@ def main(argv=None):
                         xlabel='RMSD (in Å)',
                         ylabel='Radius of Gyration (in Å)',
                 )
-    Landscape.plot_landscapes(landscapes=landscapes,
-                    title=args['--title'],
-                    filename=args['--output'],
-                    xlabel='RMSD (in  Å)',
-                    ylabel='Radius of Gyration (in  Å)',
-                    zlabel='Energy (kJ/mol)',
-                    othrographic=args['--ortho'],
-                    )
+    Landscape.plot_landscapes(
+        landscapes=landscapes,
+        title=args['--title'],
+        filename=args['--output'],
+        xlabel='RMSD (in  Å)',
+        ylabel='Rg (in  Å)',
+        zlabel='Energy (kJ/mol)',
+        width=int(args['--width']) if args['--width'] else None,
+        height=int(args['--height']) if args['--height'] else None,
+        font_size=int(args['--font_size']) if args['--font_size'] else None,
+        othrographic=args['--ortho'],
+    )
 
 
 if __name__ == '__main__':

@@ -85,8 +85,9 @@ class Landscape(object):
             time_grp = grp.create_group('time_group')
             for x, rows in enumerate(self.time_bins):
                 for y, time in enumerate(rows):
+                    print(x, y, self.xBins[x], self.yBins[y], len(time), self.zValues[x, y] )
                     if len(time) > 0:
-                        t = time_grp.create_dataset(f'({self.xBins[x]}, {self.yBins[y]})',
+                        t = time_grp.create_dataset(f'({self.xBins[x]}, {self.yBins[y]}, {x}, {y})',
                             data=numpy.array(time),
                         )
                         t_dset[x, y] = t.ref
@@ -217,8 +218,11 @@ class Landscape(object):
             return (4, math.ceil(num_subplots/4.0) )
 
     @classmethod
-    def plot_landscapes(cls, landscapes, title='Landscapes', filename='landscape.html',
-                        xlabel='x', ylabel='y', zlabel='z', othrographic=False):
+    def plot_landscapes(cls, landscapes,
+                        title='Landscapes',
+                        filename='landscape.html',
+                        xlabel='x', ylabel='y', zlabel='z',
+                        width=None, height=None, othrographic=False, font_size=None):
         """ Make 2 subplots """
         subtitles = [ls.label for ls in landscapes]
         columns, rows = cls.get_layout(len(landscapes))
@@ -227,12 +231,15 @@ class Landscape(object):
                                             shared_xaxes=True,
                                             shared_yaxes=True,
                                             subplot_titles=subtitles,
-                                            specs=[ [{'is_3d': True}] * columns ] * rows
+                                            specs=[ [{'is_3d': True}] * columns ] * rows,
+                                            horizontal_spacing = 0.02,
+                                            vertical_spacing = 0.05,
                                             )
         # adding surfaces to subplots.
         axes_indices = itertools.product(range(1, rows + 1), range(1, columns + 1))
         for landscape, (current_row, current_column) in zip(landscapes, axes_indices):
             x, y = numpy.meshgrid(landscape.xBins, landscape.yBins)
+            print(x, y)
             z = landscape.zValues
             current_trace = dict(type='surface', x=x, y=y, z=z,
                                  colorscale='Cividis',
@@ -257,7 +264,19 @@ class Landscape(object):
             for axis in ['x', 'y', 'z']:
                 if axis in ls.dims:
                     fig['layout'][f'scene{i}'][axis + 'axis'].update(range=ls.dims[axis])
-
+                if font_size:
+                    fig['layout'][f'scene{i}'][axis + 'axis'].title.font.update(
+                        family='Courier New, monospace',
+                        size=font_size,
+                    )
+        if width:
+            fig.layout.update(width=width)
+        if height:
+            fig.layout.update(height=height)
+        if font_size:
+            for annotation in fig.layout.annotations:
+                annotation.font = dict(family='Courier New, monospace',
+                                       size=font_size)
         div = py.plot(fig, include_plotlyjs=False, output_type='div')
         # retrieve the div id for the figure
         div_id = div.split('=')[1].split()[0].replace("'", "").replace('"', '')
