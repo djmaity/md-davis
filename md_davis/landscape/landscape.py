@@ -85,9 +85,8 @@ class Landscape(object):
             time_grp = grp.create_group('time_group')
             for x, rows in enumerate(self.time_bins):
                 for y, time in enumerate(rows):
-                    print(x, y, self.xBins[x], self.yBins[y], len(time), self.zValues[x, y] )
                     if len(time) > 0:
-                        t = time_grp.create_dataset(f'({self.xBins[x]}, {self.yBins[y]}, {x}, {y})',
+                        t = time_grp.create_dataset(f'({self.xBins[x]}, {self.yBins[y]})',
                             data=numpy.array(time),
                         )
                         t_dset[x, y] = t.ref
@@ -222,7 +221,8 @@ class Landscape(object):
                         title='Landscapes',
                         filename='landscape.html',
                         xlabel='x', ylabel='y', zlabel='z',
-                        width=None, height=None, othrographic=False, font_size=None):
+                        width=None, height=None,
+                        othrographic=False, font_size=None):
         """ Make 2 subplots """
         subtitles = [ls.label for ls in landscapes]
         columns, rows = cls.get_layout(len(landscapes))
@@ -238,8 +238,7 @@ class Landscape(object):
         # adding surfaces to subplots.
         axes_indices = itertools.product(range(1, rows + 1), range(1, columns + 1))
         for landscape, (current_row, current_column) in zip(landscapes, axes_indices):
-            x, y = numpy.meshgrid(landscape.xBins, landscape.yBins)
-            print(x, y)
+            x, y = numpy.meshgrid(landscape.xBins, landscape.yBins, indexing='ij')
             z = landscape.zValues
             current_trace = dict(type='surface', x=x, y=y, z=z,
                                  colorscale='Cividis',
@@ -269,10 +268,13 @@ class Landscape(object):
                         family='Courier New, monospace',
                         size=font_size,
                     )
-        if width:
-            fig.layout.update(width=width)
-        if height:
-            fig.layout.update(height=height)
+        # if width:
+        #     fig.layout.update(width=width)
+        # if height:
+        #     fig.layout.update(height=height)
+        
+        fig.update_layout(autosize=False, width=width, height=height)
+
         if font_size:
             for annotation in fig.layout.annotations:
                 annotation.font = dict(family='Courier New, monospace',
