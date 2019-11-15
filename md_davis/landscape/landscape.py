@@ -268,13 +268,10 @@ class Landscape(object):
                         family='Courier New, monospace',
                         size=font_size,
                     )
-        # if width:
-        #     fig.layout.update(width=width)
-        # if height:
-        #     fig.layout.update(height=height)
-        
-        fig.update_layout(autosize=False, width=width, height=height)
-
+        if width:
+            fig.layout.update(width=width)
+        if height:
+            fig.layout.update(height=height)
         if font_size:
             for annotation in fig.layout.annotations:
                 annotation.font = dict(family='Courier New, monospace',
