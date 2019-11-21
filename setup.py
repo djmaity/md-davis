@@ -16,10 +16,10 @@ requirements = ['Click>=6.0',
                 'docopt',
                 'matplotlib',
                 'mdtraj',
-                'plotly',
+                'plotly>=4.0',
                 'numpy',
                 'pandas',
-                'h5py',
+                'h5py>=2.10',
 ]
 
 setup_requirements = ['pytest-runner', ]
