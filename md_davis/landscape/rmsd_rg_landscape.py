@@ -32,6 +32,8 @@ Options:
   --width <int>                 Width of the plot
   --height <int>                Height of the plot
   --font_size <int>             Size of text and labels in the plot
+  --dtick <dict>                Tick interval on each axes
+  --hide_labels                 Hide the axes labels
 """
 
 import numpy
@@ -114,18 +116,34 @@ def main(argv=None):
                         xlabel='RMSD (in Å)',
                         ylabel='Radius of Gyration (in Å)',
                 )
-    Landscape.plot_landscapes(
-        landscapes=landscapes,
-        title=args['--title'],
-        filename=args['--output'],
-        xlabel='RMSD (in  Å)',
-        ylabel='Rg (in  Å)',
-        zlabel='Energy (kJ/mol)',
-        width=int(args['--width']) if args['--width'] else None,
-        height=int(args['--height']) if args['--height'] else None,
-        font_size=int(args['--font_size']) if args['--font_size'] else None,
-        othrographic=args['--ortho'],
-    )
+    if args['--hide_labels']:
+        Landscape.plot_landscapes(
+            landscapes=landscapes,
+            title=args['--title'],
+            filename=args['--output'],
+            xlabel='',
+            ylabel='',
+            zlabel='',
+            width=int(args['--width']) if args['--width'] else None,
+            height=int(args['--height']) if args['--height'] else None,
+            font_size=int(args['--font_size']) if args['--font_size'] else None,
+            othrographic=args['--ortho'],
+            dtick=eval(args['--dtick']),
+        )
+    else:
+        Landscape.plot_landscapes(
+            landscapes=landscapes,
+            title=args['--title'],
+            filename=args['--output'],
+            xlabel=' <br>RMSD (in  Å)',
+            ylabel=' <br>Rg (in  Å)',
+            zlabel='Energy (kJ mol<sup>-1</sup>)<br> ',
+            width=int(args['--width']) if args['--width'] else None,
+            height=int(args['--height']) if args['--height'] else None,
+            font_size=int(args['--font_size']) if args['--font_size'] else None,
+            othrographic=args['--ortho'],
+            dtick=eval(args['--dtick']),
+        )
 
 
 if __name__ == '__main__':

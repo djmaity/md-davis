@@ -128,7 +128,7 @@ def plot_landscapes(landscape, title='Energy Landscape', filename='landscape.htm
     fig.show()
 
 def main():
-    landscapes = Landscape.open('Lab_Home/my_research/research_sorted/hemoglobin/15_hemoglobin_crystal_hdf5/Hb_Crystal-landscape.h5')
+    landscapes = Landscape.open('/home/djmaity/Lab_Home/my_research/research_sorted/hemoglobin/15_hemoglobin_crystal_hdf5/Hb_Crystal-landscape.h5')
     plot_landscapes(landscapes[0])
 
 if __name__ == "__main__":

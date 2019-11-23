@@ -222,7 +222,7 @@ class Landscape(object):
                         filename='landscape.html',
                         xlabel='x', ylabel='y', zlabel='z',
                         width=None, height=None,
-                        othrographic=False, font_size=None):
+                        othrographic=False, font_size=None, dtick=None):
         """ Make 2 subplots """
         subtitles = [ls.label for ls in landscapes]
         columns, rows = cls.get_layout(len(landscapes))
@@ -240,11 +240,22 @@ class Landscape(object):
         for landscape, (current_row, current_column) in zip(landscapes, axes_indices):
             x, y = numpy.meshgrid(landscape.xBins, landscape.yBins, indexing='ij')
             z = landscape.zValues
-            current_trace = dict(type='surface', x=x, y=y, z=z,
-                                 colorscale='Cividis',
-                                 cmin=landscape.dims['z'][0],
-                                 cmax=landscape.dims['z'][1],
-                                #  showscale=False,
+            current_trace = dict(
+                type='surface', x=x, y=y, z=z,
+                colorscale='Cividis',
+                cmin=landscape.dims['z'][0],
+                cmax=landscape.dims['z'][1],
+                colorbar=dict(
+                    title=dict(
+                        text=zlabel,
+                        font=dict(size=font_size),
+                        side='right',
+                    ),
+                    len=0.5,
+                    thickness=50,
+                    tickfont=dict(size=font_size)
+                ),
+                #  showscale=False,
             )
             fig.append_trace(current_trace, current_row, current_column)
         # Show contour lines
@@ -258,24 +269,40 @@ class Landscape(object):
                 yaxis_title=ylabel,
                 zaxis_title=zlabel,
             )
+            # fig['layout'][f'scene{i}'].colorbar.update(len=0.5)
             if othrographic:
                 fig.layout[f'scene{i}'].camera.projection.update(type='orthographic')
             for axis in ['x', 'y', 'z']:
                 if axis in ls.dims:
                     fig['layout'][f'scene{i}'][axis + 'axis'].update(range=ls.dims[axis])
-                if font_size:
-                    fig['layout'][f'scene{i}'][axis + 'axis'].title.font.update(
-                        family='Courier New, monospace',
-                        size=font_size,
-                    )
+
         if width:
             fig.layout.update(width=width)
         if height:
             fig.layout.update(height=height)
+
+        if dtick:
+            for i in range(1, len(landscapes) + 1):
+                for axis in ['x', 'y', 'z']:
+                    fig['layout'][f'scene{i}'][axis + 'axis'].update(
+                        dtick=dtick[axis]
+                    )
         if font_size:
+            fig.layout.font.update(
+                family='Courier New, monospace',
+                size=font_size - 10 if font_size > 20 else 12,  # Fonts size for ticks do not match other fonts
+            )
+            for i in range(1, len(landscapes) + 1):
+                # fig['layout'][f'scene{i}'].colorbar.tickfont.update(size=font_size)
+                for axis in ['x', 'y', 'z']:
+                    fig['layout'][f'scene{i}'][axis + 'axis'].title.font.update(
+                        family='Courier New, monospace',
+                        size=font_size,
+                    )
             for annotation in fig.layout.annotations:
                 annotation.font = dict(family='Courier New, monospace',
                                        size=font_size)
+
         div = py.plot(fig, include_plotlyjs=False, output_type='div')
         # retrieve the div id for the figure
         div_id = div.split('=')[1].split()[0].replace("'", "").replace('"', '')
