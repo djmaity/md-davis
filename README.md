@@ -13,6 +13,16 @@ Activate the environment before running the install command
 ```
 conda activate md_davis
 ```
+Install the dependencies using the following commands:
+```
+conda install scipy
+conda install psutil
+conda install -c schrodinger pymol
+conda install -c conda-forge mdtraj
+conda install -c plotly plotly-orca
+conda update -c conda-forge h5py
+```
+
 Install this package using pip:
 ```
 pip install path/to/md_davis

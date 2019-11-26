@@ -88,6 +88,9 @@ def main():
         if args['<args>'][0] == 'rmsd_rg':
             from .landscape import rmsd_rg_landscape
             rmsd_rg_landscape.main(argv=argv)
+        if args['<args>'][0] == 'animation':
+            from .landscape import landscape_animation
+            landscape_animation.main(argv=argv)
     else:
         exit("%r is not a md_davis command. See 'md_davis --help'." % args['<command>'])
     return
