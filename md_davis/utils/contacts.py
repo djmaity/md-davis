@@ -1,7 +1,7 @@
 import argparse
 import mdtraj as md
 import csv
-
+import re
 
 class Atom(object):
     """ Wrapper for MDTraj topology.atom object """
@@ -17,6 +17,25 @@ class Atom(object):
     def __repr__(self):
         return f'{self.segment:2} {self.chain_char(self.chain)} ' + \
             f'{self.residue} {self.res_id:3} {self.name:4}'
+
+    def __str__(self):
+        return f'{self.segment:2} {self.chain_char(self.chain)} ' + \
+            f'{self.residue} {self.res_id:3} {self.name:4}'
+
+    def __gt__(self, other):
+        for prop1, prop2 in zip(list(self), list(other)):
+            if prop1 == prop2:
+                continue
+            elif prop1 > prop2:
+                return True
+            else:
+                return False
+        return False
+    
+    def __ge__(self, other):
+        if self == other or self > other:
+            return True
+        return False
 
     @staticmethod
     def chain_char(index):
@@ -38,7 +57,10 @@ class Contact(object):
         self.time_series = []
 
     def __repr__(self):
-        return f'\n{self.atom1} -- {self.atom2}: {self.count}'
+        return f'\n{repr(self.atom1)} -- {repr(self.atom2)}: {self.count}'
+
+    def __str__(self):
+        return f'\n{str(self.atom1)} -- {str(self.atom2)}: {self.count}'
 
     def __iter__(self):
         return iter(list(self.atom1) + list(self.atom2) + [self.count])
@@ -78,14 +100,31 @@ class Contacts(object):
 
     def add_counts(self, xpm_file):
         bond_idx = 0
+        toggle = False
         with open(xpm_file, 'r') as xpm_data:
             for line in xpm_data:
-                if line.startswith('"') and len(line) > 1000:  # Read data
-                    bond_seires_array = [1 if char ==
-                                         'o' else 0 for char in line]
-                    self.bonds[bond_idx].time_series = bond_seires_array
-                    self.bonds[bond_idx].count = sum(bond_seires_array)
-                    bond_idx += 1
+                if line.startswith('/* x-axis:'):
+                    toggle = True
+                if toggle:
+                    if line.startswith('"'):  # Read data
+                        contacts = re.search('"(.*)"', line).group(1)
+                        bond_seires_array = [
+                            1 if char == 'o' else 0 for char in contacts
+                        ]
+                        self.bonds[bond_idx].time_series = bond_seires_array
+                        self.bonds[bond_idx].count = sum(bond_seires_array)
+                        bond_idx += 1
+
+    # def add_counts(self, xpm_file):
+    #     bond_idx = 0
+    #     with open(xpm_file, 'r') as xpm_data:
+    #         for line in xpm_data:
+    #             if line.startswith('"') and len(line) > 1000:  # Read data
+    #                 bond_seires_array = [1 if char ==
+    #                                      'o' else 0 for char in line]
+    #                 self.bonds[bond_idx].time_series = bond_seires_array
+    #                 self.bonds[bond_idx].count = sum(bond_seires_array)
+    #                 bond_idx += 1
 
     def write_csv(self, csv_file):
         with open(csv_file, 'w') as csvfile:
