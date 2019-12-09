@@ -52,10 +52,11 @@ def frame_args(duration):
     }
 
 
-def landscape_trajectory(landscape, data, title='Energy Landscape',
+def landscape_trajectory(landscape, data,
                          filename='landscape.html',
                          xlabel='x', ylabel='y', zlabel='z',
                          width=None, height=None, hide_surface=False, marker_size=8,
+                         title=None,
                          othrographic=False, font_size=None, dtick=None):
     """ Show the X and Y quiatity values from the trajectory on the landscape """
     x, y = numpy.meshgrid(landscape.xBins, landscape.yBins, indexing='ij')
@@ -71,6 +72,7 @@ def landscape_trajectory(landscape, data, title='Energy Landscape',
         )
         data.append(trace)
     trace = go.Scatter3d(x=x_val,
+                         name='Trajectory',
                          y=y_val,
                          z=z_val,
                          mode='markers',
@@ -85,12 +87,18 @@ def landscape_trajectory(landscape, data, title='Energy Landscape',
     for axis in ['x', 'y', 'z']:
         if axis in landscape.dims:
             fig['layout'][f'scene'][axis + 'axis'].update(range=landscape.dims[axis])
+    fig.update_layout(
+        title=title if title else landscape.label,
+        showlegend=True,
+        legend_orientation="h",
+    )
     plotly.offline.plot(fig, filename=filename)
 
 
-def landscape_animation(landscape, data, title='Energy Landscape',
+def landscape_animation(landscape, data,
                       filename='landscape.html',
                       xlabel='x', ylabel='y', zlabel='z',
+                      title=None,
                       width=None, height=None,
                       othrographic=False, font_size=None, dtick=None):
     x, y = numpy.meshgrid(landscape.xBins, landscape.yBins, indexing='ij')
@@ -144,7 +152,7 @@ def landscape_animation(landscape, data, title='Energy Landscape',
         for k, f in enumerate(fig.frames)]
     }]
     fig.update_layout(
-         title=title,
+         title=title if title else landscape.label,
          updatemenus = [
             {
                 "buttons": [
@@ -186,10 +194,44 @@ def main(argv=None):
     data = get_animation_data(landscape)[start:stop:step]
     data = numpy.array(data)
 
-    if args['--static']:
-        landscape_trajectory(landscape=landscape, data=data, hide_surface=args['--hide_surface'])
+    if args['--hide_labels']:
+        xlabel, ylabel, zlabel = '', '', ''
     else:
-        landscape_animation(landscape=landscape, data=data)
+        xlabel=' <br>RMSD (in  Å)'
+        ylabel=' <br>Rg (in  Å)'
+        zlabel='Energy (kJ mol<sup>-1</sup>)<br> '
+
+    if args['--static']:
+        landscape_trajectory(
+            landscape=landscape,
+            data=data,
+            hide_surface=args['--hide_surface']
+            title=args['--title'],
+            filename=args['--output'],
+            xlabel=xlabel,
+            ylabel=ylabel,
+            zlabel=zlabel,
+            width=int(args['--width']) if args['--width'] else None,
+            height=int(args['--height']) if args['--height'] else None,
+            font_size=int(args['--font_size']) if args['--font_size'] else None,
+            dtick=eval(args['--dtick']) if args['--dtick'] else None,
+            othrographic=args['--ortho'],
+        )
+    else:
+        landscape_animation(
+            landscape=landscape,
+            data=data,
+            title=args['--title'],
+            filename=args['--output'],
+            xlabel=xlabel,
+            ylabel=ylabel,
+            zlabel=zlabel,
+            width=int(args['--width']) if args['--width'] else None,
+            height=int(args['--height']) if args['--height'] else None,
+            font_size=int(args['--font_size']) if args['--font_size'] else None,
+            dtick=eval(args['--dtick']) if args['--dtick'] else None,
+            othrographic=args['--ortho'],
+        )
 
 
 if __name__ == "__main__":
