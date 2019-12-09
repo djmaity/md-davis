@@ -134,7 +134,7 @@ def main(argv=None):
         height=int(args['--height']) if args['--height'] else None,
         font_size=int(args['--font_size']) if args['--font_size'] else None,
         othrographic=args['--ortho'],
-        dtick=eval(args['--dtick']),
+        dtick=eval(args['--dtick']) if args['--dtick'] else None,
     )
 
 

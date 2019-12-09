@@ -3,7 +3,7 @@
 Create an HDF file for collection analysis data
 
 Usage:
-  md_davis collect [(--all_atom_rmsd FILE --all_atom_rg FILE)]
+  md_davis collect [--comment <string> (--all_atom_rmsd FILE --all_atom_rg FILE)]
                    [(--backbone_rmsd FILE --backbone_rg FILE)]
                    [(--c_alpha_rmsd FILE --c_alpha_rg FILE)]
                    [(--rmsf "FILES" <begin> <end>)]
@@ -28,6 +28,7 @@ Options:
   --backbone_rg FILE        Add Backbone Rg into HDF_FILE
   --c_alpha_rg FILE         Add c_alpha Rg into HDF_FILE
 
+  --comment <string>        Comment about RMSD and Rg dataset
   -r, --rmsf FILES          Add data from RMSF file into the HDF_FILE
   -d, --dipoles FILE        Add dipole_moment into the HDF_FILE
   -t, --trajectory FILE     MD trajectory file
@@ -124,11 +125,11 @@ def add_info(hdf_file, info):
 
 
 def add_rmsd_rg(hdf_file, rmsd, rg, dataset='all_atom',
-    comment='RMSD is calculated with respect to last frame',
+    comment=None,
     time_unit='picosecond', unit='nanometer'):
     """ Make RMSD & Rg dataset in HDF5 file """
     group = hdf_file.require_group('rmsd_rg')
-    group.attrs['comment'] = comment
+    group.attrs['comment'] = comment if comment else 'RMSD was calculated with respect to last frame'
     print(f'Collecting data from {rmsd} and {rg} into HDF5 file.')
     rmsd_data = numpy.loadtxt(rmsd, comments=('#', '@'), dtype=numpy.single)
     rg_data = numpy.loadtxt(rg, comments=('#', '@'), dtype=numpy.single)
@@ -291,18 +292,21 @@ def main(argv):
                         rmsd=args['--all_atom_rmsd'],
                         rg=args['--all_atom_rg'],
                         dataset='all_atom',
+                        comment=args['--comment'],
             )
         if args['--backbone_rmsd'] and args['--backbone_rg']:
             add_rmsd_rg(hdf_file=hdf_file,
                         rmsd=args['--backbone_rmsd'],
                         rg=args['--backbone_rg'],
                         dataset='backbone',
+                        comment=args['--comment'],
             )
         if args['--c_alpha_rmsd'] and args['--c_alpha_rg']:
             add_rmsd_rg(hdf_file=hdf_file,
                         rmsd=args['--c_alpha_rmsd'],
                         rg=args['--c_alpha_rg'],
                         dataset='c-alpha',
+                        comment=args['--comment'],
             )
         if args['--rmsf']:
             add_rmsf(hdf_file=hdf_file, rmsf=args['--rmsf'].strip().split(),

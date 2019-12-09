@@ -82,15 +82,18 @@ def main():
         else:
             pass
     elif args['<command>'] == 'landscape':
-        if len(args['<args>']) < 1:
-            print('Choose a relevant command')
-            return
-        if args['<args>'][0] == 'rmsd_rg':
-            from .landscape import rmsd_rg_landscape
-            rmsd_rg_landscape.main(argv=argv)
-        if args['<args>'][0] == 'animation':
-            from .landscape import landscape_animation
-            landscape_animation.main(argv=argv)
+        if len(args['<args>']) > 1:
+            if args['<args>'][0] == 'rmsd_rg':
+                from .landscape import rmsd_rg_landscape
+                rmsd_rg_landscape.main(argv=argv)
+                return
+            elif args['<args>'][0] == 'animation':
+                from .landscape import landscape_animation
+                landscape_animation.main(argv=argv)
+                return
+        print('Invalid command. The available commands are:')
+        print('  md_davis landscape rmsd_rg')
+        print('  md_davis landscape animation')
     else:
         exit("%r is not a md_davis command. See 'md_davis --help'." % args['<command>'])
     return
