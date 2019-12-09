@@ -16,6 +16,7 @@ Options:
                                 [default: 0]
   -e, --end int                 Last index for the data to include
   -s, --step int                Step size for the animation data [default: 1]
+  --hide_surface                Hide the energy landscape surface
   --ortho                       Orthographic projection for 3D plots
   --width <int>                 Width of the plot
   --height <int>                Height of the plot
@@ -54,30 +55,33 @@ def frame_args(duration):
 def landscape_trajectory(landscape, data, title='Energy Landscape',
                          filename='landscape.html',
                          xlabel='x', ylabel='y', zlabel='z',
-                         width=None, height=None,
+                         width=None, height=None, hide_surface=False, marker_size=8,
                          othrographic=False, font_size=None, dtick=None):
     """ Show the X and Y quiatity values from the trajectory on the landscape """
     x, y = numpy.meshgrid(landscape.xBins, landscape.yBins, indexing='ij')
     z = landscape.zValues
     time, x_val, y_val, z_val = data.T
-    fig = go.Figure(
-        data=[
-            go.Scatter3d(x=x_val,
+    data = []
+    if not hide_surface:
+        trace = go.Surface(x=x, y=y, z=z,
+            colorscale='Cividis',
+            cmin=landscape.dims['z'][0],
+            cmax=landscape.dims['z'][1],
+            contours_z=dict(show=True, usecolormap=True, highlightcolor="limegreen", project_z=True)
+        )
+        data.append(trace)
+    trace = go.Scatter3d(x=x_val,
                          y=y_val,
                          z=z_val,
+                         mode='markers',
                          marker=dict(color=time,
-                            reversescale=True,
-                            colorbar=dict(x=0.9, title='Time'),
+                                     reversescale=True,
+                                     colorbar=dict(x=0.9, title='Time'),
+                                     size=marker_size,
                          ),
-            ),
-            go.Surface(x=x, y=y, z=z,
-              colorscale='Cividis',
-              cmin=landscape.dims['z'][0],
-              cmax=landscape.dims['z'][1],
-              contours_z=dict(show=True, usecolormap=True, highlightcolor="limegreen", project_z=True)
-            )
-        ],
     )
+    data.append(trace)
+    fig = go.Figure(data=data)
     for axis in ['x', 'y', 'z']:
         if axis in landscape.dims:
             fig['layout'][f'scene'][axis + 'axis'].update(range=landscape.dims[axis])
@@ -183,7 +187,7 @@ def main(argv=None):
     data = numpy.array(data)
 
     if args['--static']:
-        landscape_trajectory(landscape=landscape, data=data)
+        landscape_trajectory(landscape=landscape, data=data, hide_surface=args['--hide_surface'])
     else:
         landscape_animation(landscape=landscape, data=data)
 
