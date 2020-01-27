@@ -20,6 +20,7 @@ requirements = ['Click>=6.0',
                 'numpy',
                 'pandas',
                 'h5py>=2.10',
+                'pytables'
 ]
 
 setup_requirements = ['pytest-runner', ]

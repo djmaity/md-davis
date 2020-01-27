@@ -1,7 +1,39 @@
+# -*- coding: utf-8 -*-
+"""
+Parse contacts evaluated by gmx hbonds
+
+Usage:
+  md_davis contacts [options] (--file <.xpm>)
+                              (--index <.ndx>)
+                              (--structure <.pdb/.gro>)
+                              (--group <string>)
+
+  md_davis contacts -h | --help
+
+Options:
+
+  -f, --file <.xpm>             Contact file obtained from GROMACS
+  -i, --index <.ndx>            Index file
+  -s, --structure <.pdb/.gro>   Structure file
+  -g, --group <string>          Group to match from index file to get the list of contacts
+
+  -b, --begin <int>             Frame to start calculation from
+
+  --pickle FILENAME             Save the output to a pickle file
+  --hdf FILENAME                Save the output to a HDF file
+  --csv FILENAME                Save the output to a CSV file
+
+  -h, --help                    Show this screen.
+"""
+
 import argparse
 import mdtraj as md
 import csv
 import re
+import pickle
+import docopt
+import pandas
+
 
 class Atom(object):
     """ Wrapper for MDTraj topology.atom object """
@@ -31,7 +63,7 @@ class Atom(object):
             else:
                 return False
         return False
-    
+
     def __ge__(self, other):
         if self == other or self > other:
             return True
@@ -115,53 +147,35 @@ class Contacts(object):
                         self.bonds[bond_idx].count = sum(bond_seires_array)
                         bond_idx += 1
 
-    # def add_counts(self, xpm_file):
-    #     bond_idx = 0
-    #     with open(xpm_file, 'r') as xpm_data:
-    #         for line in xpm_data:
-    #             if line.startswith('"') and len(line) > 1000:  # Read data
-    #                 bond_seires_array = [1 if char ==
-    #                                      'o' else 0 for char in line]
-    #                 self.bonds[bond_idx].time_series = bond_seires_array
-    #                 self.bonds[bond_idx].count = sum(bond_seires_array)
-    #                 bond_idx += 1
-
-    def write_csv(self, csv_file):
-        with open(csv_file, 'w') as csvfile:
-            bondwriter = csv.writer(
-                csvfile, delimiter=',', quoting=csv.QUOTE_NONNUMERIC)
-            bondwriter.writerow(['Segment1', 'Chain1', 'Residue1', 'ResSeq1', 'Atom1',
-                                 'Segment2', 'Chain2', 'Residue2', 'ResSeq2', 'Atom2', 'Count'])
-            for bond in list(self):
-                bondwriter.writerow(bond)
+    @property
+    def to_df(self):
+        columns = ['Segment1', 'Chain1', 'Residue1', 'ResSeq1', 'Atom1',
+                   'Segment2', 'Chain2', 'Residue2', 'ResSeq2', 'Atom2', 'Count']
+        df = pandas.DataFrame(data=list(self), columns=columns)
+        return df
 
 
-def parse_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('xpm', help='xpm file')
-    parser.add_argument('ndx', help='ndx file')
-    parser.add_argument('gro', help='gro file')
-    parser.add_argument(
-        'group', help='group to match from index file to get the list of h-bonds')
-    parser.add_argument('-o', '--out', dest='output', help='Save Hydrogen bonds '
-                        'data in csv')
-    parser.add_argument('-p', '--prefix', dest='prefix', help='Prefix of '
-                        'output filenames')
-    parser.add_argument('-b', '--begin', dest='begin', type=int,
-                        help='Frame to start calculation from')
-    return parser.parse_args()
+def main(argv):
+    if argv:
+        args = docopt.docopt(__doc__, argv=argv)
+    else:
+        args = docopt.docopt(__doc__)
+
+    topology = md.load(args['--structure']).topology
+    molecular_contacts = Contacts(topology)
+    molecular_contacts.parse_indices(index_file=args['--index'], group=args['--group'])
+    molecular_contacts.add_counts(xpm_file=args['--file'])
+
+    print(molecular_contacts)
+
+    df = molecular_contacts.to_df
+    if args['--hdf']:
+        df.to_hdf(args['--hdf'], key='contacts')
+    if args['--csv']:
+        df.to_csv(args['--csv'])
+    if args['--pickle']:
+        df.to_pickle(args['--pickle'])
 
 
-def main(args):
-    topology = md.load(args.gro).topology
-    hydrogen_bonds = Contacts(topology)
-    hydrogen_bonds.parse_indices(index_file=args.ndx, group=args.group)
-    hydrogen_bonds.add_counts(xpm_file=args.xpm)
-    if args.output:
-        hydrogen_bonds.write_csv(args.output)
-    print(hydrogen_bonds)
-
-
-if __name__ == "__main__":
-    arguments = parse_args()
-    main(arguments)
+if __name__ == '__main__':
+    main()

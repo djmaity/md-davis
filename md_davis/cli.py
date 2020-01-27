@@ -42,6 +42,10 @@ def main():
         from . import collect
         collect.main(argv=argv)
 
+    elif args['<command>'] == 'contacts':
+        from .utils import contacts
+        contacts.main(argv=argv)
+
     elif args['<command>'] == 'sequence':
         from .structure import sequence
         sequence.main(argv=argv)

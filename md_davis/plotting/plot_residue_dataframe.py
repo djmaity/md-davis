@@ -386,6 +386,29 @@ def main(args):
                          width=2000,
         margin=go.layout.Margin(l=100, r=200, b=450, t=80, pad=2)
     )
+
+    updatemenus = list([
+        dict(
+            buttons=list([
+                dict(label='Show',
+                        method='update',
+                        args=[{'visible': True}]
+                        ),
+                dict(label='Hide',
+                        method='update',
+                        args=[{'visible': "legendonly"}]
+                        )
+            ]),
+            direction='left',
+            pad={'r': 10, 't': 10},
+            type='buttons',
+            x=1.1,
+            xanchor='left',
+            y=-0.2,
+            yanchor='top'
+        ),
+    ])
+    fig['layout']['updatemenus'] = updatemenus
     plot(fig, filename=output_filename)
 
 
