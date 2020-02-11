@@ -27,32 +27,32 @@ Options:
 """
 
 import argparse
-import mdtraj as md
 import csv
 import re
 import pickle
 import docopt
 import pandas
+from biopandas.pdb import PandasPdb
 
+
+# TODO: Directly use biopandas data frame and remove the atom class
 
 class Atom(object):
-    """ Wrapper for MDTraj topology.atom object """
+    """ Wrapper for MDTraj structure.atom object """
 
-    def __init__(self, index, topology):
-        atom = topology.atom(index)
-        self.segment = atom.residue.segment_id
-        self.chain = atom.residue.chain.index
-        self.residue = atom.residue.name
-        self.res_id = atom.residue.resSeq
-        self.name = atom.name
+    def __init__(self, index, structure):
+        atom = structure.df['ATOM']
+        self.segment = atom.iloc[index]['segment_id']
+        self.chain = atom.iloc[index]['chain_id']
+        self.residue = atom.iloc[index]['residue_name']
+        self.res_id = atom.iloc[index]['residue_number']
+        self.name = atom.iloc[index]['atom_name']
 
     def __repr__(self):
-        return f'{self.segment:2} {self.chain_char(self.chain)} ' + \
-            f'{self.residue} {self.res_id:3} {self.name:4}'
+        return f'{self.segment:2} {self.chain} {self.residue} {self.res_id:3} {self.name:4}'
 
     def __str__(self):
-        return f'{self.segment:2} {self.chain_char(self.chain)} ' + \
-            f'{self.residue} {self.res_id:3} {self.name:4}'
+        return f'{self.segment:2} {self.chain} {self.residue} {self.res_id:3} {self.name:4}'
 
     def __gt__(self, other):
         for prop1, prop2 in zip(list(self), list(other)):
@@ -69,22 +69,17 @@ class Atom(object):
             return True
         return False
 
-    @staticmethod
-    def chain_char(index):
-        return chr(index + 65)
-
     def __iter__(self):
         """ Segment Chain Residue ResSeq Atom """
-        return iter([self.segment, self.chain_char(self.chain), self.residue,
-                     self.res_id, self.name])
+        return iter([self.segment, self.chain, self.residue, self.res_id, self.name])
 
 
 class Contact(object):
     """ Defines a contact between two atoms """
 
-    def __init__(self, atom_indices, topology):
-        self.atom1 = Atom(atom_indices[0], topology)
-        self.atom2 = Atom(atom_indices[-1], topology)
+    def __init__(self, atom_indices, structure):
+        self.atom1 = Atom(atom_indices[0], structure)
+        self.atom2 = Atom(atom_indices[-1], structure)
         self.count = 0
         self.time_series = []
 
@@ -101,8 +96,8 @@ class Contact(object):
 class Contacts(object):
     """ All hydrogen bonds """
 
-    def __init__(self, topology):
-        self.topology = topology
+    def __init__(self, structure):
+        self.structure = structure
         self.bonds = []
 
     def __repr__(self):
@@ -126,7 +121,7 @@ class Contacts(object):
             for line in ndx_file:
                 if save:
                     indices = [int(_) - 1 for _ in line.strip().split()]
-                    self.bonds.append(Contact(indices, self.topology))
+                    self.bonds.append(Contact(indices, self.structure))
                 if line == f'[ {group} ]\n':
                     save = True
 
@@ -161,11 +156,10 @@ def main(argv):
     else:
         args = docopt.docopt(__doc__)
 
-    topology = md.load(args['--structure']).topology
-    molecular_contacts = Contacts(topology)
+    structure = PandasPdb().read_pdb(args['--structure'])
+    molecular_contacts = Contacts(structure)
     molecular_contacts.parse_indices(index_file=args['--index'], group=args['--group'])
     molecular_contacts.add_counts(xpm_file=args['--file'])
-
     print(molecular_contacts)
 
     df = molecular_contacts.to_df

@@ -1,10 +1,40 @@
-import argparse
-import mdtraj as md
-import csv
-# My modules
-import contacts
+# -*- coding: utf-8 -*-
+"""
+Parse contacts evaluated by gmx hbonds
 
-## Subclass the Contacts to get Hbonds Class
+Usage:
+  md_davis contacts [options] (--file <.xpm>)
+                              (--index <.ndx>)
+                              (--structure <.pdb/.gro>)
+                              (--group <string>)
+
+  md_davis contacts -h | --help
+
+Options:
+
+  -f, --file <.xpm>             Contact file obtained from GROMACS
+  -i, --index <.ndx>            Index file
+  -s, --structure <.pdb/.gro>   Structure file
+  -g, --group <string>          Group to match from index file to get the list of contacts
+
+  -b, --begin <int>             Frame to start calculation from
+
+  --pickle FILENAME             Save the output to a pickle file
+  --hdf FILENAME                Save the output to a HDF file
+  --csv FILENAME                Save the output to a CSV file
+
+  -h, --help                    Show this screen.
+"""
+
+import argparse
+import csv
+import re
+import pickle
+import docopt
+import pandas
+from biopandas.pdb import PandasPdb
+# Local imports
+import .contacts
 
 
 class Hbond(object):
@@ -23,7 +53,7 @@ class Hbond(object):
     def __iter__(self):
         return iter(list(self.donor) + list(self.recipient) + [self.count])
 
-
+# Subclass the Contacts to get Hbonds Class
 class Hbonds(object):
     """ All hydrogen bonds """
 
@@ -65,26 +95,25 @@ class Hbonds(object):
                     self.bonds[bond_idx].count = sum(bond_seires_array)
                     bond_idx += 1
 
-    def write_csv(self, csv_file):
-        with open(csv_file, 'w') as csvfile:
-            bondwriter = csv.writer(
-                csvfile, delimiter=',', quoting=csv.QUOTE_NONNUMERIC)
-            bondwriter.writerow(['Segment', 'Chain', 'Residue', 'ResID', 'Atom',
-                                 'Segment', 'Chain', 'Residue', 'ResID', 'Atom', 'Count'])
-            for bond in list(self):
-                bondwriter.writerow(bond)
+def main(argv):
+    if argv:
+        args = docopt.docopt(__doc__, argv=argv)
+    else:
+        args = docopt.docopt(__doc__)
 
+    structure = PandasPdb().read_pdb(args['--structure'])
+    molecular_contacts = Hbonds(structure)
+    molecular_contacts.parse_indices(index_file=args['--index'], group=args['--group'])
+    molecular_contacts.add_counts(xpm_file=args['--file'])
+    print(molecular_contacts)
 
-def main(args):
-    topology = md.load(args.gro).topology
-    hydrogen_bonds = Hbonds(topology)
-    hydrogen_bonds.parse_indices(index_file=args.ndx, group=args.group)
-    hydrogen_bonds.add_counts(xpm_file=args.xpm)
-    if args.output:
-        hydrogen_bonds.write_csv(args.output)
-    print(hydrogen_bonds)
-
+    df = molecular_contacts.to_df
+    if args['--hdf']:
+        df.to_hdf(args['--hdf'], key='contacts')
+    if args['--csv']:
+        df.to_csv(args['--csv'])
+    if args['--pickle']:
+        df.to_pickle(args['--pickle'])
 
 if __name__ == "__main__":
-    arguments = contacts.parse_args()
-    main(arguments)
+    main()
