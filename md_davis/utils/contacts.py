@@ -7,7 +7,6 @@ Usage:
                               (--index <.ndx>)
                               (--structure <.pdb/.gro>)
                               (--group <string>)
-
   md_davis contacts -h | --help
 
 Options:
@@ -23,6 +22,11 @@ Options:
   --hdf FILENAME                Save the output to a HDF file
   --csv FILENAME                Save the output to a CSV file
 
+  --matrix FILENAME             Save a file containnig the contact matrix
+
+  --pdb FILENAME                Save a pdb file with percentage of frames
+                                in the B-factor column
+
   -h, --help                    Show this screen.
 """
 
@@ -32,6 +36,8 @@ import re
 import pickle
 import docopt
 import pandas
+import collections
+import numpy
 from biopandas.pdb import PandasPdb
 
 
@@ -42,6 +48,7 @@ class Atom(object):
 
     def __init__(self, index, structure):
         atom = structure.df['ATOM']
+        self.index = index
         self.segment = atom.iloc[index]['segment_id']
         self.chain = atom.iloc[index]['chain_id']
         self.residue = atom.iloc[index]['residue_name']
@@ -97,8 +104,9 @@ class Contacts(object):
     """ All hydrogen bonds """
 
     def __init__(self, structure):
-        self.structure = structure
+        self.structure = PandasPdb().read_pdb(structure)
         self.bonds = []
+        self.nframes = 1
 
     def __repr__(self):
         return self.bonds
@@ -149,6 +157,66 @@ class Contacts(object):
         df = pandas.DataFrame(data=list(self), columns=columns)
         return df
 
+    def to_pdb(self, filename):
+        contact_dict = collections.defaultdict(list)
+        for bond in self.bonds:
+            contact_dict[bond.atom1.index].append(bond.time_series)
+            contact_dict[bond.atom2.index].append(bond.time_series)
+        for index, contacts in contact_dict.items():
+            contacts = numpy.array(contacts).any(axis=0)
+            b_factor = round(numpy.sum(contacts) / len(contacts) * 99.99, 2)
+            self.structure.df['ATOM'].loc[index,'b_factor'] = b_factor
+        self.structure.to_pdb(path=filename, 
+            records=None, 
+            gz=False, 
+            append_newline=True)
+
+    def plot_matrix(self, df=None):
+
+        def text(atoms):
+            output = []
+            for atom in atoms:
+                if atom:
+                    output.append('-'.join([str(_) for _ in atom]))
+                else:
+                    output.append('')
+            return output
+
+        if df:
+            df = pandas.read_pickle(pickle_file)
+        else:
+            df = self.to_df
+
+        # df['Count'] = df['Count'] * 100 / 200000  # Convert to percentage of frames
+        df['Count'] = df['Count'] * 100 / 10000  # Convert to percentage of frames
+        # df = df[df['Count'] > 20]
+
+        atoms1 = list(df.groupby(['Chain1', 'Residue1', 'ResSeq1', 'Atom1']).groups.keys())
+        atoms1 = sorted(atoms1, key=operator.itemgetter(0, 2, 1))
+        atom_group2 = df.groupby(['Chain2', 'Residue2', 'ResSeq2', 'Atom2'])
+        atoms2 = list(atom_group2.groups.keys())
+        atoms2 = sorted(atoms2, key=operator.itemgetter(0, 2, 1))
+
+        matrix = numpy.empty(shape=(len(atoms1), len(atoms2)))
+        matrix[:] = numpy.NaN
+        for group, atoms in atom_group2:
+            j = atoms2.index(group)
+            for index, row in atoms.iterrows():
+                i = atoms1.index((row['Chain1'], row['Residue1'], row['ResSeq1'], row['Atom1']))
+                matrix[i, j] = row['Count']
+
+        fig = go.Figure(data=go.Heatmap(
+            z=matrix,
+            x=text(atoms1),
+            y=text(atoms2),
+            colorscale='Greys', zmin=0, zmax=100,
+            transpose=True,
+        ))
+        fig.update_layout(
+            title=f'Contact Matrix for the interface between {sel1} and {sel2}',
+        )
+        py.plot(fig, filename=f'{prefix}_{sel1}-{sel2}_contact_matrix.html', auto_open=False)
+
 
 def main(argv):
     if argv:
@@ -156,10 +224,10 @@ def main(argv):
     else:
         args = docopt.docopt(__doc__)
 
-    structure = PandasPdb().read_pdb(args['--structure'])
-    molecular_contacts = Contacts(structure)
+    molecular_contacts = Contacts(args['--structure'])
     molecular_contacts.parse_indices(index_file=args['--index'], group=args['--group'])
     molecular_contacts.add_counts(xpm_file=args['--file'])
+
     print(molecular_contacts)
 
     df = molecular_contacts.to_df
@@ -169,6 +237,9 @@ def main(argv):
         df.to_csv(args['--csv'])
     if args['--pickle']:
         df.to_pickle(args['--pickle'])
+
+    if args['--pdb']:
+        molecular_contacts.to_pdb(args['--pdb'])
 
 
 if __name__ == '__main__':
