@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 """
-Parse contacts evaluated by gmx hbonds
+Parse H-bonds evaluated by gmx hbonds
 
 Usage:
-  md_davis contacts [options] (--file <.xpm>)
+  md_davis hbonds [options] (--file <.xpm>)
                               (--index <.ndx>)
                               (--structure <.pdb/.gro>)
                               (--group <string>)
 
-  md_davis contacts -h | --help
+  md_davis hbonds -h | --help
 
 Options:
 
-  -f, --file <.xpm>             Contact file obtained from GROMACS
+  -f, --file <.xpm>             H-bond file obtained from GROMACS
   -i, --index <.ndx>            Index file
   -s, --structure <.pdb/.gro>   Structure file
-  -g, --group <string>          Group to match from index file to get the list of contacts
+  -g, --group <string>          Group to match from index file to get the list of H-bonds
 
   -b, --begin <int>             Frame to start calculation from
 
@@ -34,7 +34,7 @@ import docopt
 import pandas
 from biopandas.pdb import PandasPdb
 # Local imports
-import .contacts
+from .contacts import Atom
 
 
 class Hbond(object):
@@ -51,7 +51,7 @@ class Hbond(object):
         return f'\n{self.donor} -- {self.hydrogen} -> {self.recipient}: {self.count}'
 
     def __iter__(self):
-        return iter(list(self.donor) + list(self.recipient) + [self.count])
+        return iter(list(self.donor) + list(self.hydrogen) + list(self.recipient) + [self.count])
 
 # Subclass the Contacts to get Hbonds Class
 class Hbonds(object):
@@ -95,6 +95,15 @@ class Hbonds(object):
                     self.bonds[bond_idx].count = sum(bond_seires_array)
                     bond_idx += 1
 
+    @property
+    def to_df(self):
+        columns = ['Segment1', 'Chain1', 'Residue1', 'ResSeq1', 'Atom1',
+                   'Segment1-H', 'Chain1-H', 'Residue1-H', 'ResSeq1-H', 'Atom1-H',
+                   'Segment2', 'Chain2', 'Residue2', 'ResSeq2', 'Atom2', 'Count']
+        df = pandas.DataFrame(data=list(self), columns=columns)
+        return df
+
+
 def main(argv):
     if argv:
         args = docopt.docopt(__doc__, argv=argv)
@@ -105,9 +114,9 @@ def main(argv):
     molecular_contacts = Hbonds(structure)
     molecular_contacts.parse_indices(index_file=args['--index'], group=args['--group'])
     molecular_contacts.add_counts(xpm_file=args['--file'])
-    print(molecular_contacts)
-
+    # print(molecular_contacts)
     df = molecular_contacts.to_df
+
     if args['--hdf']:
         df.to_hdf(args['--hdf'], key='contacts')
     if args['--csv']:

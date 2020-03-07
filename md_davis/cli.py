@@ -46,6 +46,10 @@ def main():
         from .utils import contacts
         contacts.main(argv=argv)
 
+    elif args['<command>'] == 'hbonds':
+        from .utils import hbonds
+        hbonds.main(argv=argv)
+
     elif args['<command>'] == 'sequence':
         from .structure import sequence
         sequence.main(argv=argv)
