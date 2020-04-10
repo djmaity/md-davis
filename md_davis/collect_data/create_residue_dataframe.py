@@ -1,7 +1,7 @@
 """
 Create a pandas dataframe from the information in HDF5 file for plotting
 
-Usage:  md_davis create [options] HDF_FILE OUTPUT
+Usage:  md_davis residue dataframe [options] HDF_FILE OUTPUT
 
 Options:
   -h, --help                        Show this screen.
@@ -83,6 +83,14 @@ def residue_dataframes(hdf_file, potentials=None, pdb_potentials=None):
                 rmsf_df = pandas.DataFrame(hdf5_file[f'rmsf/chain {ch}'][:, 1])
                 array_to_concat.append(rmsf_df)
                 keys_to_concat.append('rmsf')
+            # Add SASA to dtaframe from HDF5 file    
+            if f'sasa/chain {ch}' in hdf5_file:
+                sasa_dict = {}
+                for measure in ['average', 'standard_deviation']:
+                    sasa_dict[measure] = hdf5_file[f'sasa/chain {ch}'][measure]
+                sasa_df = pandas.DataFrame(sasa_dict)
+                array_to_concat.append(sasa_df)
+                keys_to_concat.append('sasa')
             # Add dihedral standard deviation to dtaframe from HDF5 file
             if f'dihedral_standard_deviation/chain {ch}' in hdf5_file:
                 dih_sd_dict = {}

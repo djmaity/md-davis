@@ -205,7 +205,7 @@ def main(argv=None):
         landscape_trajectory(
             landscape=landscape,
             data=data,
-            hide_surface=args['--hide_surface']
+            hide_surface=args['--hide_surface'],
             title=args['--title'],
             filename=args['--output'],
             xlabel=xlabel,

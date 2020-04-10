@@ -14,17 +14,15 @@ import pandas
 structure_info = collections.namedtuple('structure_info', ['label', 'html', 'color'])
 
 secondary_structure = collections.OrderedDict([
-    ('H', structure_info(label='α-helix', html='α helix', color='rgb(255, 100,0)') ),
-    ('G', structure_info(label='3_10-helix', html='3<sub>10</sub> helix', color='rgb(255, 200, 0)') ),
-    ('I', structure_info(label='π-helix', html='π helix', color='rgb(255, 255, 0)') ),
-    ('E', structure_info(label='β strand', html='β strand', color='rgb(0, 150, 255)') ),
-    ('B', structure_info(label='β-bridge', html='β bridge', color='rgb(0, 220, 255)') ),
-    ('T', structure_info(label='Turn', html='Turn', color='rgb(0, 255, 120)') ),
-    ('S', structure_info(label='Bend', html='Bend', color='rgb(0, 255, 0)') ),
-    ('~', structure_info(label='Loop', html='Loop', color='rgb(120, 255, 0)') ),
+    ('H', structure_info(label='α-helix', html='α helix', color='rgb(255, 0, 0)') ),
+    ('G', structure_info(label='3_10-helix', html='3<sub>10</sub> helix', color='rgb(120, 0, 100)') ),
+    ('I', structure_info(label='π-helix', html='π helix', color='rgb(255, 15, 139)') ),
+    ('E', structure_info(label='β strand', html='β strand', color='rgb(0, 0, 255)') ),
+    ('B', structure_info(label='β-bridge', html='β bridge', color='rgb(15, 125, 255)') ), 
+    ('T', structure_info(label='Turn', html='Turn', color='rgb(0, 200, 0)') ),
+    ('S', structure_info(label='Bend', html='Bend', color='rgb(120, 200, 0)') ),
+    ('~', structure_info(label='Loop', html='Loop', color='rgb(159, 255, 15)') ),
 ])
-
-
 
 # def plot_secondary_structure(data, name, figure, twin_axis, row=1, column=1, height=100):
 def plot_secondary_structure(data, name, figure, axis=None, row=1, column=1, height=100, showlegend=True):
@@ -38,9 +36,9 @@ def plot_secondary_structure(data, name, figure, axis=None, row=1, column=1, hei
 
     for code, structure in secondary_structure.items():
         if isinstance(data, pandas.DataFrame):
-            x_values = data.index + 1
+            x_values = data.index + 1.5
         if isinstance(data, h5py.Dataset):
-            x_values = list(range(1, data.len() + 1 ))
+            x_values = list(range(1, data.len() + 1 )) + 1.5
         y_values = data[code] * (height / frames)
         trace = go.Bar(
             x=x_values,

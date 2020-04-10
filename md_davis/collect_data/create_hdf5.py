@@ -18,17 +18,17 @@ import docopt
 import json
 
 EPILOG = """
-The attributes resuired are given in the example below:
+The attributes required are given in the example below:
 
 {
     "label": "MD Simulation",
     "short_label": "MD",
     "html": "<i>MD Simulation</i>",
     "short_html": "<i>MD Simulation</i>",
-    "protein": "My Protein",
-    "scientific_name": "Homo sapiens",
-    "common_name": "Human",
-    "sequence": "ACDEFGHIKLMNPQRSTVWY"
+    "protein": "protein name",
+    "scientific_name": "some organism",
+    "common_name": "common name",
+    "sequence": "PUT/YOUR/SEQUENCE/HERE"
 }
 
 This information is primarily parsed to create labels for plots with 

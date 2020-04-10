@@ -1,5 +1,5 @@
 <!DOCTYPE html><html><head>
-      <title>index</title>
+      <title>Instructions</title>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       
@@ -263,42 +263,137 @@ pre[data-line] .line-highlight[data-end]:after {
     </head>
     <body for="html-export">
       <div class="mume markdown-preview  ">
-      <h1 class="mume-header" id="md-davis">MD Davis</h1>
+      <h1 class="mume-header" id="how-to-plot-overlaid-residue-data-plot-and-free-energy-landscapes">How to plot overlaid residue data plot and free energy landscapes</h1>
 
-<p>A Python package to perform preliminary analysis of molecular dynamics trajectories. The source code can be found at: <a href="https://github.com/djmaity/md_davis">https://github.com/djmaity/md_davis</a></p>
-<h2 class="mume-header" id="what-can-md-davis-do">What can MD Davis do?</h2>
+<h2 class="mume-header" id="step-1-calculate-the-required-quantities-using-gromacs">Step 1: Calculate the required quantities using GROMACS.</h2>
 
-<ol>
-<li>
-<p>Create dynamic visualization of electric field around the molecule using PyMOL.<br>
-<img src="2GV1_100frames.gif" alt="Dynamics of electric field" title="Dynamics of electric field"></p>
-</li>
-<li>
-<p>Create interactive plot for time series data: root mean squared deviation (RMSD) and radius of gyration</p>
-</li>
-</ol>
-<iframe src="acylphosphatase_rmsg_rg.html" frameborder="0" width="100%" height="500px"></iframe>
-<ol start="3">
-<li>Create Free energy landscapes using common ranges and number of bins.</li>
-</ol>
-<iframe src="landscapes.html" frameborder="0" width="100%" height="500px"></iframe>
-<ol start="4">
-<li>Create interactive plot of containing the following residue level properties:
+<p>Root mean squared deviation (RMSD) and radius of gyration are not required for creating overlaid residue plot, but they would be used to create energy landscapes. Ensure that the processed trajectory and structures are provided, in which the periodic boundary have been corrected for.</p>
+<h3 class="mume-header" id="root-mean-squared-deviation-rmsd">Root mean squared deviation (RMSD)</h3>
+
+<p>The structure provided here will be used as the reference for calculating RMSD of the trajectory.</p>
+<pre data-role="codeBlock" data-info="shell" class="language-shell">gmx rms -f trajectory.trr -s structure.gro -o rmsd.xvg
+</pre><h3 class="mume-header" id="radius-of-gyration">Radius of gyration</h3>
+
+<pre data-role="codeBlock" data-info="shell" class="language-shell">gmx gyrate -f trajectory.trr -s structure.gro -o rg.xvg
+</pre><h3 class="mume-header" id="root-mean-squared-fluctuation-rmsf">Root mean squared fluctuation (RMSF)</h3>
+
+<pre data-role="codeBlock" data-info="shell" class="language-shell">gmx rmsf -f trajectory.trr -s structure.gro -res -o rmsf.xvg
+</pre><p>This would align the whole molecule for RMSF calculation. You may calculate the RMSF of each chain separately in a protein with multiple chains. This would reflect the fluctations only due to backbone motion and elimiate the fluctuation from relative motion of chains.</p>
+<h3 class="mume-header" id="solvent-accessible-surface-area-sasa">Solvent accessible surface area (SASA)</h3>
+
+<p>To calculate the average SASA per residue pass <code>-or</code> option to <code>gmx sasa</code>.</p>
+<pre data-role="codeBlock" data-info="shell" class="language-shell">gmx sasa -f trajectory.trr -s structure.gro -o sasa.xvg -or resarea.xvg
+</pre><h3 class="mume-header" id="secondary-structure">Secondary structure</h3>
+
+<p>For the GROMACS command <code>do_dssp</code> to work the DSSP binary must be available on your system.<br>
+<a href="ftp://ftp.cmbi.ru.nl/pub/software/dssp/">Download DSSP binaries here</a></p>
+<pre data-role="codeBlock" data-info="shell" class="language-shell">gmx do_dssp -f trajectory.trr -s structure.gro \
+            -o dssp \
+            -ssdump dssp \
+            -sc dssp_count
+</pre><p><code>-ssdump</code> option will output a file <code>dssp.dat</code> containing the secondary structure for the full trajectory as single letter codes. This would be processed by MD&#xA0;DaVis to calculate the secondary structure persistence at each residue.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Code</th>
+<th style="text-align:left">Secondary structure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">H</td>
+<td style="text-align:left">&#x3B1;-helix</td>
+</tr>
+<tr>
+<td style="text-align:center">G</td>
+<td style="text-align:left">3<sub>10</sub>-helix</td>
+</tr>
+<tr>
+<td style="text-align:center">I</td>
+<td style="text-align:left">&#x3C0;-helix</td>
+</tr>
+<tr>
+<td style="text-align:center">B</td>
+<td style="text-align:left">&#x3B2;-bridge</td>
+</tr>
+<tr>
+<td style="text-align:center">E</td>
+<td style="text-align:left">&#x3B2; strand</td>
+</tr>
+<tr>
+<td style="text-align:center">T</td>
+<td style="text-align:left">Turn</td>
+</tr>
+<tr>
+<td style="text-align:center">S</td>
+<td style="text-align:left">Bend</td>
+</tr>
+<tr>
+<td style="text-align:center">~</td>
+<td style="text-align:left">Loop</td>
+</tr>
+</tbody>
+</table>
+<h2 class="mume-header" id="step2-create-hdf-file-with-all-the-data">Step2: Create HDF file with all the data</h2>
+
+<p><strong>Step 2a:</strong> Obtain the sequence of the protein from the PDB file used to start the simulation.</p>
+<pre data-role="codeBlock" data-info="shell" class="language-shell">md_davis sequence structure_used_for_simulation.pdb
+</pre><p><strong>Step 2b:</strong> Provide this sequence in JSON file below, along with a few other properties. Note that for multi-chain proteins the sequence for each chain would be separated by a &apos;/&apos;.</p>
+<pre data-role="codeBlock" data-info="json" class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">&quot;label&quot;</span><span class="token operator">:</span> <span class="token string">&quot;MD Simulation&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;short_label&quot;</span><span class="token operator">:</span> <span class="token string">&quot;MD&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;html&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;i&gt;MD Simulation&lt;/i&gt;&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;short_html&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;i&gt;MD Simulation&lt;/i&gt;&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;protein&quot;</span><span class="token operator">:</span> <span class="token string">&quot;protein name&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;scientific_name&quot;</span><span class="token operator">:</span> <span class="token string">&quot;some organism&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;common_name&quot;</span><span class="token operator">:</span> <span class="token string">&quot;common name&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;sequence&quot;</span><span class="token operator">:</span> <span class="token string">&quot;PUT/YOUR/SEQUENCE/HERE&quot;</span>
+<span class="token punctuation">}</span>
+</pre><p>The most important property here is the <strong>sequence</strong>, which tells <code>md_davis collect</code> of the number of chains in the molecule and the number of residues in each chain. The <strong>short_html</strong> will determine the labels for the data in the final plots. This file is named <code>information.json</code> in the next command.</p>
+<p><strong>Step 2c:</strong> Collect all the output files generated by GROMACS analysis tools into a single HDF file using the following command:</p>
+<pre data-role="codeBlock" data-info="shell" class="language-shell">md_davis collect \
+    --backbone_rmsd rmsd.xvg --backbone_rg rg.xvg \
+    --trajectory trajectory.trr --structure structure.gro
+    --rmsf rmsf.xvg 0 500 \
+    --ss dssp.dat \
+    --sasa resarea.xvg \
+    --info information.json \
+    output1.h5
+</pre><p>If the <code>--trajectory</code> and <code>--structure</code> options are provided. MD&#xA0;DaVis will calculate the backbone dihedral angles for all frames and the circular standard deviation of each dihedral angle.</p>
+<p>Note the numbers at the end of the <code>--rmsf</code> options are the start and end time for the RMSF calculation in nanosecond. These will be inserted as attributes in the HDF file and must be provided. In case, the RMSF for each chain was calculated separately, the files may be provided to <code>--rmsf</code> option in the correct order followed by the start and end times.</p>
+<p>Additional details are available with <code>-h</code> option for each MD&#xA0;DaVis command, such as</p>
+<pre data-role="codeBlock" data-info="shell" class="language-shell">md_davis collect -h
+</pre><h2 class="mume-header" id="step-3-plotting-overlaid-residue-data">Step 3: Plotting overlaid residue data</h2>
+
+<p><strong>Step 3a:</strong> Create a pickle file with the residue dataframe using:</p>
+<pre data-role="codeBlock" data-info="shell" class="language-shell">md_davis residue dataframe -p name1 output1.h5 data1.p
+</pre><p>The optional argument <code>-a annotations.json</code> can be provided to place a mark at certain residue locations. The contents of <code>annotations.json</code> should be of the following form:</p>
+<pre data-role="codeBlock" data-info="json" class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">&quot;chain 0&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token property">&quot;Active Site&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">23</span><span class="token punctuation">,</span> <span class="token number">41</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token property">&quot;Substrate Binding Site&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">56</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;chain 1&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token property">&quot;Nucleotide Binding Regions&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">15</span><span class="token punctuation">,</span> <span class="token number">18</span><span class="token punctuation">]</span><span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</pre><p>Each type of annotation is rendered with a different mark. Following annotations are available at present:</p>
 <ul>
-<li>root mean squared fluctuation (RMSF)</li>
-<li>circular standard deviation of backbone dihedral angles</li>
-<li>Secondary structure</li>
-<li>Solvent accessible surface area</li>
-<li>Mean and standard deviation for the total surface     electrostatic potential per residue</li>
-<li>Mean and standard deviation for the mean surface electrostatic potential per residue</li>
+<li>Active Site</li>
+<li>Nucleotide Binding Regions</li>
+<li>NADP Binding Site</li>
+<li>Substrate Binding Site</li>
+<li>Metal Binding Site</li>
+<li>Cofactor Binding Site</li>
+<li>Mutation</li>
 </ul>
-</li>
-</ol>
-<p>It can also use an alignment to align the residue level data from different proteins along the x-axis. This ensures that the peaks line up properly for better interpretation.</p>
-<iframe src="acylphosphatase_residue_wise_data_aligned.html" frameborder="0" width="1200px" height="700px"></iframe>
-<p>Some instructions for creating these types of plots are available here: <a href="https://github.com/djmaity/md_davis/instructions.html">https://github.com/djmaity/md_davis/instructions.html</a><br>
-help for each command in MD&#xA0;Davis can be accessed with <code>-h</code>, for example</p>
-<pre data-role="codeBlock" data-info="shell" class="language-shell">md_davis -h
+<p><strong>Step 3b:</strong> Plot the residue data pickle file from the previous command using:</p>
+<pre data-role="codeBlock" data-info="shell" class="language-shell">md_davis plot residue data1.p data2.p
+</pre><h2 class="mume-header" id="step-4-free-energy-landscapes">Step 4: Free energy Landscapes</h2>
+
+<h3 class="mume-header" id="create-and-plot-free-energy-landscapes-using-common-bins-and-ranges">Create and plot free energy landscapes using common bins and ranges</h3>
+
+<pre data-role="codeBlock" data-info="shell" class="language-shell">md_davis landscape rmsd_rg -T 300 --common --select backbone output1.h5 output2.h5 -s landscapes.h5
+</pre><p>This command will create an html file with the interactive landscapes. It will not open the file like other plotting commands, so check the working directory for the output html file.</p>
+<h3 class="mume-header" id="plot-free-energy-landscape-overlaid-with-trajectory-points">Plot free energy landscape overlaid with trajectory points</h3>
+
+<p>One must save the landscape created by the previous command with <code>-s</code> before this one can be used. Since the output generated for single landscape is big, visualization of multiple landscapes becomes impractical. So, it only plots one landscape at a time. Select the desired landscape in <code>landscapes.h5</code> by providing its index with <code>-i</code>. By default only the first landscape is plotted</p>
+<pre data-role="codeBlock" data-info="shell" class="language-shell">md_davis landscape animation landscapes.h5 -i 0 --static -o trajectory.html
 </pre>
       </div>
       

@@ -10,6 +10,7 @@ Usage:
                    [(--trajectory FILE --structure FILE -c <int> -a <list>)]
                    [--dipoles FILE]
                    [--ss FILE]
+                   [--sasa "FILES"]
                    [--info JSON]
                    HDF_FILE
 
@@ -35,6 +36,7 @@ Options:
   -s, --structure FILE      Structure file, preferably in PDB format
   -c, --chunk <int>         Number of frames to read at once
   -a, --atoms <list>        Atoms to use for dihedral calculation
+  --sasa FILES              Add SASA into the HDF_FILE
   --ss FILE                 Add secondary sctructure information from
                             'gmx do_dssp' into HDF_FILE
 
@@ -50,10 +52,10 @@ The attributes resuired as JSON with '--info' are given in the example below:
     "short_label": "MD",
     "html": "<i>MD Simulation</i>",
     "short_html": "<i>MD Simulation</i>",
-    "protein": "My Protein",
-    "scientific_name": "Homo sapiens",
-    "common_name": "Human",
-    "sequence": "ACDEFGHIKLMNPQRSTVWY"
+    "protein": "protein name",
+    "scientific_name": "some organism",
+    "common_name": "common name",
+    "sequence": "PUT/YOUR/SEQUENCE/HERE"
 }
 
 This information is primarily parsed to create labels for plots with
@@ -275,6 +277,23 @@ def add_dipoles(hdf_file, dipoles):
     dset.attrs['unit'] = 'Debye'
 
 
+def add_sasa(hdf_file, sasa, unit='nanometer^2'):
+    group = hdf_file.require_group('sasa')
+    if isinstance(sasa, list):
+        sasa_split_by_chains = []
+        for xvg_file in sasa:
+            sasa_data = numpy.loadtxt(xvg_file, comments=('#', '@'), dtype=numpy.single)
+            sasa_split_by_chains.append(sasa_data)
+    else:
+        sasa_data = numpy.loadtxt(sasa, comments=('#', '@'), dtype=numpy.single)
+        sasa_split_by_chains = split_increasing(sasa_data.T)
+    for ch, chain_sasa in enumerate(sasa_split_by_chains):
+        data = numpy.core.records.fromarrays(chain_sasa.T,
+            names='time, average, standard_deviation')
+        group.create_dataset(f'chain {ch}', data=data)
+    group.attrs['unit'] = unit
+
+
 def main(argv):
     if argv:
         args = docopt.docopt(__doc__, argv=argv)
@@ -314,6 +333,9 @@ def main(argv):
 
         if args['--ss']:
             add_dssp(hdf_file=hdf_file, dssp=args['--ss'])
+
+        if args['--sasa']:
+            add_sasa(hdf_file=hdf_file, sasa=args['--sasa'].strip().split())
 
         if args['--dipoles']:
             add_dipoles(hdf_file=hdf_file, dipoles=args['--dipoles'])

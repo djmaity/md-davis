@@ -125,6 +125,7 @@ def residue_data_trace(figure, data, prefix, ss_axis=None,
     """ Create traces for the residue wise data """
     mean_potential_traces = []
     total_potential_traces = []
+    sasa_traces = []
     dihedral_traces = []
     rmsf_traces = []
     seq = data['sequence']
@@ -189,36 +190,52 @@ def residue_data_trace(figure, data, prefix, ss_axis=None,
                 hoverinfo='text+y',
                 showlegend=False,
             )]
+    if 'sasa' in data:
+        sasa = data['sasa']
+        sasa_traces += plot_rmsd_rg.continuous_errorbar(
+            x=data.index + 1,
+            y=sasa['average'] * 100,  # Convert to Å^2
+            err=sasa['standard_deviation'] * 100,  # Convert to Å^2
+            name=prefix + 'SASA',
+            hover_text=hover_text,
+            line_color=line_color,
+            fill_color=fill_color,
+            dash='dot',
+            showlegend=showlegend,
+        )
+
     # RMSF
-    rmsf_traces += [go.Scatter(
-        name=prefix + 'RMSF',
-        x=data.index + 1,
-        y=data.rmsf.values.flatten() * 10,
-        line=dict(color=line_color),
-        text=hover_text,
-        hoverinfo='text+y',
-        mode='lines',
-        legendgroup=prefix + ' RMSF',
-        showlegend=False,
-    )]
+    if 'rmsf' in data:
+        rmsf_traces += [go.Scatter(
+            name=prefix + 'RMSF',
+            x=data.index + 1,
+            y=data.rmsf.values.flatten() * 10,
+            line=dict(color=line_color),
+            text=hover_text,
+            hoverinfo='text+y',
+            mode='lines',
+            legendgroup=prefix + ' RMSF',
+            showlegend=False,
+        )]
     # Dihedral SD
-    x_values = alternate_join(numpy.array(data.index) + 0.75,
-                    numpy.array(data.index) + 1.25)
-    dih_sd = alternate_join(data['dihedral_standard_deviation'].phi,
-                    data['dihedral_standard_deviation'].psi)
-    dih_hover_text = alternate_join(seq.resn + ' ϕ ' + seq.resi.map(str),
-                                    seq.resn + ' ψ ' + seq.resi.map(str))
-    dihedral_traces += [go.Scatter(
-        name=prefix + 'Dihedral Standard Deviation',
-        x=x_values[1:-1],   # Omit the first and last angle which do not exist
-        y=numpy.degrees(dih_sd[1:-1]),
-        line=dict(color=line_color, dash='dot'),
-        mode='lines',
-        text=dih_hover_text[1:-1],
-        hoverinfo='text+y',
-        legendgroup=prefix + ' Dihedral SD',
-        showlegend=False,
-    )]
+    if 'dihedral_standard_deviation' in data:
+        x_values = alternate_join(numpy.array(data.index) + 0.75,
+                        numpy.array(data.index) + 1.25)
+        dih_sd = alternate_join(data['dihedral_standard_deviation'].phi,
+                        data['dihedral_standard_deviation'].psi)
+        dih_hover_text = alternate_join(seq.resn + ' ϕ ' + seq.resi.map(str),
+                                        seq.resn + ' ψ ' + seq.resi.map(str))
+        dihedral_traces += [go.Scatter(
+            name=prefix + 'Dihedral Standard Deviation',
+            x=x_values[1:-1],   # Omit the first and last angle which do not exist
+            y=numpy.degrees(dih_sd[1:-1]),
+            line=dict(color=line_color, dash='dot'),
+            mode='lines',
+            text=dih_hover_text[1:-1],
+            hoverinfo='text+y',
+            legendgroup=prefix + ' Dihedral SD',
+            showlegend=False,
+        )]
     if annotation:
         sites = annotation_traces(data=data, annotations=annotation,
                                   prefix=prefix, color=line_color)
@@ -226,6 +243,7 @@ def residue_data_trace(figure, data, prefix, ss_axis=None,
         sites = None
     traces = (mean_potential_traces,
               total_potential_traces,
+              sasa_traces,
               dihedral_traces,
               rmsf_traces,
               sites,
@@ -269,6 +287,7 @@ def main(args):
     ax_start = y_axis
     my_layout = [('right', 0.9),
                  ('left', 0),
+                 ('left', 0.035),
                  ('right', 0.8),
                  ('left', 0.09),
     ]
@@ -276,7 +295,9 @@ def main(args):
         for ax in range(1, max_rows + 1):
             fig['layout'].update({
                 f'yaxis{y_axis}': dict(anchor=f'free', overlaying=f'y{ax}',
-                            side=side, showgrid=False, position=pos),
+                                       side=side, showgrid=False,
+                                       position=pos, ticks='outside', ticklen=10, showline=True
+                    ),
                 })
             y_axis += 1
 
@@ -308,42 +329,44 @@ def main(args):
 
             mean_pot_traces = traces[0]
             total_pot_traces = traces[1]
-            dih_traces = traces[2]
-            rmsf_traces = traces[3]
-            site_annotations = traces[4]
+            sasa_traces = traces[2]
+            dih_traces = traces[3]
+            rmsf_traces = traces[4]
+            site_annotations = traces[5]
 
             if total_pot_traces:
-                # if first_chain:
-                #     total_pot_traces[0]['showlegend'] = True
                 for trace in total_pot_traces:
                     fig.append_trace(trace, i, 1)
                     fig['data'][-1].update(yaxis=f'y{ax_start + i-1}')
 
             if mean_pot_traces:
-                # if first_chain:
-                #     mean_pot_traces[0]['showlegend'] = True
                 for trace in mean_pot_traces:
                     fig.append_trace(trace, i, 1)
                     fig['data'][-1].update(yaxis=f'y{ax_start + max_rows + i-1}')
+
+            if sasa_traces:
+                for trace in sasa_traces:
+                    fig.append_trace(trace, i, 1)
+                    fig['data'][-1].update(yaxis=f'y{ax_start + 2*max_rows + i-1}')
 
             if dih_traces:
                 if first_chain:
                     dih_traces[0]['showlegend'] = True
                 for trace in dih_traces:
                     fig.append_trace(trace, i, 1)
-                    fig['data'][-1].update(yaxis=f'y{ax_start + 2*max_rows + i-1}')
+                    fig['data'][-1].update(yaxis=f'y{ax_start + 3*max_rows + i-1}')
 
             if rmsf_traces:
                 if first_chain:
                     rmsf_traces[0]['showlegend'] = True
                 for trace in rmsf_traces:
                     fig.append_trace(trace, i, 1)
-                    fig['data'][-1].update(yaxis=f'y{ax_start + 3*max_rows + i-1}')
+                    fig['data'][-1].update(yaxis=f'y{ax_start + 4*max_rows + i-1}')
 
             if site_annotations:
                 for trace in site_annotations:
                     fig.append_trace(trace, i, 1)
-                    fig['data'][-1].update(yaxis=f'y{ax_start + 3*max_rows + i-1}')
+                    fig['data'][-1].update(yaxis=f'y{ax_start + 4*max_rows + i-1}')
 
             fig['layout'].update({
                 f'yaxis{axis_number}': dict(showgrid=False,
@@ -359,31 +382,49 @@ def main(args):
     fig['layout']['font'].update(family='Courier New, monospace', size=24, color='black')
 
     annotations = plot_hdf5_data.add_secondary_structure_legend(figure=fig, spacing=0.06, xloc=0.1 )
-    annotations += [
-        dict(x=0.0, y=0.5, showarrow=True, text='RMSF (in Å)',
+    if rmsf_traces:
+        annotations += [
+        dict(x=0.02, y=0.5, showarrow=True, text='RMSF (in Å)',
              arrowcolor='rgba(0,0,0,0)', textangle=-90,
-             xref='paper', yref='paper', font=dict(size=24), ax=50, ay=0),
+             xref='paper', yref='paper', font=dict(size=24), ax=50, ay=0)
+        ]
 
+    if mean_pot_traces:
+        annotations += [
         dict(x=-0.1, y=0.5, showarrow=True, text='Mean Surface Potential (in kT/e)',
             arrowcolor='rgba(0,0,0,0)', textangle=-90,
             xref='paper', yref='paper', font=dict(size=24), ax=50, ay=0),
+        ]
 
+    if sasa_traces:
+        annotations += [
+        dict(x=-0.05, y=0.5, showarrow=True, text='SASA (in Å<sup>2</sup>)',
+             arrowcolor='rgba(0,0,0,0)', textangle=-90,
+             xref='paper', yref='paper', font=dict(size=24), ax=50, ay=0),
+        ]
+
+    if dih_traces:
+        annotations += [
         dict(x=0.81, y=0.5, showarrow=True, text='Dihedral SD (in degrees)',
              arrowcolor='rgba(0,0,0,0)', textangle=-90,
              xref='paper', yref='paper', font=dict(size=24), ax=50, ay=0),
+        ]
 
+    if total_pot_traces:
+        annotations += [
         dict(x=0.95, y=0.5, showarrow=True, text='Total Surface Potential (in kT/e)',
             arrowcolor='rgba(0,0,0,0)', textangle=-90,
             xref='paper', yref='paper', font=dict(size=24), ax=50, ay=0),
+        ]
 
-        dict(x=0.5, y=-0.03, showarrow=True, text='Residue Index',
-             arrowcolor='rgba(0,0,0,0)',
-             xref='paper', yref='paper', font=dict(size=24), ax=0, ay=50),
-    ]
+    dict(x=0.5, y=-0.03, showarrow=True, text='Residue Index',
+            arrowcolor='rgba(0,0,0,0)',
+            xref='paper', yref='paper', font=dict(size=24), ax=0, ay=50),
+
     fig['layout']['annotations'] = annotations
     fig['layout'].update(title=title,
                          height=1200,
-                         width=2000,
+                         width=2400,
         margin=go.layout.Margin(l=100, r=200, b=450, t=80, pad=2)
     )
 

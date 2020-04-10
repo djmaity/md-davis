@@ -62,10 +62,21 @@ def main():
         from .electrostatics import surface_electrostatics
         surface_electrostatics.main(argv=argv)
 
-    elif args['<command>'] == 'create':
-        import md_davis.collect_data.create_residue_dataframe as res_df
-        arguments = docopt(res_df.__doc__, argv=argv)
-        res_df.main(arguments)
+    elif args['<command>'] == 'residue':
+        if len(args['<args>']) > 1:
+            if args['<args>'][0] == 'dataframe':
+                import md_davis.collect_data.create_residue_dataframe as res_df
+                arguments = docopt(res_df.__doc__, argv=argv)
+                res_df.main(arguments)
+                return
+            if args['<args>'][0] == 'aligned':
+                import md_davis.collect_data.create_aligned_residue_dataframe as res_aligned_df
+                res_aligned_df.main(argv=argv)
+                return
+        print('Invalid command. The available commands are:')
+        print('  md_davis residue dataframe')
+        print('  md_davis residue aligned')
+
 
     elif args['<command>'] == 'plot':
         if len(args['<args>']) < 1:
@@ -95,7 +106,7 @@ def main():
                 from .landscape import rmsd_rg_landscape
                 rmsd_rg_landscape.main(argv=argv)
                 return
-            elif args['<args>'][0] == 'animation':
+            if args['<args>'][0] == 'animation':
                 from .landscape import landscape_animation
                 landscape_animation.main(argv=argv)
                 return

@@ -1,11 +1,25 @@
-import argparse
+"""
+Align the dataframes created by 'md_davis residue dataframe' for plotting.
+
+Usage:  md_davis residue aligned --alignment FILE --map <dictionary> OUTPUT
+
+Options:
+  -h, --help                        Show this screen.
+  -a, --alignment FILE              Alignment file in CLUSTAL format
+  -m, --map <dictionary>            A dictionary mapping the labels in the
+                                    alignment file with the corresponding
+                                    pickle file containing residue dataframe.
+"""
+
+import docopt
 import json
 import pandas
 import pickle
 import re
 import numpy
 import collections
-
+import os
+import json
 
 def parse_alignment(alignment_file):
     """ Parse and alignment file in CLUSTAL format"""
@@ -24,29 +38,29 @@ def parse_alignment(alignment_file):
     return alignment
 
 
-def main():
-    parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('json', type=argparse.FileType('r'),
-                        help='JSON file containing input filenames')
-    args = parser.parse_args()
-
-    json_dict = json.load(args.json)
-
-    if 'alignment' in json_dict:
-        aln_dict = parse_alignment(json_dict['alignment'])
-        aln_seq_length = len(next(iter(aln_dict.values())))  # Length of sequences in alignment file
+def main(argv=None):
+    if argv:
+        args = docopt.docopt(__doc__, argv=argv)
     else:
-        aln_dict = None
-        aln_seq_length = 0
+        args = docopt.docopt(__doc__)
+
+    if os.path.exists(args['--map']):
+        mapping = json.load(open(args['--map'], 'r'))
+    else:
+        json_acceptable_string = args['--map'].replace("'", "\"")
+        mapping = json.loads(json_acceptable_string)
+
+    aln_dict = parse_alignment(args['--alignment'])
+    aln_seq_length = len(next(iter(aln_dict.values())))  # Length of sequences in alignment file
 
     aligned_dataframe = collections.defaultdict(dict)
-    for prefix, location in json_dict['locations'].items():
-        data = pickle.load(open(location, 'rb'))
-        assert prefix == data['prefix']
+    for alignment_label, pickle_file in mapping.items():
+        data = pickle.load(open(pickle_file, 'rb'))
+        prefix = data['prefix']
         aligned_dataframe[prefix] = data
         if aln_dict:
-            if prefix not in aln_dict:
-                print(f'{prefix} not in alignment file')
+            if alignment_label not in aln_dict:
+                print(f'{alignment_label} not in alignment file')
                 return
             for chain, df in data['data'].items():
                 out_df = pandas.DataFrame(
@@ -54,14 +68,14 @@ def main():
                     columns=df.columns)
                 out_df['sequence', 'resn'] = '-'
                 i, j = 0, 0
-                for ressidue in aln_dict[prefix]:
+                for ressidue in aln_dict[alignment_label]:
                     if ressidue != '-':
                         assert ressidue == df.iloc[j].sequence.resn
                         out_df.iloc[i] = df.iloc[j]
                         j += 1
                     i += 1
                 aligned_dataframe[prefix]['data'][chain] = out_df
-    pickle.dump( aligned_dataframe, open(json_dict['output'], 'wb') )
+    pickle.dump( aligned_dataframe, open(args['OUTPUT'], 'wb') )
 
 
 if __name__ == "__main__":

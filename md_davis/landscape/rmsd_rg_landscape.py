@@ -34,6 +34,8 @@ Options:
   --font_size <int>             Size of text and labels in the plot
   --dtick <dict>                Tick interval on each axes
   --hide_labels                 Hide the axes labels
+  --select <string>             Select: all_atom, c-alpha or backbone
+                                [default: all_atom]
 """
 
 import numpy
@@ -84,7 +86,7 @@ def main(argv=None):
                 with h5py.File(filename, 'r') as hdf_file:
                     name = hdf_file.attrs['short_label']
                     label = hdf_file.attrs['short_html']
-                    group = hdf_file['/rmsd_rg/all_atom']
+                    group = hdf_file['/rmsd_rg/' + args['--select']]
                     time = group['time'][start:end]
                     rmsd = group['rmsd'][start:end] * 10  # Convert from nm to Å
                     rg = group['rg'][start:end] * 10    # Convert from nm to Å
