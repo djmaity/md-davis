@@ -59,7 +59,7 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://djmaity.github.io/md_davis/',
-    version='0.1.0',
+    version='0.2.0',
     zip_safe=False,
     python_requires='>=3.6',
 )
