@@ -161,7 +161,7 @@ def main(argv=None):
         args = docopt.docopt(__doc__)
 
     if args['--columns']:
-        columns = args['--columns'].strip().split()
+        columns = [int(_) for _ in args['--columns'].strip().split()]
     else:
         columns = None
     parsed_data = parse_xvg(input_file=args['XVG_FILE'],

@@ -278,7 +278,8 @@ def main(args):
                                            domain=[0.0, 1.0],
                                            showticklabels=False,
                                            ticks='',
-                                           range=[0, 100]
+                                           range=[0, 100],
+                                           matches='y1'
                     ),
                 })
                 y_axis += 1
@@ -292,11 +293,13 @@ def main(args):
                  ('left', 0.09),
     ]
     for side, pos in my_layout:
+        first_y_axis = y_axis
         for ax in range(1, max_rows + 1):
             fig['layout'].update({
                 f'yaxis{y_axis}': dict(anchor=f'free', overlaying=f'y{ax}',
                                        side=side, showgrid=False,
-                                       position=pos, ticks='outside', ticklen=10, showline=True
+                                       position=pos, ticks='outside', ticklen=10,
+                                       showline=True, matches=f'y{first_y_axis}'
                     ),
                 })
             y_axis += 1
@@ -379,7 +382,8 @@ def main(args):
             first_chain = False
 
 
-    fig['layout']['font'].update(family='Courier New, monospace', size=24, color='black')
+    # fig['layout']['font'].update(family='Courier New, monospace', size=24, color='black')
+    fig['layout']['font'].update(family='Times new roman', size=24, color='black')
 
     annotations = plot_hdf5_data.add_secondary_structure_legend(figure=fig, spacing=0.06, xloc=0.1 )
     if rmsf_traces:

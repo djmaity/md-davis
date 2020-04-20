@@ -15,9 +15,9 @@ import pickle
 # import json
 
 # Imports from within MD Davis package
-import plot_hdf5_data
+import md_davis.plotting.plot_hdf5_data
 # import plot_rmsd_rg
-import plot_residue_wise_data
+import md_davis.plotting.plot_residue_dataframe
 
 
 def main():

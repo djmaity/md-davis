@@ -21,6 +21,7 @@ requirements = ['Click>=6.0',
                 'pandas',
                 'h5py>=2.10',
                 'tables',    # PyTables
+                'biopandas',
 ]
 
 setup_requirements = ['pytest-runner', ]
@@ -54,7 +55,7 @@ setup(
     include_package_data=True,
     keywords='analysis data visualization molecular dynamics protein',
     name='md_davis',
-    packages=find_packages(include=['md_davis']),
+    packages=find_packages(),
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,

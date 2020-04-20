@@ -17,7 +17,7 @@ Available Commands:
   plot              plotting commands
   plot_dipoles      plot commands
   create            create HDF5 files
-  electrostaics     Commands for calculating surface electrostatic
+  electrostatics    Commands for calculating surface electrostatic
                     pontential using Delphi and MSMS
   collect           collect data from various calculations into one
                     HDF binary file

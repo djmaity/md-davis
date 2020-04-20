@@ -11,9 +11,6 @@ import numpy
 import re
 from Bio.PDB.PDBParser import PDBParser
 
-sys.path.append('/home/djmaity/Documents/Repositories/mypython')
-from my_simulations import my_simulations_dict, labels
-
 line_color = [
     'rgb(31,119,180)',  # muted blue
     'rgb(255,127,14)',  # safety orange

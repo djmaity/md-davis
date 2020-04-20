@@ -11,7 +11,7 @@ Usage: python separate_chains.py <PDB FILE>
 """
 
 import Bio.PDB
-from my_parser import get_pdb_filename
+from md_davis.structure.my_parser import get_pdb_filename
 
 
 def separate_chains(filename):

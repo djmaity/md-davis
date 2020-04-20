@@ -7,7 +7,7 @@ Usage:
                    [(--backbone_rmsd FILE --backbone_rg FILE)]
                    [(--c_alpha_rmsd FILE --c_alpha_rg FILE)]
                    [(--rmsf "FILES" <begin> <end>)]
-                   [(--trajectory FILE --structure FILE -c <int> -a <list>)]
+                   [(--trajectory FILE --structure FILE) -c <int> -a <list>]
                    [--dipoles FILE]
                    [--ss FILE]
                    [--sasa "FILES"]
