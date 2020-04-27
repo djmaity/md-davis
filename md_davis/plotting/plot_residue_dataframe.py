@@ -13,6 +13,8 @@ Options:
   -t, --title <string>              title for the plot
   -h, --help                        display this help and exit
   -o, --output <filename.html>      output HTML file [default: output.html]
+  --width <int>                     Width of the plot [default: 2400]
+  --height <int>                    Height of the plot [default: 1500]
 """
 
 import docopt
@@ -255,6 +257,8 @@ def main(args):
     input_files = args['FILES']
     title = args['--title']
     output_filename = args['--output']
+    width = float(args['--width'])
+    height = float(args['--height'])
 
     pickled_data = []
     for input_file in input_files:
@@ -286,20 +290,23 @@ def main(args):
 
     # Axes for Residue wise Quantities
     ax_start = y_axis
-    my_layout = [('right', 0.9),
-                 ('left', 0),
-                 ('left', 0.035),
-                 ('right', 0.8),
-                 ('left', 0.09),
-    ]
-    for side, pos in my_layout:
+    my_layout = {
+        'Total Potential (in kT/e)': ('right', 0.9),
+        'Mean Potential (in kT/e)': ('left', 0.01),
+        'SASA (in Å<sup>2</sup>)': ('left', 0.1),
+        'Dihedral SD (in °)': ('right', 0.85),
+        'RMSF (in Å)': ('left', 0.2),
+    }
+
+    for title_text, (side, pos) in my_layout.items():
         first_y_axis = y_axis
         for ax in range(1, max_rows + 1):
             fig['layout'].update({
                 f'yaxis{y_axis}': dict(anchor=f'free', overlaying=f'y{ax}',
                                        side=side, showgrid=False,
                                        position=pos, ticks='outside', ticklen=10,
-                                       showline=True, matches=f'y{first_y_axis}'
+                                       showline=True, matches=f'y{first_y_axis}',
+                                       title_text=title_text,
                     ),
                 })
             y_axis += 1
@@ -377,7 +384,7 @@ def main(args):
                                             showticklabels=False,
                                             range=[0, 100],
                                             ),
-                f'xaxis{axis_number}':dict(domain=[0.1, 0.8]),
+                f'xaxis{axis_number}':dict(domain=[0.2, 0.85]),
             })
             first_chain = False
 
@@ -385,50 +392,16 @@ def main(args):
     # fig['layout']['font'].update(family='Courier New, monospace', size=24, color='black')
     fig['layout']['font'].update(family='Times new roman', size=24, color='black')
 
-    annotations = plot_hdf5_data.add_secondary_structure_legend(figure=fig, spacing=0.06, xloc=0.1 )
-    if rmsf_traces:
-        annotations += [
-        dict(x=0.02, y=0.5, showarrow=True, text='RMSF (in Å)',
-             arrowcolor='rgba(0,0,0,0)', textangle=-90,
-             xref='paper', yref='paper', font=dict(size=24), ax=50, ay=0)
-        ]
+    annotations = plot_hdf5_data.add_secondary_structure_legend(figure=fig, spacing=0.04, xloc=0.2, yloc=-0.1)
 
-    if mean_pot_traces:
-        annotations += [
-        dict(x=-0.1, y=0.5, showarrow=True, text='Mean Surface Potential (in kT/e)',
-            arrowcolor='rgba(0,0,0,0)', textangle=-90,
-            xref='paper', yref='paper', font=dict(size=24), ax=50, ay=0),
-        ]
-
-    if sasa_traces:
-        annotations += [
-        dict(x=-0.05, y=0.5, showarrow=True, text='SASA (in Å<sup>2</sup>)',
-             arrowcolor='rgba(0,0,0,0)', textangle=-90,
-             xref='paper', yref='paper', font=dict(size=24), ax=50, ay=0),
-        ]
-
-    if dih_traces:
-        annotations += [
-        dict(x=0.81, y=0.5, showarrow=True, text='Dihedral SD (in degrees)',
-             arrowcolor='rgba(0,0,0,0)', textangle=-90,
-             xref='paper', yref='paper', font=dict(size=24), ax=50, ay=0),
-        ]
-
-    if total_pot_traces:
-        annotations += [
-        dict(x=0.95, y=0.5, showarrow=True, text='Total Surface Potential (in kT/e)',
-            arrowcolor='rgba(0,0,0,0)', textangle=-90,
-            xref='paper', yref='paper', font=dict(size=24), ax=50, ay=0),
-        ]
-
-    dict(x=0.5, y=-0.03, showarrow=True, text='Residue Index',
+    dict(x=0.5, y=0, showarrow=True, text='Residue Index',
             arrowcolor='rgba(0,0,0,0)',
             xref='paper', yref='paper', font=dict(size=24), ax=0, ay=50),
 
     fig['layout']['annotations'] = annotations
     fig['layout'].update(title=title,
-                         height=1200,
-                         width=2400,
+                         height=height,
+                         width=width,
         margin=go.layout.Margin(l=100, r=200, b=450, t=80, pad=2)
     )
 
