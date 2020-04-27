@@ -34,8 +34,8 @@ Options:
   -d, --dipoles FILE        Add dipole_moment into the HDF_FILE
   -t, --trajectory FILE     MD trajectory file
   -s, --structure FILE      Structure file, preferably in PDB format
-  -c, --chunk <int>         Number of frames to read at once
-  -a, --atoms <list>        Atoms to use for dihedral calculation
+  -c, --chunk <int>         Number of frames to read at once [default: 0]
+  -a, --atoms <list>        Atoms to use for dihedral calculation [default: None]
   --sasa FILES              Add SASA into the HDF_FILE
   --ss FILE                 Add secondary sctructure information from
                             'gmx do_dssp' into HDF_FILE
@@ -72,7 +72,7 @@ import docopt
 import mdtraj
 import numpy
 import scipy.stats
-
+import warnings
 
 SECSTR_CODES = {'H':'α-helix',
                 'G':'3_10-helix',
@@ -105,7 +105,8 @@ def split_increasing(array, use_col=0):
 
 def split_chains(array, lengths):
     """ """
-    assert sum(lengths) == len(array)
+    if sum(lengths) != len(array):
+        warnings.warn('Number of dihedral angles is inconsistent with the number of residues.')
     start = 0
     for end in lengths:
         end = start + end
@@ -262,7 +263,8 @@ def get_dihedral_sd(hdf_file, begin=0, end=1000, step=200):
 
     for angle in ['phi', 'psi', 'omega']:
         _, num_angles = numpy.shape(hdf_file[f'/dihedrals/{angle}'])
-        assert sum(lengths) == num_angles
+        if sum(lengths) != num_angles:
+            warnings.warn('Number of dihedral angles is inconsistent with the number of residues.')
         circ_sd = scipy.stats.circstd(hdf_file[f'/dihedrals/{angle}'][start:end], axis=0, high=numpy.pi)
         for ch, chain_dih_sd in enumerate(split_chains(circ_sd, lengths)):
             dset = hdf_file[f'/dihedral_standard_deviation/chain {ch}']
