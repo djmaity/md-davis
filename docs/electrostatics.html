@@ -1,5 +1,5 @@
 <!DOCTYPE html><html><head>
-      <title>index</title>
+      <title>electrostatics</title>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       
@@ -263,42 +263,31 @@ pre[data-line] .line-highlight[data-end]:after {
     </head>
     <body for="html-export">
       <div class="mume markdown-preview  ">
-      <h1 class="mume-header" id="md-davis">MD Davis</h1>
+      <h2 class="mume-header" id="how-to-calculate-surface-electrostatics-using-md-davis">How to calculate surface electrostatics using MD DaVis?</h2>
 
-<p>A Python package to perform preliminary analysis of molecular dynamics trajectories. The source code can be found at: <a href="https://github.com/djmaity/md_davis">https://github.com/djmaity/md_davis</a></p>
-<h2 class="mume-header" id="what-can-md-davis-do">What can MD Davis do?</h2>
-
-<ol>
-<li>
-<p>Create dynamic visualization of electric field around the molecule using PyMOL.<br>
-<img src="2GV1_100frames.gif" alt="Dynamics of electric field" title="Dynamics of electric field"></p>
-</li>
-<li>
-<p>Create interactive plot for time series data: root mean squared deviation (RMSD) and radius of gyration</p>
-</li>
-</ol>
-<iframe src="acylphosphatase_rmsg_rg.html" frameborder="0" width="100%" height="500px"></iframe>
-<ol start="3">
-<li>Create Free energy landscapes using common ranges and number of bins.</li>
-</ol>
-<iframe src="landscapes.html" frameborder="0" width="100%" height="500px"></iframe>
-<ol start="4">
-<li>Create interactive plot of containing the following residue level properties:
-<ul>
-<li>root mean squared fluctuation (RMSF)</li>
-<li>circular standard deviation of backbone dihedral angles</li>
-<li>Secondary structure</li>
-<li>Solvent accessible surface area</li>
-<li>Mean and standard deviation for the total surface     electrostatic potential per residue</li>
-<li>Mean and standard deviation for the mean surface electrostatic potential per residue</li>
-</ul>
-</li>
-</ol>
-<p>It can also use an alignment to align the residue level data from different proteins along the x-axis. This ensures that the peaks line up properly for better interpretation.</p>
-<iframe src="acylphosphatase_residue_wise_data_aligned.html" frameborder="0" width="1200px" height="700px"></iframe>
-<p>Some instructions for creating these types of plots are available here: <a href="http://djmaity.com/md_davis/instructions.html">Instructions</a> and instructions for calculating surface electrostatic potentials can be found here: <a href="http://djmaity.com/md_davis/electrostatics.html">Electrostatics</a></p>
-<p>help for each command in MD&#xA0;Davis can be accessed with <code>-h</code>, for example</p>
-<pre data-role="codeBlock" data-info="shell" class="language-shell">md_davis -h
+<p>Delphi and MSMS must be installed for this to work. You may download these from: <a href="http://compbio.clemson.edu/delphi">Delphi</a>  and <a href="http://mgl.scripps.edu/people/sanner/html/msms_home.html">MSMS</a></p>
+<p>You will need the parameter files for delphi run, which can be downloaded from <a href="http://compbio.clemson.edu/downloadDir/delphi/parameters.tar.gz">paramter files</a></p>
+<p><strong>Step 1:</strong> Calculate the electrostatics using the following command</p>
+<pre data-role="codeBlock" data-info="shell" class="language-shell">md_davis electrostatics --surface_potential \
+    -m ~/.opt/msms/ \
+    -d ~/.opt/delphi8.4.2_sequential
+    -c path/to/charge/file.crg \
+    -r path/to/radius/file.siz \
+    PDB_FILE.pdb \
+    path/to/electrostatics/output/directory
+</pre><p>The following charge and radius files are provided with the source code for MD&#xA0;DaVis.</p>
+<pre data-role="codeBlock" data-info class="language-"><code>md_davis/md_davis/electrostatics/charmm.crg
+md_davis/md_davis/electrostatics/charmm.siz
+</code></pre><p>If you receive a warning during Delphi run regarding missing charge or radius. Then the missing properties must be added to these files or whichever files you provide to <code>md_davis electrostatics</code>.</p>
+<p><strong>Step 2:</strong> Add the surface electrostatics data into the residue dataframe by modifying the command for creating residue dataframe to include the option <code>-d</code> and specifying the path to the directory containing the surface potential files. This will search for all  <code>.pot</code> files and include their mean and total in the residue dataframe.</p>
+<pre data-role="codeBlock" data-info="shell" class="language-shell">md_davis residue dataframe \
+        --potential  path/to/electrostatics/output/directory \
+        --annotation  annotations.json \
+        --prefix  prefix \
+        md_davis_collect_output_data.h5  \
+        output_residue_wise_data.p
+</pre><p><strong>Step 3:</strong> Plot the residue dataframe with the usual command:</p>
+<pre data-role="codeBlock" data-info="shell" class="language-shell">md_davis plot residue output_residue_wise_data.p
 </pre>
       </div>
       

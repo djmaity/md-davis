@@ -25,7 +25,8 @@ It can also use an alignment to align the residue level data from different prot
 
 <iframe src="acylphosphatase_residue_wise_data_aligned.html" frameborder="0" width="1200px" height=700px></iframe>
 
-Some instructions for creating these types of plots are available here: https://github.com/djmaity/md_davis/instructions.html
+Some instructions for creating these types of plots are available here: [Instructions](http://djmaity.com/md_davis/instructions.html) and instructions for calculating surface electrostatic potentials can be found here: [Electrostatics](http://djmaity.com/md_davis/electrostatics.html)
+
 help for each command in MD&nbsp;Davis can be accessed with `-h`, for example
 ```shell
 md_davis -h

@@ -10,7 +10,7 @@ Usage:
                    [(--trajectory FILE --structure FILE) -c <int> -a <list>]
                    [--dipoles FILE]
                    [--ss FILE]
-                   [--sasa "FILES"]
+                   [(--sasa "FILES")]
                    [--info JSON]
                    HDF_FILE
 
@@ -146,14 +146,16 @@ def add_rmsd_rg(hdf_file, rmsd, rg, dataset='all_atom',
 
 def add_rmsf(hdf_file, rmsf, begin, end, unit='nanometer'):
     group = hdf_file.require_group('rmsf')
-    if isinstance(rmsf, list):
+    if isinstance(rmsf, list) and len(rmsf) > 1:
         rmsf_split_by_chains = []
         for xvg_file in rmsf:
             rmsf_data = numpy.loadtxt(xvg_file, comments=('#', '@'), dtype=numpy.single)
             rmsf_split_by_chains.append(rmsf_data)
-    else:
-        rmsf_data = numpy.loadtxt(rmsf, comments=('#', '@'), dtype=numpy.single)
+    elif isinstance(rmsf, list) and len(rmsf) == 1:
+        rmsf_data = numpy.loadtxt(rmsf[0], comments=('#', '@'), dtype=numpy.single)
         rmsf_split_by_chains = split_increasing(rmsf_data.T)
+    else:
+        raise TypeError
     for ch, chain_rmsf in enumerate(rmsf_split_by_chains):
         group.create_dataset(f'chain {ch}', data=chain_rmsf)
     group.attrs['unit'] = unit
@@ -279,14 +281,16 @@ def add_dipoles(hdf_file, dipoles):
 
 def add_sasa(hdf_file, sasa, unit='nanometer^2'):
     group = hdf_file.require_group('sasa')
-    if isinstance(sasa, list):
+    if isinstance(sasa, list) and len(sasa) > 1:
         sasa_split_by_chains = []
         for xvg_file in sasa:
             sasa_data = numpy.loadtxt(xvg_file, comments=('#', '@'), dtype=numpy.single)
             sasa_split_by_chains.append(sasa_data)
-    else:
-        sasa_data = numpy.loadtxt(sasa, comments=('#', '@'), dtype=numpy.single)
+    elif isinstance(sasa, list) and len(sasa) == 1:
+        sasa_data = numpy.loadtxt(sasa[0], comments=('#', '@'), dtype=numpy.single)
         sasa_split_by_chains = split_increasing(sasa_data.T)
+    else:
+        raise TypeError
     for ch, chain_sasa in enumerate(sasa_split_by_chains):
         data = numpy.core.records.fromarrays(chain_sasa.T,
             names='time, average, standard_deviation')
