@@ -22,6 +22,7 @@ requirements = ['Click>=6.0',
                 'h5py>=2.10',
                 'tables',    # PyTables
                 'biopandas',
+                'scikit-learn'
 ]
 
 setup_requirements = ['pytest-runner', ]

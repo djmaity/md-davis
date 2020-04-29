@@ -8,8 +8,8 @@
 
 import argparse
 import numpy
-import Bio.PDB
-from scipy.spatial import distance_matrix
+from sklearn.neighbors import KDTree
+from biopandas.pdb import PandasPdb
 
 
 def main():
@@ -27,28 +27,20 @@ def main():
     vertex_file = open(args.vert, 'r', errors='replace')
     vertices = numpy.loadtxt(vertex_file, usecols=(0, 1, 2), skiprows=3)
 
-    pdb_parser = Bio.PDB.PDBParser()
-    structure = pdb_parser.get_structure("structure", args.pdb)
-    model = structure[0]    # Use the first model
+    pdb_file = PandasPdb().read_pdb(args.pdb)
+    df = pdb_file.df['ATOM']
+    coordinates = df[['x_coord', 'y_coord', 'z_coord']]
 
-    atoms, coordinates = [], []
-    for atom in model.get_atoms():
-        atoms.append(atom)
-        coordinates.append(atom.get_coord())
-
-    coordinates = numpy.array(coordinates)
-
-    distances = distance_matrix(vertices, coordinates)
-    atom_indices = numpy.argmin(distances, axis=1)
+    kdt = KDTree(coordinates, metric='euclidean')
+    atom_indices = kdt.query(vertices, return_distance=False, dualtree=True)
 
     for vertex, index in zip(vertices, atom_indices):
-        residue = atoms[index].get_parent()
-        chain = residue.get_parent()._id
-        name = atoms[index].get_fullname()
-        resName = residue.get_resname()
-        resSeq = residue.id[1]
+        residue = df.at[int(index), 'residue_name']
+        chain = df.at[int(index), 'chain_id']
+        name = df.at[int(index), 'atom_name']
+        resSeq = df.at[int(index), 'residue_number']
         x, y, z = vertex
-        print(f'ATOM        {name:^4} {resName:3} {chain:1}{resSeq:4}    {x:8.3f}{y:8.3f}{z:8.3f}',
+        print(f'ATOM        {name:^4} {residue:3} {chain:1}{resSeq:4}    {x:8.3f}{y:8.3f}{z:8.3f}',
             file=args.output)
 
 if __name__ == "__main__":
