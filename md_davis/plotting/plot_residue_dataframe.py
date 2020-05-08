@@ -13,8 +13,8 @@ Options:
   -t, --title <string>              title for the plot
   -h, --help                        display this help and exit
   -o, --output <filename.html>      output HTML file [default: output.html]
-  --width <int>                     Width of the plot [default: 2400]
-  --height <int>                    Height of the plot [default: 1500]
+  --width <int>                     Width of the plot in pixels [default: 2400]
+  --height <int>                    Height of the plot in pixels [default: 1500]
 """
 
 import docopt

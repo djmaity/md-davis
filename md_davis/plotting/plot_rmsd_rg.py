@@ -1,10 +1,8 @@
-import collections
-from plotly import tools
-from plotly.offline import plot
 import numpy
+import plotly
+from plotly.offline import plot
 import plotly.graph_objs as go
 import h5py
-import os
 import argparse
 import colorsys
 
@@ -66,7 +64,7 @@ def continuous_errorbar(x, y, err, name, hover_text=None,
 
 
 def main():
-    fig = tools.make_subplots(rows=1, cols=1)
+    fig = plotly.subplots.make_subplots(rows=1, cols=1)
     fig['layout'].update({f'yaxis2': dict(anchor='x', overlaying='y',
         side='right', showgrid=False, title='R<sub>G</sub>') })
     # TODO: Have a button to toggle between twin axes and subplots
@@ -94,7 +92,7 @@ def main():
             time = window_mean(dset['time'], window=args.window) / 1000
             rmsd_traces += continuous_errorbar(
                 x=time,
-                y=window_mean(dset['rmsd'], window=args.window) * 10,  # Convet nm to Å
+                y=window_mean(dset['rmsd'], window=args.window) * 10,  # Convert nm to Å
                 err=window_std(dset['rmsd'], window=args.window) * 10,
                 name='RMSD ' + datafile.attrs['short_html'],
                 line_color=next(rmsd_color),
@@ -102,7 +100,7 @@ def main():
             )
             rg_traces += continuous_errorbar(
                 x=time,
-                y=window_mean(dset['rg'], window=args.window) * 10,  # Convet nm to Å
+                y=window_mean(dset['rg'], window=args.window) * 10,  # Convert nm to Å
                 err=window_std(dset['rg'], window=args.window) * 10,
                 name='R<sub>G</sub> ' + datafile.attrs['short_html'],
                 line_color=next(rg_color),
