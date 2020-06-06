@@ -119,7 +119,7 @@ def add_info(hdf_file, info):
     """ Add labels and other information as attributes in the HDF file """
     # TODO: Catch error if filename wrong
     if os.path.exists(info):
-        attributes = json.load(open(info, 'r'))
+        attributes = json.load(open(info, 'r', encoding='utf-8'))
     else:
         json_acceptable_string = info.replace("'", "\"")
         attributes = json.loads(json_acceptable_string)

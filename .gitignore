@@ -34,3 +34,5 @@ wheels/
 # FreeFileSync database
 .sync.ffs_db
 .vscode/
+
+.idea/

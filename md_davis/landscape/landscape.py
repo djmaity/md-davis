@@ -221,11 +221,15 @@ class Landscape(object):
                         title='Landscapes',
                         filename='landscape.html',
                         xlabel='x', ylabel='y', zlabel='z',
-                        width=None, height=None,
-                        othrographic=False, font_size=None, dtick=None):
+                        width=None, height=None, layout=None,
+                        othrographic=False, dtick=None,
+                        font_family='Courier New, monospace', font_size=None):
         """ Make 2 subplots """
         subtitles = [ls.label for ls in landscapes]
-        columns, rows = cls.get_layout(len(landscapes))
+        if layout:
+            columns, rows = layout
+        else:
+            columns, rows = cls.get_layout(len(landscapes))
         fig = plotly.subplots.make_subplots(rows=rows,
                                             cols=columns,
                                             shared_xaxes=True,
@@ -289,18 +293,18 @@ class Landscape(object):
                     )
         if font_size:
             fig.layout.font.update(
-                family='Courier New, monospace',
+                family=font_family,
                 size=font_size - 10 if font_size > 20 else 12,  # Fonts size for ticks do not match other fonts
             )
             for i in range(1, len(landscapes) + 1):
                 # fig['layout'][f'scene{i}'].colorbar.tickfont.update(size=font_size)
                 for axis in ['x', 'y', 'z']:
                     fig['layout'][f'scene{i}'][axis + 'axis'].title.font.update(
-                        family='Courier New, monospace',
+                        family=font_family,
                         size=font_size,
                     )
             for annotation in fig.layout.annotations:
-                annotation.font = dict(family='Courier New, monospace',
+                annotation.font = dict(family=font_family,
                                        size=font_size)
 
         div = py.plot(fig, include_plotlyjs=False, output_type='div')

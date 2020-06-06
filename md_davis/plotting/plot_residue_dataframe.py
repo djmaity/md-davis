@@ -179,7 +179,7 @@ def residue_data_trace(figure, data, prefix, ss_axis=None,
                 line=dict(color=line_color),
                 text=hover_text,
                 hoverinfo='text+y',
-                showlegend=False,
+                showlegend=showlegend,
             )]
         if 'pdb_mean' in potential:
             mean_potential_traces += [go.Scatter(
@@ -190,7 +190,7 @@ def residue_data_trace(figure, data, prefix, ss_axis=None,
                 line=dict(color=line_color),
                 text=hover_text,
                 hoverinfo='text+y',
-                showlegend=False,
+                showlegend=showlegend,
             )]
     if 'sasa' in data:
         sasa = data['sasa']

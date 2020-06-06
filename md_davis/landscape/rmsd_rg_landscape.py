@@ -31,11 +31,13 @@ Options:
   --order <string>              Specify the order of landscapes in the plot
   --width <int>                 Width of the plot
   --height <int>                Height of the plot
+  --font_family <string>        Font style
   --font_size <int>             Size of text and labels in the plot
   --dtick <dict>                Tick interval on each axes
   --hide_labels                 Hide the axes labels
   --select <string>             Select: all_atom, c-alpha or backbone
                                 [default: all_atom]
+  --layout <string>             Layout of subplots [default: None]
 """
 
 import numpy
@@ -137,6 +139,8 @@ def main(argv=None):
         font_size=int(args['--font_size']) if args['--font_size'] else None,
         othrographic=args['--ortho'],
         dtick=eval(args['--dtick']) if args['--dtick'] else None,
+        layout=eval(args['--layout']) if args['--layout'] else None,
+        font_family=args['--font_family'],
     )
 
 

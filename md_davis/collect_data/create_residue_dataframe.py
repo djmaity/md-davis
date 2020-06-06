@@ -14,8 +14,8 @@ Options:
 
 """
 
-import argparse
-import numpy
+# import argparse
+# import numpy
 import h5py
 import pandas
 import json
@@ -24,7 +24,7 @@ import json
 # import scipy.stats as statistics
 import os
 import pickle
-import json
+# import json
 import collections
 import docopt
 
@@ -33,25 +33,22 @@ from md_davis.utils import secStr_counts
 
 
 def parse_potential(potential_file):
-    df = pandas.read_csv(potential_file, skiprows=12, delim_whitespace=True, skipfooter=2,
-        dtype={'resSeq': int}, engine='python',
-        names=['name', 'resName', 'chainID', 'resSeq', 'potential',
-            'reaction', 'coulomb', 'Ex', 'Ey', 'Ez'],
-    )
     df = pandas.read_fwf(potential_file, skiprows=12, skipfooter=2,
-        dtype={'resSeq': int}, engine='python',
-        names=['name', 'resName', 'chainID', 'resSeq', 'potential',
-            'reaction', 'coulomb', 'Ex', 'Ey', 'Ez'],
-        widths=[5, 3, 3, 9, 10, 10, 10, 10, 10, 10]
+                         dtype={'resSeq': int}, engine='python',
+                         names=['name', 'resName', 'chainID', 'resSeq',
+                                'potential', 'reaction', 'coulomb',
+                                'Ex', 'Ey', 'Ez'
+                         ],
+                         widths=[5, 3, 3, 9, 10, 10, 10, 10, 10, 10]
     )
+    df['chainID'].fillna('A', inplace=True)
     output = {}
     chain = 0
     for _, data in df.groupby(['chainID'], as_index=False):
-        # grouped_df = data.groupby(['resSeq', 'resName'], as_index=False)['potential']
         grouped_df = data.groupby(['resSeq'], as_index=False)['potential']
-        potential =  grouped_df.sum()
+        potential = grouped_df.sum()
         potential.rename(columns={'potential':'total'}, inplace=True)
-        potential['mean'] =  grouped_df.mean()['potential']
+        potential['mean'] = grouped_df.mean()['potential']
         output[f'chain {chain}'] = potential
         chain += 1
     return output
@@ -83,7 +80,7 @@ def residue_dataframes(hdf_file, potentials=None, pdb_potentials=None):
                 rmsf_df = pandas.DataFrame(hdf5_file[f'rmsf/chain {ch}'][:, 1])
                 array_to_concat.append(rmsf_df)
                 keys_to_concat.append('rmsf')
-            # Add SASA to dtaframe from HDF5 file    
+            # Add SASA to dtaframe from HDF5 file
             if f'sasa/chain {ch}' in hdf5_file:
                 sasa_dict = {}
                 for measure in ['average', 'standard_deviation']:

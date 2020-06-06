@@ -4,9 +4,9 @@ Parse H-bonds evaluated by gmx hbonds
 
 Usage:
   md_davis hbonds [options] (--file <.xpm>)
-                              (--index <.ndx>)
-                              (--structure <.pdb/.gro>)
-                              (--group <string>)
+                            (--index <.ndx>)
+                            (--structure <.pdb/.gro>)
+                            (--group <string>)
 
   md_davis hbonds -h | --help
 
@@ -18,6 +18,8 @@ Options:
   -g, --group <string>          Group to match from index file to get the list of H-bonds
 
   -b, --begin <int>             Frame to start calculation from
+
+  -o, --output <.p>             Output Pickle file
 
   --pickle FILENAME             Save the output to a pickle file
   --hdf FILENAME                Save the output to a HDF file
@@ -114,7 +116,11 @@ def main(argv):
     molecular_contacts = Hbonds(structure)
     molecular_contacts.parse_indices(index_file=args['--index'], group=args['--group'])
     molecular_contacts.add_counts(xpm_file=args['--file'])
+
     # print(molecular_contacts)
+    if args['--output']:
+        pickle.dump(molecular_contacts, open(args['--output'], 'wb'))
+
     df = molecular_contacts.to_df
 
     if args['--hdf']:
