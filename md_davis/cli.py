@@ -90,7 +90,7 @@ def main():
             plot_dipoles.main(argv=argv)
         elif args['<args>'][0] == 'rmsd_rg':
             from .plotting import plot_rmsd_rg
-            plot_rmsd_rg.main(argv=argv)
+            plot_rmsd_rg.main()
         elif args['<args>'][0] == 'residue':
             import md_davis.plotting.plot_residue_dataframe
             arguments = docopt(

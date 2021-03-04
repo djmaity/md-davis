@@ -16,6 +16,7 @@ def initialize_pymol(window=False):
 
 
 def inertia_tensor(selection, name="tensor", state=1):
+    """ https://pymolwiki.org/index.php/Inertia_tensor """
     totmass = 0.0
     x_com, y_com, z_com = 0, 0, 0
 

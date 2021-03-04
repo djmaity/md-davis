@@ -55,7 +55,7 @@ def frame_args(duration):
 def landscape_trajectory(landscape, data,
                          filename='landscape.html',
                          xlabel='x', ylabel='y', zlabel='z',
-                         width=None, height=None, hide_surface=False, marker_size=8,
+                         width=None, height=None, hide_surface=False, marker_size=10,
                          title=None,
                          othrographic=False, font_size=None, dtick=None):
     """ Show the X and Y quiatity values from the trajectory on the landscape """
@@ -87,11 +87,22 @@ def landscape_trajectory(landscape, data,
     for axis in ['x', 'y', 'z']:
         if axis in landscape.dims:
             fig['layout'][f'scene'][axis + 'axis'].update(range=landscape.dims[axis])
+
+    camera = dict(
+        # eye=dict(x=-1.25, y=1.25, z=1.25)
+        eye=dict(x=1.25, y=1.25, z=1.25)
+    )
     fig.update_layout(
         title=title if title else landscape.label,
         showlegend=True,
         legend_orientation="h",
+        scene_camera=camera,
     )
+    fig.layout.scene.camera.projection.update(type='orthographic')
+    if width:
+        fig.layout.update(width=width)
+    if height:
+        fig.layout.update(height=height)
     plotly.offline.plot(fig, filename=filename)
 
 

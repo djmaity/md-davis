@@ -31,17 +31,17 @@ gmx do_dssp -f trajectory.trr -s structure.gro \
             -ssdump dssp \
             -sc dssp_count
 ```
-`-ssdump` option will output a file `dssp.dat` containing the secondary structure for the full trajectory as single letter codes. This would be processed by MD&nbsp;DaVis to calculate the secondary structure persistence at each residue. 
+`-ssdump` option will output a file `dssp.dat` containing the secondary structure for the full trajectory as single letter codes. This would be processed by MD&nbsp;DaVis to calculate the secondary structure persistence at each residue.
 
 | Code | Secondary structure  |
 |:----:|:---------------------|
-| H    | α-helix              |       
-| G    | 3<sub>10</sub>-helix |          
-| I    | π-helix              |       
-| B    | β-bridge             |        
-| E    | β strand             |        
-| T    | Turn                 |    
-| S    | Bend                 |  
+| H    | α-helix              |
+| G    | 3<sub>10</sub>-helix |
+| I    | π-helix              |
+| B    | β-bridge             |
+| E    | β strand             |
+| T    | Turn                 |
+| S    | Bend                 |
 | ~    | Loop                 |
 
 ## Step2: Create HDF file with all the data
@@ -91,7 +91,7 @@ md_davis collect -h
 ## Step 3: Plotting overlaid residue data
 **Step 3a:** Create a pickle file with the residue dataframe using:
 ```shell
-md_davis residue dataframe -p name1 output1.h5 data1.p
+md_davis residue dataframe --prefix name1 output1.h5 data1.p
 ```
 The optional argument `-a annotations.json` can be provided to place a mark at certain residue locations. The contents of `annotations.json` should be of the following form:
 ```json
@@ -109,7 +109,7 @@ Each type of annotation is rendered with a different mark. Following annotations
 * Cofactor Binding Site
 * Mutation
 
-<!-- 
+<!--
 **Step 3b:** If your proteins are of different lengths and you need the peaks to be aligned, create a JSON file as shown below.
 ```json
 {
@@ -135,7 +135,7 @@ name3      ---VAKQIFALDFEIFGRVQGVFFRKHTSHEAKRLGVRGWCMNTRDGTVKGQLEAPMMNL	57
 name1      NSMKSWLSKVGSPSSRIDRTNFSNEKTISKLEYSNFSVRY	98
 name2      ELFLHHLKQ--GPRLARVEAVEVQWGEE--AGLKGFHVY-	87
 name3      MEMKHWLENNRIPNAKVSKAEFSQIQEIEDYTFTSFDIKH	97
-            :   :     *          :           * :  
+            :   :     *          :           * :
 ``` -->
 
 **Step 3b:** Plot the residue data pickle file from the previous command using:

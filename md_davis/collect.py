@@ -213,6 +213,7 @@ def get_dihedrals(hdf_file, trajectory, structure, chunk=1000, atoms=None):
     trj_iterator = mdtraj.iterload(trajectory, top=structure, chunk=chunk, atom_indices=atoms)
 
     first_trj_chunk = next(trj_iterator)
+    print(f'Calculating dihedrals for trajectory between {first_trj_chunk} and {first_trj_chunk} ps')
     phi_indices, phi = mdtraj.compute_phi(first_trj_chunk)
     psi_indices, psi = mdtraj.compute_psi(first_trj_chunk)
     omega_indices, omega = mdtraj.compute_omega(first_trj_chunk)
