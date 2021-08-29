@@ -1,0 +1,25 @@
+filename = "output_file.h5"
+name = "name_that_can_be_used_as_a_python_variable"
+label = "<i>MD Simulation</i>"
+text_label = "MD Simulation"
+
+# If sequence is not provided it will be calculated from the structure file.
+sequence = "PUT/YOUR/SEQUENCE/HERE"
+
+[timeseries]
+    rmsd = "path/to/rmsd_file.xvg"
+    rg = "path/to/rg_file.xvg"
+
+[residue_properties]
+    # Add secondary sctructure information from th output of `gmx do_dssp`
+    secondary_structure = "path/to/secondary_structure.dat"
+    sasa = "path/to/sasa.xvg"  # Add solvent accessible surface area
+    # dipoles = []
+    rmsf = ['path/to/chain/A/rmsf.xvg', 'path/to/chain/B/rmsf.xvg']
+
+# The dihedral angles are ca
+[residue_properties.dihedral]
+    trajectory = "path/to/trajectory.trr"
+    structure = "path/to/structure.pdb"
+    chunk = 0       # Number of frames to read at once [default: 0]
+    atoms = [1, 2, 3, 10, 12, 13]    # Atoms to use for dihedral calculation, leave this option to
