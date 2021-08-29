@@ -2,7 +2,6 @@
 """ Plot the site potentials file from Delphi """
 
 import argparse
-import pandas
 from plotly.offline import plot
 import plotly.graph_objs as go
 from plotly import tools
@@ -15,9 +14,7 @@ import pickle
 # import json
 
 # Imports from within MD Davis package
-import md_davis.plotting.plot_hdf5_data
 # import plot_rmsd_rg
-import md_davis.plotting.plot_residue_dataframe
 
 
 def main():

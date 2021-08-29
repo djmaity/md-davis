@@ -17,8 +17,6 @@ Options:
 """
 
 import numpy
-from pickle import dump, load
-import os
 import docopt
 import h5py
 import plotly.graph_objs as go
@@ -27,7 +25,7 @@ import plotly
 from plotly.colors import DEFAULT_PLOTLY_COLORS
 
 # Local imports
-from ..utils import polar
+from md_davis.common import polar
 
 
 def sample(array, size=None):

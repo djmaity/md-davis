@@ -6,8 +6,8 @@
         3. Surface electrostatic potential
         4. Secondary structure
 
-Usage:  md_davis plot residue [options] FILES...
-        md_davis plot residue -h | --help
+Usage:  residue [options] FILES...
+        residue -h | --help
 
 Options:
   -t, --title <string>              title for the plot
@@ -17,24 +17,18 @@ Options:
   --height <int>                    Height of the plot in pixels [default: 1500]
 """
 
-import docopt
-import pandas
+import click
 from plotly.offline import plot
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
-import sys
-import os
 import numpy
-import re
-from Bio.PDB.PDBParser import PDBParser
 import pickle
-import json
 import itertools
 
 # Imports from within MD Davis package
-from md_davis.plotting import plot_hdf5_data
-from md_davis.plotting import plot_rmsd_rg
-from md_davis.plotting import colors
+from md_davis.plotting import plot_hdf5_data, colors
+from md_davis.plotting import plot_timeseries
+
 
 def marker_type(trace_color):
     marker_dict = {
@@ -147,7 +141,7 @@ def residue_data_trace(figure, data, prefix, ss_axis=None,
     # Surface Electrostatic Potential
     if 'surface_potential' in data:
         potential = data['surface_potential']
-        total_potential_traces += plot_rmsd_rg.continuous_errorbar(
+        total_potential_traces += plot_timeseries.continuous_errorbar(
             x=data.index + 1,
             y=potential['mean_total'],
             err=potential['std_total'],
@@ -158,7 +152,7 @@ def residue_data_trace(figure, data, prefix, ss_axis=None,
             dash='dash',
             showlegend=showlegend,
         )
-        mean_potential_traces += plot_rmsd_rg.continuous_errorbar(
+        mean_potential_traces += plot_timeseries.continuous_errorbar(
             x=data.index + 1,
             y=potential['mean_mean'],
             err=potential['std_mean'],
@@ -194,7 +188,7 @@ def residue_data_trace(figure, data, prefix, ss_axis=None,
             )]
     if 'sasa' in data:
         sasa = data['sasa']
-        sasa_traces += plot_rmsd_rg.continuous_errorbar(
+        sasa_traces += plot_timeseries.continuous_errorbar(
             x=data.index + 1,
             y=sasa['average'] * 100,  # Convert to Å^2
             err=sasa['standard_deviation'] * 100,  # Convert to Å^2
@@ -225,13 +219,14 @@ def residue_data_trace(figure, data, prefix, ss_axis=None,
                         numpy.array(data.index) + 1.25)
         dih_sd = alternate_join(data['dihedral_standard_deviation'].phi,
                         data['dihedral_standard_deviation'].psi)
+
         dih_hover_text = alternate_join(seq.resn + ' ϕ ' + seq.resi.map(str),
                                         seq.resn + ' ψ ' + seq.resi.map(str))
         dihedral_traces += [go.Scatter(
             name=prefix + 'Dihedral Standard Deviation',
             x=x_values[1:-1],   # Omit the first and last angle which do not exist
             y=numpy.degrees(dih_sd[1:-1]),
-            line=dict(color=line_color, dash='dot'),
+            line=dict(color=line_color, dash='dashdot'),
             mode='lines',
             text=dih_hover_text[1:-1],
             hoverinfo='text+y',
@@ -253,19 +248,26 @@ def residue_data_trace(figure, data, prefix, ss_axis=None,
     return traces
 
 
-def main(args):
-    input_files = args['FILES']
-    title = args['--title']
-    output_filename = args['--output']
-    width = float(args['--width'])
-    height = float(args['--height'])
+CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
-    pickled_data = []
-    for input_file in input_files:
-        pickled_data.append( pickle.load( open(input_file, 'rb') ) )
+
+@click.command(name='plot_residue', context_settings=CONTEXT_SETTINGS)
+@click.option('-o', '--output', default='residue_data.html',
+              help='output HTML file')
+@click.option('--width', default=None, type=int,
+              help='Width of the plot in pixels')
+@click.option('--height', default=None, type=int,
+              help='Height of the plot in pixels')
+@click.option('-t', '--title', type=str, default=None,
+              help="title for the plot")
+@click.argument('pickle_file', type=click.Path(exists=True))
+def main(pickle_file, output='residue_data.html', title=None,
+         width=None, height=None):
+    """ main function """
+    pickled_data = pickle.load(open(pickle_file, 'rb'))
 
     # TODO: Rename 'data' to chains in the dataframe pickle file.
-    num_chains = [len(_['data']) for _ in pickled_data]
+    num_chains = [len(_) for _ in pickled_data['data'].values()]
     max_rows = max(num_chains)
     fig = make_subplots(rows=max_rows, cols=1)
 
@@ -313,22 +315,22 @@ def main(args):
 
     lcolor = itertools.cycle(colors.line_color)
     fcolor = itertools.cycle(colors.fill_color)
-    for j, residue_data in enumerate(pickled_data):
-        prefix = residue_data['prefix']
-        rows = len(residue_data['data'])
+
+    for j, (prefix, residue_data) in enumerate(pickled_data['data'].items()):
+        rows = len(residue_data)
 
         line_color = next(lcolor)
         fill_color = next(fcolor)
 
         first_chain = True
-        for i, (chain, res_data) in enumerate(residue_data['data'].items(), start=1):
+        for i, (chain, res_data) in enumerate(residue_data.items(), start=1):
             ss_ax = '' if j * max_rows + i < 2 else j * max_rows + i
             axis_number = '' if i < 2 else i
 
             my_annotations = None
-            if 'annotations' in residue_data:
-                if chain in residue_data['annotations']:
-                    my_annotations = residue_data['annotations'][chain]
+            if 'annotations' in pickled_data:
+                if chain in pickled_data['annotations'][prefix]:
+                    my_annotations = pickled_data['annotations'][prefix][chain]
 
             traces = residue_data_trace(
                 figure=fig, data=res_data, prefix=prefix + ' ', row=i,
@@ -408,11 +410,11 @@ def main(args):
     updatemenus = list([
         dict(
             buttons=list([
-                dict(label='Show',
+                dict(label='Show All',
                         method='update',
                         args=[{'visible': True}]
                         ),
-                dict(label='Hide',
+                dict(label='Hide All',
                         method='update',
                         args=[{'visible': "legendonly"}]
                         )
@@ -427,9 +429,8 @@ def main(args):
         ),
     ])
     fig['layout']['updatemenus'] = updatemenus
-    plot(fig, filename=output_filename)
+    plot(fig, filename=output)
 
 
 if __name__ == "__main__":
-    arguments = docopt.docopt(__doc__)
-    main(arguments)
+    main()

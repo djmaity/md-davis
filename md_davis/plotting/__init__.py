@@ -1,10 +1,1 @@
-import md_davis.plotting.collect_data
-import md_davis.plotting.colors
-import md_davis.plotting.plot_aligned_residue_wise_data
-import md_davis.plotting.plot_dipoles
-import md_davis.plotting.plot_do_dssp_per_residue
-import md_davis.plotting.plot_hdf5_data
-import md_davis.plotting.plot_residue_dataframe
-import md_davis.plotting.plot_residue_wise_data_aligned
-import md_davis.plotting.plot_rmsd_rg
-import md_davis.plotting.plot_xvg
+from . import plot_residue_dataframe

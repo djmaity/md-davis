@@ -1,67 +1,79 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""The setup script."""
+import io
+import os
+import re
+from glob import glob
+from setuptools import find_packages
+from setuptools import setup
 
-from setuptools import setup, find_packages
 
-with open('README.rst') as readme_file:
-    readme = readme_file.read()
+def read(*names, **kwargs):
+    with io.open(
+        os.path.join(os.path.dirname(__file__), *names),
+        encoding=kwargs.get('encoding', 'utf8')
+    ) as fh:
+        return fh.read()
 
-with open('HISTORY.rst') as history_file:
-    history = history_file.read()
-
-requirements = ['Click>=6.0',
-                'biopython',
-                'docopt',
-                'matplotlib',
-                # 'mdtraj',
-                'plotly>=4.0',
-                'numpy',
-                'pandas',
-                'h5py>=2.10',
-                'tables',    # PyTables
-                'biopandas',
-                'scikit-learn'
-]
-
-setup_requirements = ['pytest-runner', ]
-
-test_requirements = ['pytest', ]
 
 setup(
-    author="Dibyajyoti Maity",
+    name='md_davis',
+    version='0.3.0',
+    description='A tool for comparative analysis of molecular dynamics '
+                'simulations of proteins.',
+    long_description='%s' % (re.compile('^.. start-badges.*^.. end-badges', re.M | re.S).sub('', read('README.md'))),
+    long_description_content_type='text/markdown',
+    author='Dibyajyoti Maity',
     author_email='djdibs@gmail.com',
+    url='https://github.com/djmaity/md_davis',
+    packages=find_packages(),
+    py_modules=[os.path.splitext(os.path.basename(path))[0] for path in glob('src/*.py')],
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Environment :: Console',
-        'Intended Audience :: Developers',
+        'Intended Audience :: Science/Research',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
-        "Operating System :: OS Independent",
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python :: 3.7+',
+        'Topic :: Scientific/Engineering :: Bio-Informatics',
+        'Topic :: Scientific/Engineering :: Visualization',
     ],
-    description="A package to analyze and visualize molecular dynamics simulations of proteins.",
+    project_urls={
+        'Documentation': 'https://md_davis.readthedocs.io/',
+        'Changelog': 'https://md_davis.readthedocs.io/en/latest/changelog.html',
+        'Issue Tracker': 'https://github.com/djmaity/md_davis/issues',
+    },
+    license='MIT license',
+    keywords=[
+        'analysis', 'data visualization', 'molecular dynamics', 'protein'
+    ],
+    python_requires='>=3.7',
+    install_requires=['biopandas',
+                      'biopython',  # TODO: Refactor dependency
+                      'click',
+                      'docopt',  # TODO: Refactor dependency
+                      'h5py>=2.10',
+                      'matplotlib',
+                      'more_itertools',
+                      'numpy',  # numpy should be before mdtraj
+                      'pandas',
+                      'plotly>=4.0',
+                      'scikit-learn',
+                      'scipy',
+                      'toml',
+                      'mdtraj',
+                      'pymol',
+                      ],
+    include_package_data=True,
+    setup_requires=['flake8', 'pytest-runner'],
+    test_suite='tests',
+    tests_require=['pytest'],
+    zip_safe=False,  # TODO: check if it can be made zip safe
     entry_points={
         'console_scripts': [
             'md_davis=md_davis.cli:main',
         ],
     },
-    install_requires=requirements,
-    license="MIT license",
-    long_description=readme + '\n\n' + history,
-    long_description_content_type="text/x-rst",
-    include_package_data=True,
-    keywords='analysis data visualization molecular dynamics protein',
-    name='md_davis',
-    packages=find_packages(),
-    setup_requires=setup_requirements,
-    test_suite='tests',
-    tests_require=test_requirements,
-    url='https://djmaity.github.io/md_davis/',
-    version='0.2.0',
-    zip_safe=False,
-    python_requires='>=3.6',
 )

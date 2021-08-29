@@ -7,8 +7,14 @@ import pytest
 
 from click.testing import CliRunner
 
-from md_davis import md_davis
 from md_davis import cli
+
+
+from md_davis.cli import main
+
+
+def test_main():
+    main([])
 
 
 @pytest.fixture
