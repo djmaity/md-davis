@@ -26,25 +26,27 @@ import click
 
 # Import from my packages
 from md_davis.common import secStr_counts
+import md_davis
 
 pandas.option_context('display.max_rows', None)
 
 
-def residue_dataframe(hdf_file, potentials=None, pdb_potentials=None):
+def residue_dataframe(hdf_file):
     """ Create a pandas dataframe for Residue data to plot """
     output_dict = {}
-    for ch, chain_sequence in enumerate(hdf_file.attrs['sequence'].split('/')):
+    for chain in hdf_file['sequence']:
         array_to_concat = []
         keys_to_concat = []
         # Add sequence
-        sequence = pandas.DataFrame(data=enumerate(chain_sequence, start=1),
+        sequence = pandas.DataFrame(data=zip(hdf_file[f'sequence/{chain}/resi'],
+                                             hdf_file[f'sequence/{chain}/resn'].asstr()),
                                     columns=['resi', 'resn'])
         array_to_concat.append(sequence)
         keys_to_concat.append('sequence')
         # Add scondary structure to dtaframe from HDF5 file
-        if f'secondary_structure/counts_per_residue/chain {ch}' in hdf_file:
+        if f'secondary_structure/counts_per_residue/{chain}' in hdf_file:
             ss_counts = hdf_file[
-                f'secondary_structure/counts_per_residue/chain {ch}']
+                f'secondary_structure/counts_per_residue/{chain}']
             secondary_structure_dict = {}
             for code in secStr_counts.SECSTR_CODES.keys():
                 secondary_structure_dict[code] = ss_counts[code]
@@ -52,102 +54,54 @@ def residue_dataframe(hdf_file, potentials=None, pdb_potentials=None):
             array_to_concat.append(secondary_structure_df)
             keys_to_concat.append('secondary_structure')
         # Add RMSF to dtaframe from HDF5 file
-        if f'residue_property/rmsf/chain {ch}' in hdf_file:
+        if f'residue_property/rmsf/{chain}' in hdf_file:
             rmsf_df = pandas.DataFrame(
-                hdf_file[f'residue_property/rmsf/chain {ch}'][:, 1])
+                hdf_file[f'residue_property/rmsf/{chain}'][:, 1])
             array_to_concat.append(rmsf_df)
             keys_to_concat.append('rmsf')
         # Add SASA to dtaframe from HDF5 file
-        if f'residue_property/sasa/chain {ch}' in hdf_file:
+        if f'residue_property/sasa/{chain}' in hdf_file:
             sasa_dict = {}
             for measure in ['average', 'standard_deviation']:
-                sasa_dict[measure] = \
-                hdf_file[f'residue_property/sasa/chain {ch}'][measure]
+                sasa_dict[measure] = hdf_file[f'residue_property/sasa/{chain}'][measure]
             sasa_df = pandas.DataFrame(sasa_dict)
             array_to_concat.append(sasa_df)
             keys_to_concat.append('sasa')
         # Add dihedral standard deviation to dtaframe from HDF5 file
-        if f'dihedral_standard_deviation/chain {ch}' in hdf_file:
+        if f'dihedral_standard_deviation/{chain}' in hdf_file:
             dih_sd_dict = {}
             for angle in ['phi', 'psi', 'omega']:
-                dih_sd_dict[angle] = \
-                hdf_file[f'dihedral_standard_deviation/chain {ch}'][angle]
+                dih_sd_dict[angle] = hdf_file[f'dihedral_standard_deviation/{chain}'][angle]
             dih_sd_df = pandas.DataFrame(dih_sd_dict)
             array_to_concat.append(dih_sd_df)
             keys_to_concat.append('dihedral_standard_deviation')
+
         # Combine all of the above
-        output_dict[f'chain {ch}'] = pandas.concat(array_to_concat,
+        output_dict[chain] = pandas.concat(array_to_concat,
                                                    keys=keys_to_concat,
                                                    axis=1)
-    # Add potential
-    if pdb_potentials:
-        pdb_potential_df = parse_potential(pdb_potentials)
-
-    if potentials:
-        surf_pot = collections.defaultdict(list)
-        for file in os.listdir(potentials):
-            if file.endswith('.pot'):
-                print('Parsing: ', file)
-                pot_file = os.path.join(potentials, file)
-                for chain, pot_df in parse_potential(pot_file).items():
-                    surf_pot[chain].append(pot_df)
-
-        for chain, data_frame in output_dict.items():
-            total_df = pandas.DataFrame(data_frame['sequence', 'resi'].values,
-                                        columns=['resi'])
-            mean_df = pandas.DataFrame(data_frame['sequence', 'resi'].values,
-                                       columns=['resi'])
-            total_column = 0
-            mean_column = 0
-            for potential_df in surf_pot[chain]:
-                total_df[str(total_column)] = 0
-                mean_df[str(mean_column)] = 0
-                for _, row in potential_df.iterrows():
-                    total_df.loc[
-                        total_df.resi == row.resSeq, str(total_column)] = row[
-                        'total']
-                    mean_df.loc[mean_df.resi == row.resSeq, str(mean_column)] = \
-                    row['mean']
-                total_column += 1
-                mean_column += 1
-
-            del total_df['resi']
-            del mean_df['resi']
-
-            surface_potential_df = pandas.DataFrame()
-            surface_potential_df['mean_total'] = total_df.mean(skipna=True,
-                                                               axis=1)
-            surface_potential_df['std_total'] = total_df.std(skipna=True,
-                                                             axis=1)
-            surface_potential_df['mean_mean'] = mean_df.mean(skipna=True,
-                                                             axis=1)
-            surface_potential_df['std_mean'] = mean_df.std(skipna=True, axis=1)
-
+        if f'residue_property/surface_potential/{chain}' in hdf_file:
+            potential = hdf_file[f'residue_property/surface_potential/{chain}']
+            pot_df = pandas.DataFrame.from_records(potential)
             columns = [
-                ('surface_potential', 'mean_total'),
-                ('surface_potential', 'std_total'),
-                ('surface_potential', 'mean_mean'),
-                ('surface_potential', 'std_mean'),
+                ('surface_potential', 'resSeq'),
+                ('surface_potential', 'mean_of_total'),
+                ('surface_potential', 'std_of_total'),
+                ('surface_potential', 'mean_of_mean'),
+                ('surface_potential', 'std_of_mean'),
             ]
+            pot_df.columns = pandas.MultiIndex.from_tuples(columns)
+            output_dict[chain] = output_dict[chain].merge(pot_df, how='left', left_on=[('sequence', 'resi')], right_on=[('surface_potential', 'resSeq')])
+            output_dict[chain].drop([('surface_potential', 'resSeq')], axis='columns', inplace=True)
+            # for _, pdb_row in pot_df[chain].iterrows():
+            #     pot_df.loc[data_frame['sequence']['resi'] == pdb_row.resSeq, 'pdb_total'] = pdb_row['total']
+            #     pot_df.loc[data_frame['sequence']['resi'] == pdb_row.resSeq, 'pdb_mean'] = pdb_row['mean']
+            # columns += [
+            #     ('surface_potential', 'pdb_total'),
+            #     ('surface_potential', 'pdb_mean'),
+            # ]
 
-            # Add PDB potential
-            if pdb_potentials:
-                surface_potential_df['pdb_total'] = 0
-                surface_potential_df['pdb_mean'] = 0
-                for _, pdb_row in pdb_potential_df[chain].iterrows():
-                    surface_potential_df.loc[data_frame['sequence'][
-                                                 'resi'] == pdb_row.resSeq, 'pdb_total'] = \
-                    pdb_row['total']
-                    surface_potential_df.loc[data_frame['sequence'][
-                                                 'resi'] == pdb_row.resSeq, 'pdb_mean'] = \
-                    pdb_row['mean']
-                columns += [
-                    ('surface_potential', 'pdb_total'),
-                    ('surface_potential', 'pdb_mean'),
-                ]
-            surface_potential_df.columns = pandas.MultiIndex.from_tuples(
-                columns)
-            output_dict[chain] = data_frame.join(surface_potential_df)
+        output_dict[chain].set_index(('sequence', 'resi'))
     return output_dict
 
 
@@ -204,9 +158,6 @@ def parse_alignment(alignment_file):
 
 def align_residues(residue_dataframes, alignment, mapping=None):
     """ Align residue dataframes based on sequence alignment """
-
-    print(residue_dataframes.keys())
-
     aligned_dataframes = residue_dataframes
     for chain, alignment_file in alignment['alignment'].items():
         aln_dict = parse_alignment(alignment_file)
@@ -217,14 +168,16 @@ def align_residues(residue_dataframes, alignment, mapping=None):
 
         for name, seq_label in alignment['names'].items():
             df = residue_dataframes[name][chain]
+            nan_array = numpy.empty((aln_seq_length, df.shape[1]))
+            nan_array[:] = numpy.nan
             out_df = pandas.DataFrame(
-                data=numpy.zeros((aln_seq_length, df.shape[1])),
+                data=nan_array,
                 columns=df.columns)
             out_df['sequence', 'resn'] = '-'
             i, j = 0, 0
             for residue in aln_dict[seq_label]:
                 if residue != '-':
-                    if residue == df.iloc[j].sequence.resn:
+                    if md_davis.amino_acids.ONE_TO_THREE[residue] == df.iloc[j].sequence.resn:
                         out_df.iloc[i] = df.iloc[j]
                         j += 1
                     else:
@@ -232,9 +185,8 @@ def align_residues(residue_dataframes, alignment, mapping=None):
                               ' and alignment file.')
                         return
                 i += 1
-            aligned_dataframes[name][chain] = out_df
+            aligned_dataframes[name][chain] = out_df.reset_index()
     return aligned_dataframes
-
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])

@@ -71,7 +71,17 @@ In the command above, remember to provide ``-x``, ``-y``, ``--name``, and  ``--l
 Surface Elecrtostatic Using Delphi
 ----------------------------------
 
-md_davis electrostatics -m msms_i86_64Linux2_2.6.1/msms.x86_64Linux2.2.6.1 2VH7/2VH7_structure.pdb ./ -d ./delphicpp_v8.4.5_serial
+1. Create a sample of frames for PBSA calculation using Delphi
+
+
+.. code-block:: bash
+
+    gmx trjconv -f 2VH7/2VH7_trajectory.xtc -s 2VH7/2VH7_structure.pdb -o 2VH7/2VH7_electrostatics/2VH7_frame.pdb -dt 10000 -sep
+
+
+.. code-block:: bash
+
+    md_davis electrostatics -m msms_i86_64Linux2_2.6.1/msms.x86_64Linux2.2.6.1 2VH7/2VH7_structure.pdb ./ -d ./delphicpp_v8.4.5_serial
 
 
 Residue Properties Plot
@@ -94,16 +104,16 @@ Repeat for the remaining trajectories. We are also going to plot the torsional f
 .. code-block:: toml
 
     name = '2VH7'
-    output = '2VH7_data.h5'     # Name of the output file
+    output = '2VH7_data.h5'
     label = 'Human AcP'
     text_label = 'Human AcP'
 
     trajectory = '2VH7_trajectory.xtc'
     structure = '2VH7_structure.pdb'
 
-    # [timeseries]
-    #     rmsd = '2VH7_rmsd_full.xvg'
-    #     rg = '2VH7_rg_full.xvg'
+    [timeseries]
+        rmsd = '2VH7_rmsd_full.xvg'
+        rg = '2VH7_rg_full.xvg'
 
     [dihedral]
         chunk = 101
@@ -111,6 +121,7 @@ Repeat for the remaining trajectories. We are also going to plot the torsional f
     [residue_property]
         secondary_structure = '2VH7_dssp.dat'
         sasa = '2VH7_resarea.xvg'
+        surface_potential = '2VH7/2VH7_electrostatics'
 
         [residue_property.rmsf]
             rmsf_files = '2VH7_rmsf.xvg'

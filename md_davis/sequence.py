@@ -22,22 +22,14 @@ Options:
   -h, --help                      Show this message and exit.
 """
 
-# import sys
-# import warnings
-
-# if not sys.warnoptions:
-#     warnings.filterwarnings('ignore',
-#                             category=RuntimeWarning,
-#                             module='runpy')
-
 import os
 import click
-from collections import OrderedDict
-from Bio.PDB.PDBParser import PDBParser
-from Bio.PDB.Polypeptide import PPBuilder
+import mdtraj
+import string
+from md_davis.amino_acids import THREE_TO_ONE
 
 
-def get_sequence(pdb_file, label=None, return_type=None):
+def get_sequence(structure, label=None, return_type=None):
     """Get the sequence of amino acid residues from a PDB file
 
     Determines the sequence from the order of amino acid residues in the
@@ -47,7 +39,7 @@ def get_sequence(pdb_file, label=None, return_type=None):
 
     Args
     ----
-        pdb_file : string
+        structure : string
             Input PDB file.
         label : string, optional
             Label for the sequence when returning FASTA format.
@@ -71,27 +63,34 @@ def get_sequence(pdb_file, label=None, return_type=None):
         missing residue
     """
     if not label:
-        label = os.path.splitext(os.path.basename(pdb_file))[0]
+        label = os.path.splitext(os.path.basename(structure))[0]
 
-    structure = PDBParser(QUIET=True).get_structure('structure', pdb_file)
-    chain_labels = [chain.id for chain in structure.get_chains()]
-    ppb = PPBuilder()
-    sequence = OrderedDict()
-    for chain, pp in zip(chain_labels, ppb.build_peptides(structure)):
-        sequence[chain] = pp.get_sequence().__str__()
+    top = mdtraj.load(structure).topology
+    output = {}
+    sequence = {}
+    for chain in top.chains:
+        resi = []
+        resn = []
+        sequence_string = ''
+        for residue in chain.residues:
+            resi.append(residue.resSeq)
+            resn.append(residue.name)
+            sequence_string += THREE_TO_ONE[residue.name]
+        output[chain.index] = (resi, resn)
+        sequence[chain.index] = sequence_string
 
     if return_type == 'dict':
         return dict(sequence)
     elif return_type == 'fasta':
         sequence_string = ''
-        for chain, seq in sequence.items():
-            sequence_string += f'>{label}'
-            if chain != ' ':
-                sequence_string += f'|{chain}'
-            sequence_string += f'\n{seq}\n'
+        chain = string.ascii_uppercase + string.ascii_lowercase
+        for ch, seq in sequence.items():
+            sequence_string += f'>{label}|{chain[ch]}\n{seq}\n'
         return sequence_string
-    else:
+    elif return_type == 'modeller':
         return '/'.join(sequence.values())
+    else:
+        return output
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
@@ -100,12 +99,12 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.command(name='sequence', context_settings=CONTEXT_SETTINGS)
 @click.option('-l', '--label', default=None, type=str)
 @click.option('-r', '--return-type', 'return_type', default=None,
-              type=click.Choice(['dict', 'fasta'], case_sensitive=False),
+              type=click.Choice(['dict', 'fasta', 'modeller'], case_sensitive=False),
               help="`dict` returns a dictionary containing chain labels "
                    "as keys and each chain's sequence as values. `fasta` "
                    "returns each chain's sequence separately in FASTA format.")
-@click.argument('pdb_file')
-def main(pdb_file, label, return_type):
+@click.argument('structure')
+def main(structure, label, return_type):
     """Get the sequence of amino acid residues from a PDB file
 
     Determines the sequence from the order of amino acid residues in the
@@ -117,7 +116,7 @@ def main(pdb_file, label, return_type):
     any missing residues. The sequence gets truncated at the first
     missing residue
     """
-    sequence = get_sequence(pdb_file=pdb_file, label=label,
+    sequence = get_sequence(structure=structure, label=label,
                             return_type=return_type)
     if sequence is not None:
         click.echo(sequence)

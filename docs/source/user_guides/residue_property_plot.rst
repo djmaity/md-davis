@@ -11,3 +11,6 @@ Residue Property Plot
 
 
 .. note:: the paths in the input toml file is relative to the location where the md_davis command will be called from. To avoid any confusion try using absolute paths.
+
+How to interact with the plot
+-----------------------------

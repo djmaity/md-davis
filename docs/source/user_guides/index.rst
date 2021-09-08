@@ -11,6 +11,7 @@ User Guide
    electrostatics
    contacts
    xvg
+   sequence
 
 MD Davis is a Python package to perform exploratory and comparative data
 analysis of molecular dynamics trajectories. The source code can be found

@@ -124,6 +124,7 @@ def residue_data_trace(figure, data, prefix, ss_axis=None,
     sasa_traces = []
     dihedral_traces = []
     rmsf_traces = []
+
     seq = data['sequence']
     hover_text = seq.resn + ' ' + seq.resi.map(str)
     # Secondary Structure
@@ -140,65 +141,71 @@ def residue_data_trace(figure, data, prefix, ss_axis=None,
         )
     # Surface Electrostatic Potential
     if 'surface_potential' in data:
-        potential = data['surface_potential']
-        total_potential_traces += plot_timeseries.continuous_errorbar(
-            x=data.index + 1,
-            y=potential['mean_total'],
-            err=potential['std_total'],
+        potential = data['surface_potential'].fillna(numpy.nan).replace([numpy.nan], [None])
+        total_potential_traces += [go.Scatter(
             name=prefix + 'Total Surface Potential',
-            hover_text=hover_text,
-            line_color=line_color,
-            fill_color=fill_color,
-            dash='dash',
-            showlegend=showlegend,
-        )
-        mean_potential_traces += plot_timeseries.continuous_errorbar(
             x=data.index + 1,
-            y=potential['mean_mean'],
-            err=potential['std_mean'],
+            y=potential['mean_of_total'],
+            error_y=dict(type='data', array=potential['std_of_total']),
+            line=dict(color=line_color),
+            text=hover_text,
+            hoverinfo='text+y',
+            mode='lines+markers',
+            legendgroup=prefix + ' Total Surface Potential',
+            showlegend=False,
+        )]
+
+        mean_potential_traces += [go.Scatter(
             name=prefix + 'Mean Surface Potential',
-            hover_text=hover_text,
-            line_color=line_color,
-            fill_color=fill_color,
-            dash='dashdot',
-            showlegend=showlegend,
-        )
-        if 'pdb_total' in potential:
-            # PDB Surface Potential Trace
-            total_potential_traces += [go.Scatter(
-                name=prefix + 'PDB Total Surface Potential',
-                x=data.index + 1,
-                y=potential['pdb_total'],
-                mode='markers',
-                line=dict(color=line_color),
-                text=hover_text,
-                hoverinfo='text+y',
-                showlegend=showlegend,
-            )]
-        if 'pdb_mean' in potential:
-            mean_potential_traces += [go.Scatter(
-                name=prefix + 'PDB Mean Surface Potential',
-                x=data.index + 1,
-                y=potential['pdb_mean'],
-                mode='markers',
-                line=dict(color=line_color),
-                text=hover_text,
-                hoverinfo='text+y',
-                showlegend=showlegend,
-            )]
+            x=data.index + 1,
+            y=potential['mean_of_mean'],
+            error_y=dict(type='data', array=potential['std_of_mean']),
+            line=dict(color=line_color),
+            text=hover_text,
+            hoverinfo='text+y',
+            mode='lines+markers',
+            legendgroup=prefix + ' Mean Surface Potential',
+            showlegend=False,
+        )]
+
+
+        # if 'pdb_total' in potential:
+        #     # PDB Surface Potential Trace
+        #     total_potential_traces += [go.Scatter(
+        #         name=prefix + 'PDB Total Surface Potential',
+        #         x=data.index + 1,
+        #         y=potential['pdb_total'],
+        #         mode='markers',
+        #         line=dict(color=line_color),
+        #         text=hover_text,
+        #         hoverinfo='text+y',
+        #         showlegend=showlegend,
+        #     )]
+        # if 'pdb_mean' in potential:
+        #     mean_potential_traces += [go.Scatter(
+        #         name=prefix + 'PDB Mean Surface Potential',
+        #         x=data.index + 1,
+        #         y=potential['pdb_mean'],
+        #         mode='markers',
+        #         line=dict(color=line_color),
+        #         text=hover_text,
+        #         hoverinfo='text+y',
+        #         showlegend=showlegend,
+        #     )]
     if 'sasa' in data:
         sasa = data['sasa']
-        sasa_traces += plot_timeseries.continuous_errorbar(
-            x=data.index + 1,
-            y=sasa['average'] * 100,  # Convert to Å^2
-            err=sasa['standard_deviation'] * 100,  # Convert to Å^2
+        sasa_traces += [go.Scatter(
             name=prefix + 'SASA',
-            hover_text=hover_text,
-            line_color=line_color,
-            fill_color=fill_color,
-            dash='dot',
-            showlegend=showlegend,
-        )
+            x=data.index + 1,
+            y=sasa['average'],
+            error_y=dict(type='data', array=sasa['standard_deviation']),
+            line=dict(color=line_color),
+            text=hover_text,
+            hoverinfo='text+y',
+            mode='lines+markers',
+            legendgroup=prefix + ' SASA',
+            showlegend=False,
+        )]
 
     # RMSF
     if 'rmsf' in data:
@@ -209,7 +216,7 @@ def residue_data_trace(figure, data, prefix, ss_axis=None,
             line=dict(color=line_color),
             text=hover_text,
             hoverinfo='text+y',
-            mode='lines',
+            mode='lines+markers',
             legendgroup=prefix + ' RMSF',
             showlegend=False,
         )]
@@ -227,7 +234,7 @@ def residue_data_trace(figure, data, prefix, ss_axis=None,
             x=x_values[1:-1],   # Omit the first and last angle which do not exist
             y=numpy.degrees(dih_sd[1:-1]),
             line=dict(color=line_color, dash='dashdot'),
-            mode='lines',
+            mode='lines+markers',
             text=dih_hover_text[1:-1],
             hoverinfo='text+y',
             legendgroup=prefix + ' Dihedral SD',
@@ -347,16 +354,22 @@ def main(pickle_file, output='residue_data.html', title=None,
             site_annotations = traces[5]
 
             if total_pot_traces:
+                if first_chain:
+                    total_pot_traces[0]['showlegend'] = True
                 for trace in total_pot_traces:
                     fig.append_trace(trace, i, 1)
                     fig['data'][-1].update(yaxis=f'y{ax_start + i-1}')
 
             if mean_pot_traces:
+                if first_chain:
+                    mean_pot_traces[0]['showlegend'] = True
                 for trace in mean_pot_traces:
                     fig.append_trace(trace, i, 1)
                     fig['data'][-1].update(yaxis=f'y{ax_start + max_rows + i-1}')
 
             if sasa_traces:
+                if first_chain:
+                    sasa_traces[0]['showlegend'] = True
                 for trace in sasa_traces:
                     fig.append_trace(trace, i, 1)
                     fig['data'][-1].update(yaxis=f'y{ax_start + 2*max_rows + i-1}')
@@ -389,10 +402,6 @@ def main(pickle_file, output='residue_data.html', title=None,
                 f'xaxis{axis_number}':dict(domain=[0.2, 0.85]),
             })
             first_chain = False
-
-
-    # fig['layout']['font'].update(family='Courier New, monospace', size=24, color='black')
-    fig['layout']['font'].update(family='Times new roman', size=24, color='black')
 
     annotations = plot_hdf5_data.add_secondary_structure_legend(figure=fig, spacing=0.04, xloc=0.2, yloc=-0.1)
 

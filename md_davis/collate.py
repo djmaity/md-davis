@@ -4,6 +4,8 @@
 """
 
 import os
+import collections
+import pandas
 import toml
 import h5py
 import click
@@ -60,18 +62,16 @@ def split_chains(array, lengths):
 
 
 def add_rmsd_rg(hdf_file, rmsd, rg, group_name, dataset,
-                unit='nm', time_unit='ps', comment=None):
+                unit=None, time_unit=None, comment=None):
     """ Make RMSD & Rg dataset in HDF5 file """
     group = hdf_file.require_group(group_name)
     if comment:
         group.attrs['comment'] = comment
-    print(
-        'Collecting data into HDF5 file:\n'
-        f'RMSD from {rmsd}\n'
-        f'Radius of gyration from {rg}\n'
-    )
-    rmsd_data = numpy.loadtxt(rmsd, comments=('#', '@'), dtype=numpy.single)
-    rg_data = numpy.loadtxt(rg, comments=('#', '@'), dtype=numpy.single)
+    print('Collecting data into HDF5 file:\n'
+          f'RMSD from {rmsd}\n'
+          f'Radius of gyration from {rg}\n')
+    rmsd_data = numpy.loadtxt(rmsd, comments=('#', '@'))
+    rg_data = numpy.loadtxt(rg, comments=('#', '@'))
     if not numpy.array_equal(rmsd_data[:, 0], rg_data[:, 0]):
         print('The times in RMSD file do not match '
               'those in radius of gyration file')
@@ -83,8 +83,8 @@ def add_rmsd_rg(hdf_file, rmsd, rg, group_name, dataset,
                                  shape=data.shape,
                                  dtype=data.dtype,
                                  data=data)
-    dset.attrs['time_unit'] = time_unit
-    dset.attrs['unit'] = unit
+    dset.attrs['unit'] = 'nm' if unit is None else unit
+    dset.attrs['time_unit'] = 'ps' if time_unit is None else time_unit
 
 
 def add_rmsf(hdf_file, rmsf, **attributes):
@@ -292,6 +292,49 @@ def add_sasa(hdf_file, sasa, unit='nm^2'):
     group.attrs['unit'] = unit
 
 
+def add_surface_potential(hdf_file, surface_potential):
+    """ Add potential """
+
+    # TODO if single file directly place into dataframe else combine multiple potential files
+    group = hdf_file.require_group('residue_property/surface_potential')
+
+    total_df = {}
+    mean_df = {}
+    index = 1
+    for file in os.listdir(surface_potential):
+        if file.endswith('.pot'):
+            print('Parsing: ', file)
+            potential_file = os.path.join(surface_potential, file)
+            parsed_potentials = md_davis.electrostatics.electrostatics.parse_electrostatic_potential(potential_file)
+            for chain, potential_df in parsed_potentials.items():
+                if chain not in total_df:
+                    total_df[chain] = potential_df[['resSeq', 'total']]
+                else:
+                    total_df[chain] = total_df[chain].merge(potential_df[['resSeq', 'total']], how='outer', left_on='resSeq', right_on='resSeq', suffixes=(None, str(index)))
+                if chain not in mean_df:
+                    mean_df[chain] = potential_df[['resSeq', 'mean']]
+                else:
+                    mean_df[chain] = mean_df[chain].merge(potential_df[['resSeq', 'mean']], how='outer', left_on='resSeq', right_on='resSeq', suffixes=(None, str(index)))
+            index += 1
+
+    for chain in total_df.keys():
+        tot_df = total_df[chain].set_index('resSeq')
+        avg_df = mean_df[chain].set_index('resSeq')
+
+        surface_potential_df = pandas.DataFrame()
+        surface_potential_df['mean_of_total'] = tot_df.mean(skipna=True, axis=1)
+        surface_potential_df['std_of_total'] = tot_df.std(skipna=True, ddof=0, axis=1)
+        surface_potential_df['mean_of_mean'] = avg_df.mean(skipna=True, axis=1)
+        surface_potential_df['std_of_mean'] = avg_df.std(skipna=True, ddof=0, axis=1)
+        surface_potential_df = surface_potential_df.to_records()
+
+        group.require_dataset(chain,
+                              shape=surface_potential_df.shape,
+                              dtype=surface_potential_df.dtype,
+                              data=surface_potential_df)
+
+
+
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
@@ -323,22 +366,17 @@ def main(input_files):
         with h5py.File(output, 'a') as hdf_file:
             hdf_file.attrs['name'] = data['name']
 
-            if 'sequence' in data and 'structure' in data:
-                struct_seq = md_davis.sequence.get_sequence(data['structure'])
-                if struct_seq != data['sequence']:
-                    warnings.warn('Sequence in input toml file does not '
-                                  'match sequence from structure file. '
-                                  'Using the sequence from toml file')
-            elif 'structure' in data:
-                struct_seq = md_davis.sequence.get_sequence(data['structure'])
-                hdf_file.attrs['sequence'] = struct_seq
-            elif 'sequence' in data:
-                hdf_file.attrs['sequence'] = data['sequence']
+            if 'sequence' not in hdf_file and 'structure' not in data:
+                print("Please provide 'structure' in the input toml file to parse the amino acid sequence")
+                return
             else:
-                if 'sequence' not in hdf_file.attrs:
-                    print("Please provide 'sequence' or 'structure' in the input toml file")
-                    return
-
+                sequences = md_davis.sequence.get_sequence(data['structure'])
+                for ch, seq in sequences.items():
+                    group = hdf_file.require_group(f'sequence/chain {ch}')
+                    resi = numpy.array(seq[0], dtype=int)
+                    resn = numpy.array(seq[1], dtype="S3")
+                    group.require_dataset('resi', shape=resi.shape, dtype=resi.dtype, data=resi)
+                    group.require_dataset('resn', shape=resn.shape, dtype=resn.dtype, data=resn)
             # Add RMSD and radius of gyration into the HDF5 file
             if 'timeseries' in data:
                 if 'rmsd' in data['timeseries'] and 'rg' in data['timeseries']:
@@ -402,6 +440,9 @@ def main(input_files):
                 #     add_dipoles(
                 #     hdf_file=hdf_file,
                 #     dipoles=data['residue_property']['--dipoles'])
+
+                if 'surface_potential' in data['residue_property']:
+                    add_surface_potential(hdf_file=hdf_file, surface_potential=residue['surface_potential'])
 
             # Evaluate and add dihedral angles into the HDF5 file
             if 'dihedral' in data:
