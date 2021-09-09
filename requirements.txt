@@ -15,8 +15,7 @@ plotly
 psutil
 pyflakes
 pylint
-pymol
-python-kaleido
+kaleido
 scikit-learn
 scipy
 setuptools

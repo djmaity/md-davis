@@ -17,13 +17,13 @@ dependencies:
   - scikit-learn
   - scipy
   - toml
+  - pip
 
   # Required by pandas
   - openpyxl
 
   # required by plotly for png
   - psutil
-  - python-kaleido
 
   # packaging requirements
   - setuptools

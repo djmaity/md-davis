@@ -71,18 +71,20 @@ In the command above, remember to provide ``-x``, ``-y``, ``--name``, and  ``--l
 Surface Elecrtostatic Using Delphi
 ----------------------------------
 
-1. Create a sample of frames for PBSA calculation using Delphi
+1. Create a sample of frames for PBSA calculation using DelPhi
 
 
 .. code-block:: bash
 
     gmx trjconv -f 2VH7/2VH7_trajectory.xtc -s 2VH7/2VH7_structure.pdb -o 2VH7/2VH7_electrostatics/2VH7_frame.pdb -dt 10000 -sep
 
+2. MD DaVis has the ``electrostatics`` command which is a wrapper for running DelPhi and report the electrostatic potential at the vertices of a triangulated surface obtained using MSMS (Michael Sanner)
 
 .. code-block:: bash
 
-    md_davis electrostatics -m msms_i86_64Linux2_2.6.1/msms.x86_64Linux2.2.6.1 2VH7/2VH7_structure.pdb ./ -d ./delphicpp_v8.4.5_serial
+    md_davis electrostatics --surface -m ./msms_i86_64Linux2_2.6.1/msms.x86_64Linux2.2.6.1 -d ./delphicpp_v8.4.5_serial -o 2VH7/2VH7_electrostatics/ 2VH7/2VH7_electrostatics/2VH7_frame*.pdb
 
+The output directory needs to be provided in the TOML file below to summarize the surface electrostatic potentials into the residues properties plot.
 
 Residue Properties Plot
 -----------------------
@@ -199,6 +201,11 @@ Now, we can also align the residues of the different trajectories to align the p
 .. code-block:: bash
 
     md_davis plot_residue AcP_residue_data_aligned.p -o AcP_residue_data_aligned.html
+
+H-bond and Contact Matrix
+-------------------------
+
+
 
 
 .. _gmx rms: https://manual.gromacs.org/documentation/current/onlinehelp/gmx-rms.html

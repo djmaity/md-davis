@@ -64,7 +64,7 @@ setup(
                       'scipy',
                       'toml',
                       'mdtraj',
-                      'pymol',
+                      # 'pymol', # Cannot Install automatically using pip
                       ],
     include_package_data=True,
     setup_requires=['flake8', 'pytest-runner'],
