@@ -26,7 +26,7 @@ setup(
     long_description_content_type='text/markdown',
     author='Dibyajyoti Maity',
     author_email='djdibs@gmail.com',
-    url='https://github.com/djmaity/md_davis',
+    url='https://github.com/djmaity/md-davis',
     packages=find_packages(),
     py_modules=[os.path.splitext(os.path.basename(path))[0] for path in glob('src/*.py')],
     classifiers=[
@@ -41,9 +41,9 @@ setup(
         'Topic :: Scientific/Engineering :: Visualization',
     ],
     project_urls={
-        'Documentation': 'https://md_davis.readthedocs.io/',
-        'Changelog': 'https://md_davis.readthedocs.io/en/latest/changelog.html',
-        'Issue Tracker': 'https://github.com/djmaity/md_davis/issues',
+        'Documentation': 'https://md-davis.readthedocs.io/',
+        'Changelog': 'https://md-davis.readthedocs.io/en/latest/changelog.html',
+        'Issue Tracker': 'https://github.com/djmaity/md-davis/issues',
     },
     license='MIT license',
     keywords=[
@@ -74,6 +74,7 @@ setup(
     entry_points={
         'console_scripts': [
             'md_davis=md_davis.cli:main',
+            'md-davis=md_davis.cli:main',
         ],
     },
 )

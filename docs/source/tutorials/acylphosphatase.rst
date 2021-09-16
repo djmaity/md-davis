@@ -68,23 +68,27 @@ In the command above, remember to provide ``-x``, ``-y``, ``--name``, and  ``--l
 .. image:: /_static/AcP_FEL.png
    :target: AcP_FEL.html
 
-Surface Elecrtostatic Using Delphi
-----------------------------------
+Electrostatic Potential and Electric Field Dynamics
+---------------------------------------------------
 
-1. Create a sample of frames for PBSA calculation using DelPhi
-
-
-.. code-block:: bash
-
-    gmx trjconv -f 2VH7/2VH7_trajectory.xtc -s 2VH7/2VH7_structure.pdb -o 2VH7/2VH7_electrostatics/2VH7_frame.pdb -dt 10000 -sep
-
-2. MD DaVis has the ``electrostatics`` command which is a wrapper for running DelPhi and report the electrostatic potential at the vertices of a triangulated surface obtained using MSMS (Michael Sanner)
+1. Create a sample of frames for calculating the electrostatic potential with `DelPhi <http://compbio.clemson.edu/delphi>`_
 
 .. code-block:: bash
 
-    md_davis electrostatics --surface -m ./msms_i86_64Linux2_2.6.1/msms.x86_64Linux2.2.6.1 -d ./delphicpp_v8.4.5_serial -o 2VH7/2VH7_electrostatics/ 2VH7/2VH7_electrostatics/2VH7_frame*.pdb
+    gmx trjconv -f 2VH7_trajectory.xtc -s 2VH7_structure.pdb -o 2VH7_electrostatics/2VH7_frame.pdb -dt 10000 -sep
 
-The output directory needs to be provided in the TOML file below to summarize the surface electrostatic potentials into the residues properties plot.
+2. MD DaVis has the ``electrostatics`` command which is a wrapper for running DelPhi and reporting the electrostatic potential at the vertices of a triangulated surface obtained using `MSMS <http://mgl.scripps.edu/people/sanner/html/msms_home.html>`_
+
+.. code-block:: bash
+
+    md_davis electrostatics --surface -m ./msms_i86_64Linux2_2.6.1/msms.x86_64Linux2.2.6.1 -d ./delphicpp_v8.4.5_serial -o 2VH7_electrostatics/ 2VH7_electrostatics/2VH7_frame*.pdb
+
+3. The electrostatic potential on the surface and the dynamics of electric field around the molecule can be visualized with the following command:
+
+.. code-block:: bash
+
+    md_davis electrodynamics --ss_color --surface --name Human_AcP 2VH7_electrostatics
+
 
 Residue Properties Plot
 -----------------------
@@ -123,7 +127,7 @@ Repeat for the remaining trajectories. We are also going to plot the torsional f
     [residue_property]
         secondary_structure = '2VH7_dssp.dat'
         sasa = '2VH7_resarea.xvg'
-        surface_potential = '2VH7/2VH7_electrostatics'
+        surface_potential = '2VH7_electrostatics'   # directory containing electrostatic calculations
 
         [residue_property.rmsf]
             rmsf_files = '2VH7_rmsf.xvg'
@@ -202,11 +206,47 @@ Now, we can also align the residues of the different trajectories to align the p
 
     md_davis plot_residue AcP_residue_data_aligned.p -o AcP_residue_data_aligned.html
 
-H-bond and Contact Matrix
--------------------------
+Hydrogen Bond Matrix
+---------------------
 
+1. Calculate the hydrogen bonds using the ``hbond`` utility in GROMACS.
 
+.. code-block:: bash
 
+    gmx hbond -f 2VH7_trajectory.xtc -s 2VH7_md.tpr -num 2VH7_hbnum.xvg -hbm 2VH7_hb_matrix -hbn 2VH7_hb_index
+
+2. Open the output index file ``2VH7_hb_index.ndx`` and scroll down to find the
+title of the last section containing the list of hydrogen bonds, which is ``hbonds_Protein`` in this case, as shown below:
+
+.. code-block:: text
+
+     1235  1243  1244  1248  1249  1260  1261  1263  1264  1280  1285  1286  1301  1302  1320
+     1321  1339  1340  1356  1361  1362  1380  1381  1389  1390  1392  1393  1410  1413  1414
+     1421  1424  1425  1433  1434  1436  1437  1456  1457  1468  1469  1473  1474  1492  1493
+     1508  1509  1525  1530  1531
+    [ hbonds_Protein ]
+          9     10     35
+         36     37    773
+         55     56   1285
+         62     63    725
+
+3. Calculate the occurrence of each hydrogen bond:
+
+.. code-block:: bash
+
+    md_davis hbond -x 2VH7_hb_matrix.xpm -i 2VH7_hb_index.ndx -s 2VH7_structure.pdb -g hbonds_Protein --save_pickle 2VH7_hbonds.p
+
+4. Plot the hydrogen bonds matrix
+
+.. code-block:: bash
+
+    md_davis plot_hbond --percent --total_frames 101 --cutoff 33 -o 2VH7_hbond_matrix.html 2VH7_hbonds.p
+
+The above command plots the percentage of the H-bonds, which is calculated for each H-bond as follows:
+
+number of frames the H-bond is observed / total number of frames * 100
+
+The cutoff of 33 % is set to plot only those H-bonds whose occurrence is greater than 33 %.
 
 .. _gmx rms: https://manual.gromacs.org/documentation/current/onlinehelp/gmx-rms.html
 .. _gmx gyrate: https://manual.gromacs.org/documentation/current/onlinehelp/gmx-gyrate.html

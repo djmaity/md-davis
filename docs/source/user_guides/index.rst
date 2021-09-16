@@ -26,7 +26,7 @@ Features of MD DaVis
 
 1. Create dynamic visualization of electric field around the molecule using PyMOL.
 
-.. image:: /_static/2GV1_100frames.gif
+.. image:: /_static/2VH7_electrodynamics.webp
      :alt: Dynamics of electric field
 
 2. Create interactive plot for time series data: root mean squared deviation (RMSD) and radius of gyration (R\ :subscript:\ G)

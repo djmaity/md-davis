@@ -24,10 +24,19 @@ To calculate the contacts provide ``--contact`` option. ``gmx hbond`` requires t
 
 .. code-block:: bash
 
-    md_davis contacts -f hb_matrix.xpm --index hb_index.ndx -s structure.tpr --pickle hb_data.p -g hbonds_Protein
+    md_davis hbond -f hb_matrix.xpm --index hb_index.ndx -s structure.tpr --pickle hb_data.p -g hbonds_Protein
 
 3. Plot the H-bonds/contacts matrix:
 
+.. code-block:: bash
+
+    md_davis plot_hbond --percent --total_frames 101 --cutoff 33 -o 2VH7_hbond_matrix.html 2VH7_hbonds.p
+
+The above command plots the percentage of the H-bonds, which is calculated for each H-bond as follows:
+
+number of frames the H-bond is observed / total number of frames * 100
+
+The cutoff of 33 % is set to plot only those H-bonds whose occurrence is greater than 33 %.
 
 Bonus Tip
 ---------

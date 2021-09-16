@@ -8,7 +8,7 @@ To install MD DaVis, run this command in your terminal:
 
 .. code-block:: bash
 
-    pip install md-davis
+    pip install md_davis
 
 This is the preferred method to install MD DaVis, as it will always
 install the most recent stable release.
@@ -37,7 +37,7 @@ Before running the next command to install MD DaVis
 
 .. code-block:: bash
 
-    pip install md-davis
+    pip install md_davis
 
 Installation from source
 ------------------------

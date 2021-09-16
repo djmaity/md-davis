@@ -10,13 +10,13 @@ MD DaVis
 
 A tool for comparative analysis of molecular dynamics simulations of proteins.
 
-* Free software: MIT license
-* Documentation: [https://md_davis.readthedocs.io](https://md_davis.readthedocs.io)
+* Free software: [MIT license](https://github.com/djmaity/md-davis/blob/master/LICENSE)
+* Documentation: [https://md-davis.readthedocs.io](https://md-davis.readthedocs.io)
 
 Introduction
 ------------
 
-MD DaVis is a tool to facilitate the comparative analysis of molecular 
+MD DaVis is a tool to facilitate the comparative analysis of molecular
 dynamics trajectories
 
 
@@ -32,12 +32,12 @@ Features
 Installation
 ------------
 
-For detailed installation instructions see: 
-[https://md_davis.readthedocs.io](https://md_davis.readthedocs.io)
+For detailed installation instructions see:
+[https://md-davis.readthedocs.io/en/latest/install.html](https://md-davis.readthedocs.io/en/latest/install.html)
 
-I highly recommend installing this package in a virtual environment created with 
-[Anaconda](https://www.anaconda.com/products/individual) or 
-[Miniconda](https://docs.conda.io/en/latest/miniconda.html) distribution. 
+I highly recommend installing this package in a virtual environment created with
+[Anaconda](https://www.anaconda.com/products/individual) or
+[Miniconda](https://docs.conda.io/en/latest/miniconda.html) distribution.
 Make sure to activate the environment before running the install commands
 ```console
 conda create --name md_davis_env python>=3.7
@@ -46,8 +46,8 @@ conda activate md_davis_env
 `md_davis_env` is the name of the virtual environment and you can choose any name you like.
 The environment must be activated with `conda activate md_davis_env` before using MD DaVis.
 
-On Windows machines the install command fails because `pip` tries to compile 
-the dependencies. Please install the following dependencies with conda before 
+On Windows machines the install command fails because `pip` tries to compile
+the dependencies. Please install the following dependencies with conda before
 running the `pip` command:
 ```console
 conda install -c conda-forge mdtraj
@@ -56,13 +56,13 @@ conda install -c conda-forge pymol-open-source
 
 To install MD DaVis, run this command in your terminal:
 ```shell
-pip install md-davis
+pip install md_davis
 ```
 
 Dependencies
 ------------
 
-* [Open-Source PyMOL](https://github.com/schrodinger/pymol-open-source) available from `conda-forge` is for 64-bit linux and 
+* [Open-Source PyMOL](https://github.com/schrodinger/pymol-open-source) available from `conda-forge` is for 64-bit linux and
 Windows systems only and requires Python > 3.7
 
 Commercial version of pymol can be installed with:
@@ -73,21 +73,16 @@ This can also be used with an Educational PyMOL [license](https://pymol.org/edu/
 
 mdtraj is available for linux-64, osx-64, win-32, and win-64
 
-Python dependencies are automatically installed. However, electrostatic 
-calculation requires on following two programs which must be downloaded 
+Python dependencies are automatically installed. However, electrostatic
+calculation requires on following two programs which must be downloaded
 and installed separately.
 * [Delphi](http://compbio.clemson.edu/delphi)
 * [MSMS](http://mgltools.scripps.edu/downloads#msms)
 
-To Do
------
-
-This page is still under construction. Visit `https://djmaity.github.io/md_davis/ <https://djmaity.github.io/md_davis/>`_ to know more.
-
 Author
 ------
 
-Dibyajyoti Maity - [www.djmaity.com](www.djmaity.com)
+Dibyajyoti Maity - [www.djmaity.com](http://www.djmaity.com)
 
 <!--  --------------------------------------------------------------------- -->
 [pypi-badge]: https://img.shields.io/pypi/v/md-davis.svg

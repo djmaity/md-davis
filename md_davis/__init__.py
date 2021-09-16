@@ -7,7 +7,7 @@ from md_davis import landscape
 from md_davis import electrostatics
 from md_davis import structure
 from md_davis import common
-from md_davis import contacts
+from md_davis import hbond
 
 import md_davis.residue
 import md_davis.sequence
