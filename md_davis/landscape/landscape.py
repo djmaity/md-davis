@@ -367,7 +367,7 @@ class Landscape:
         div_id = div.split('=')[1].split()[0].replace("'", "").replace('"', '')
 
         # Header for the output HTML file
-        header = ('<html>\n<head><metacharset="utf-8"/>\n'
+        header = ('<!DOCTYPE html><html>\n<head><metacharset="utf-8"/>\n'
                   '<script src="https://cdn.plot.ly/plotly-latest.min.js">'
                   '</script>\n</head>\n<body>\n')
 

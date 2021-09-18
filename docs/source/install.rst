@@ -1,6 +1,8 @@
 Installation
 ============
 
+
+
 Stable release
 --------------
 
@@ -16,6 +18,31 @@ install the most recent stable release.
 If you don't have ```pip`` <https://pip.pypa.io>`_ installed, this
 `Python installation guide <http://docs.python-guide.org/en/latest/starting/installation/>`_
 can guide you through the process.
+
+
+
+```console
+conda create --name md_davis_env python>=3.7
+conda activate md_davis_env
+```
+`md_davis_env` is the name of the virtual environment and you can choose any name you like.
+The environment must be activated with `conda activate md_davis_env` before using MD DaVis.
+
+On Windows machines the install command fails because `pip` tries to compile
+the dependencies. Please install the following dependencies with conda before
+running the `pip` command:
+```console
+conda install -c conda-forge mdtraj
+conda install -c conda-forge pymol-open-source
+```
+
+ Make sure to activate the environment before running the install commands
+
+To install MD DaVis, run this command in your terminal:
+```shell
+pip install md_davis
+```
+
 
 Windows installation
 ^^^^^^^^^^^^^^^^^^^^
@@ -108,6 +135,20 @@ Install the dependencies using the following commands
 
 Install this package using pip:
 
+Dependencies
+------------
+
 .. code-block:: bash
-    
+
     pip install path/to/md_davis
+
+* [Open-Source PyMOL](https://github.com/schrodinger/pymol-open-source) available from `conda-forge` is for 64-bit Linux and Windows systems only and requires Python > 3.7
+Commercial version of pymol can be installed with:
+        ```console
+        conda install -c schrodinger pymol-bundle
+        ```
+This can also be used with an Educational PyMOL [license](https://pymol.org/edu/?q=educational)
+
+* mdtraj is available for linux-64, osx-64, win-32, and win-64
+
+Python dependencies are automatically installed. However, electrostatic calculation requires on following two programs which must be downloaded and installed separately.

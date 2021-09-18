@@ -23,18 +23,18 @@ Often the first step after a successful MD simulation is to calculate the root-m
 
 .. code-block:: bash
 
-    gmx rms -f 2VH7_trajectory.xtc -s 2VH7_structure.pdb -o 2VH7_rmsd
-    gmx gyrate -f 2VH7_trajectory.xtc -s 2VH7_structure.pdb -o 2VH7_rg
+    gmx rms -f 2VH7/2VH7_trajectory.xtc -s 2VH7/2VH7_structure.pdb -o 2VH7/2VH7_rmsd
+    gmx gyrate -f 2VH7/2VH7_trajectory.xtc -s 2VH7/2VH7_structure.pdb -o 2VH7/2VH7_rg
 
 2VH7_rmsd.xvg and 2VH7_rg.xvg are text files containing the RMSD and R\ :sub:`G`\ , respectively. Repeat the process for all the other trajectories.
 
 .. note:: If you have installed MD DaVis in a virtual or conda environment as suggested in the installation instructions, make sure to activate it before running the ``md_davis`` commands.
 
-Plot 2VH7_processed_rmsd.xvg using:
+Plot 2VH7_rmsd.xvg using:
 
 .. code-block:: bash
 
-    md_davis xvg 2VH7_rmsd.xvg -o 2VH7_rmsd.html
+    md_davis xvg 2VH7/2VH7_rmsd.xvg -o 2VH7/2VH7_rmsd.html
 
 You should obtain a plot like this:
 
@@ -42,7 +42,7 @@ To plot the RMSD from the four trajectories together use:
 
 .. code-block:: bash
 
-    md_davis xvg 2VH7_rmsd.xvg 2GV1_rmsd.xvg 2ACY_rmsd.xvg 1URR_rmsd.xvg -o AcP_rmsd.html
+    md_davis xvg 2VH7/2VH7_rmsd.xvg 2GV1/2GV1_rmsd.xvg 2ACY/2ACY_rmsd.xvg 1URR/1URR_rmsd.xvg -o AcP_rmsd.html
 
 .. image:: /_static/AcP_rmsd.png
     :target: AcP_rmsd.html
@@ -55,13 +55,13 @@ Next we will create the free energy landscape using RMSD and R\ :sub:`G`\  as th
 
 .. code-block:: bash
 
-    md_davis landscape_xvg -T 300 -x 2VH7_rmsd_full.xvg -y 2VH7_rg_full.xvg -n "2VH7" -l "Human AcP" -o 2VH7_landscape.html
+    md_davis landscape_xvg -T 300 -x 2VH7/2VH7_rmsd_full.xvg -y 2VH7/2VH7_rg_full.xvg -n "2VH7" -l "Human AcP" -o 2VH7_landscape.html
 
 Here, ``-T 300`` specifies 300 K as the temperature of the system. Now to plot all four landscapes together:
 
 .. code-block:: bash
 
-    md_davis landscape_xvg -T 300 --common -x 2VH7_rmsd_full.xvg -y 2VH7_rg_full.xvg --name "2VH7" --label "Human AcP" -x 2GV1_rmsd_full.xvg -y 2GV1_rg_full.xvg --name "2GV1" --label "E. coli AcP" -x 2ACY_rmsd_full.xvg -y 2ACY_rg_full.xvg --name "2ACY" --label "Bovine AcP" -x 1URR_rmsd_full.xvg -y 1URR_rg_full.xvg --name "1URR" --label "Fruit Fly AcP" -o AcP_FEL.html
+    md_davis landscape_xvg -T 300 --common -x 2VH7/2VH7_rmsd_full.xvg -y 2VH7/2VH7_rg_full.xvg --name "2VH7" --label "Human AcP" -x 2GV1/2GV1_rmsd_full.xvg -y 2GV1/2GV1_rg_full.xvg --name "2GV1" --label "E. coli AcP" -x 2ACY/2ACY_rmsd_full.xvg -y 2ACY/2ACY_rg_full.xvg --name "2ACY" --label "Bovine AcP" -x 1URR/1URR_rmsd_full.xvg -y 1URR/1URR_rg_full.xvg --name "1URR" --label "Fruit Fly AcP" -o AcP_FEL.html
 
 In the command above, remember to provide ``-x``, ``-y``, ``--name``, and  ``--label`` together before those for the next trajectory. The option ``--common`` instructs MD DaVis to create the four landscapes using identical ranges and binning. This allows us to reliably compare the landscapes. The output from the above command is shown below, click the image to view the interactive html file.
 
@@ -75,19 +75,22 @@ Electrostatic Potential and Electric Field Dynamics
 
 .. code-block:: bash
 
-    gmx trjconv -f 2VH7_trajectory.xtc -s 2VH7_structure.pdb -o 2VH7_electrostatics/2VH7_frame.pdb -dt 10000 -sep
+    mkdir 2VH7/2VH7_electrostatics/
+    gmx trjconv -f 2VH7/2VH7_trajectory.xtc -s 2VH7/2VH7_structure.pdb -o 2VH7/2VH7_electrostatics/2VH7_frame.pdb -dt 10000 -sep
 
 2. MD DaVis has the ``electrostatics`` command which is a wrapper for running DelPhi and reporting the electrostatic potential at the vertices of a triangulated surface obtained using `MSMS <http://mgl.scripps.edu/people/sanner/html/msms_home.html>`_
 
 .. code-block:: bash
 
-    md_davis electrostatics --surface -m ./msms_i86_64Linux2_2.6.1/msms.x86_64Linux2.2.6.1 -d ./delphicpp_v8.4.5_serial -o 2VH7_electrostatics/ 2VH7_electrostatics/2VH7_frame*.pdb
+    md_davis electrostatics --surface -m ~/msms_i86_64Linux2_2.6.1/msms.x86_64Linux2.2.6.1 -d ~/delphicpp_v8.4.5_serial -o 2VH7/2VH7_electrostatics/ 2VH7/2VH7_electrostatics/2VH7_frame*.pdb
+
+In the command above the MSMS directory and the Delphi executable are placed in the home folder. Adjust the path according to your system.
 
 3. The electrostatic potential on the surface and the dynamics of electric field around the molecule can be visualized with the following command:
 
 .. code-block:: bash
 
-    md_davis electrodynamics --ss_color --surface --name Human_AcP 2VH7_electrostatics
+    md_davis electrodynamics --ss_color --surface --name Human_AcP 2VH7/2VH7_electrostatics
 
 
 Residue Properties Plot
@@ -97,9 +100,9 @@ Residue Properties Plot
 
 .. code-block:: bash
 
-    gmx rmsf -res -f 2VH7_trajectory.xtc -s 2VH7_structure.pdb -o 2VH7_rmsf
-    gmx sasa -f 2VH7_trajectory.xtc -s 2VH7_structure.pdb -o 2VH7_sasa.xvg -or 2VH7_resarea.xvg
-    gmx do_dssp -f 2VH7_trajectory.xtc -s 2VH7_structure.pdb -o 2VH7_dssp -ssdump 2VH7_dssp -sc 2VH7_dssp_count
+    gmx rmsf -res -f 2VH7/2VH7_trajectory.xtc -s 2VH7/2VH7_structure.pdb -o 2VH7/2VH7_rmsf
+    gmx sasa -f 2VH7/2VH7_trajectory.xtc -s 2VH7/2VH7_structure.pdb -o 2VH7/2VH7_sasa.xvg -or 2VH7/2VH7_resarea.xvg
+    gmx do_dssp -f 2VH7/2VH7_trajectory.xtc -s 2VH7/2VH7_structure.pdb -o 2VH7/2VH7_dssp -ssdump 2VH7/2VH7_dssp -sc 2VH7/2VH7_dssp_count
 
 Repeat for the remaining trajectories. We are also going to plot the torsional flexibility, but that will be calculated by MD DaVis later.
 
@@ -140,7 +143,7 @@ Next, collate all the data using MD DaVis. MD DaVis can process multiple such TO
 
 .. code-block:: bash
 
-    md_davis collate 2VH7_input.toml 2GV1_input.toml 2ACY_input.toml 1URR_input.toml
+    md_davis collate 2VH7/2VH7_input.toml 2GV1/2GV1_input.toml 2ACY/2ACY_input.toml 1URR/1URR_input.toml
 
 3. Combine the data from the HDF file into a pandas dataframe with:
 

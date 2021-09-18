@@ -403,7 +403,7 @@ def main(pickle_file, output='residue_data.html', title=None,
             })
             first_chain = False
 
-    annotations = plot_hdf5_data.add_secondary_structure_legend(figure=fig, spacing=0.04, xloc=0.2, yloc=-0.1)
+    annotations = plot_hdf5_data.add_secondary_structure_legend(figure=fig, xspace=0.09, yspace=0, xloc=0.1, yloc=-0.2)
 
     dict(x=0.5, y=0, showarrow=True, text='Residue Index',
             arrowcolor='rgba(0,0,0,0)',
@@ -413,7 +413,8 @@ def main(pickle_file, output='residue_data.html', title=None,
     fig['layout'].update(title=title,
                          height=height,
                          width=width,
-        margin=go.layout.Margin(l=100, r=200, b=450, t=80, pad=2)
+        margin=go.layout.Margin(l=100, r=200, b=100, t=80, pad=2)
+        # margin = go.layout.Margin(l=100, r=200, b=450, t=80, pad=2)
     )
 
     updatemenus = list([

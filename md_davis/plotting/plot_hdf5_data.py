@@ -47,7 +47,7 @@ def plot_secondary_structure(data, name, figure, axis=None, row=1, column=1, hei
             legendgroup=name,
             showlegend=False,
             marker={'color': structure.color,
-                    'opacity': 0.5,
+                    'opacity': 0.3,
             },
             hoverinfo='none',
         )
@@ -59,12 +59,12 @@ def plot_secondary_structure(data, name, figure, axis=None, row=1, column=1, hei
     figure['layout']['barmode'] = 'stack'
 
 
-def add_secondary_structure_legend(figure, xloc=0.8, yloc=-0.2, spacing=0.06):
+def add_secondary_structure_legend(figure, xloc=0.8, yloc=-0.2, xspace=0, yspace=-0.06):
     dssp_legend = []
     for index, structure in enumerate(secondary_structure.values()):
         dssp_legend.append(
-            dict(x=xloc,
-                 y=yloc - index * spacing,
+            dict(x=xloc + index * xspace,
+                 y=yloc + index * yspace,
                  showarrow=False,
                  text=structure.html,
                  xref='paper',

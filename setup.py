@@ -54,7 +54,7 @@ setup(
                       'biopython',  # TODO: Refactor dependency
                       'click',
                       'docopt',  # TODO: Refactor dependency
-                      'h5py>=2.10',
+                      'h5py>=3.0',
                       'matplotlib',
                       'more_itertools',
                       'numpy',  # numpy should be before mdtraj

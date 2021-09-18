@@ -15,73 +15,44 @@ A tool for comparative analysis of molecular dynamics simulations of proteins.
 
 Introduction
 ------------
-
-MD DaVis is a tool to facilitate the comparative analysis of molecular
-dynamics trajectories
-
+MD DaVis is a tool to facilitate the comparative analysis of molecular dynamics simulations of proteins.
 
 Features
 --------
-
-1. Residue data plot
-2. Free energy landscape
+1. Free energy landscape
+2. Residue properties plot
 3. Surface electrostatics
-4. Additional tools
-
+4. Electric field dynamics
+5. H-bond/Contact matrix
 
 Installation
 ------------
+The easiest installation method is with
+[Anaconda](https://www.anaconda.com/products/individual) or
+[Miniconda](https://docs.conda.io/en/latest/miniconda.html).
+It is highly recommended to install MD DaVis in a virtual environment.
+The [environment.yml](https://github.com/djmaity/md-davis/blob/master/environment.yml)
+is provided to ease the process.
+```
+conda env create -f environment.yml
+```
+This automatically creates a conda environment called `md_davis_env` with all required dependencies.
+Activate the environment and install MD DaVis in it using:
+```
+conda activate md_davis_env
+pip install md-davis
+```
 
-For detailed installation instructions see:
+For detailed installation instructions, see:
 [https://md-davis.readthedocs.io/en/latest/install.html](https://md-davis.readthedocs.io/en/latest/install.html)
 
-I highly recommend installing this package in a virtual environment created with
-[Anaconda](https://www.anaconda.com/products/individual) or
-[Miniconda](https://docs.conda.io/en/latest/miniconda.html) distribution.
-Make sure to activate the environment before running the install commands
-```console
-conda create --name md_davis_env python>=3.7
-conda activate md_davis_env
-```
-`md_davis_env` is the name of the virtual environment and you can choose any name you like.
-The environment must be activated with `conda activate md_davis_env` before using MD DaVis.
-
-On Windows machines the install command fails because `pip` tries to compile
-the dependencies. Please install the following dependencies with conda before
-running the `pip` command:
-```console
-conda install -c conda-forge mdtraj
-conda install -c conda-forge pymol-open-source
-```
-
-To install MD DaVis, run this command in your terminal:
-```shell
-pip install md_davis
-```
-
-Dependencies
-------------
-
-* [Open-Source PyMOL](https://github.com/schrodinger/pymol-open-source) available from `conda-forge` is for 64-bit linux and
-Windows systems only and requires Python > 3.7
-
-Commercial version of pymol can be installed with:
-```console
-conda install -c schrodinger pymol-bundle
-```
-This can also be used with an Educational PyMOL [license](https://pymol.org/edu/?q=educational)
-
-mdtraj is available for linux-64, osx-64, win-32, and win-64
-
-Python dependencies are automatically installed. However, electrostatic
-calculation requires on following two programs which must be downloaded
-and installed separately.
+### Dependencies
+* [PyMOL](https://pymol.org/2/)
 * [Delphi](http://compbio.clemson.edu/delphi)
 * [MSMS](http://mgltools.scripps.edu/downloads#msms)
 
 Author
 ------
-
 Dibyajyoti Maity - [www.djmaity.com](http://www.djmaity.com)
 
 <!--  --------------------------------------------------------------------- -->
@@ -89,11 +60,11 @@ Dibyajyoti Maity - [www.djmaity.com](http://www.djmaity.com)
 [pypi-link]: https://pypi.org/project/md-davis
 [travis-badge]: https://travis-ci.org/uiri/toml.svg?branch=master
 [travis-link]: https://travis-ci.org/
-[docs-badge]: https://readthedocs.org/projects/md_davis/badge/?style=flat
-[docs-link]: https://md_davis.readthedocs.io/
+[docs-badge]: https://readthedocs.org/projects/md-davis/badge/?style=flat
+[docs-link]: https://md-davis.readthedocs.io/
 [wheel-badge]: https://img.shields.io/pypi/wheel/md-davis.svg
 [wheel-link]: https://pypi.org/project/md-davis
 [python-badge]: https://img.shields.io/pypi/pyversions/md-davis.svg
 [python-link]: https://pypi.org/project/md-davis
-[commits-badge]: https://img.shields.io/github/commits-since/djmaity/md_davis/v0.3.0.svg
-[commits-link]: https://github.com/djmaity/md_davis/compare/v0.3.0...master
+[commits-badge]: https://img.shields.io/github/commits-since/djmaity/md-davis/v0.3.0.svg
+[commits-link]: https://github.com/djmaity/md-davis/compare/v0.3.0...master

@@ -13,7 +13,7 @@ dependencies:
   - numpy
   - pandas
   - plotly
-  - pymol-bundle
+  - pymol-open-source     # replace with pymol-bundle if you have a PyMOL license
   - scikit-learn
   - scipy
   - toml

@@ -1,1 +1,0 @@
-FOR /F "delims=~" %f in (requirements.txt) DO conda install --yes "%f" || conda install -c conda-forge --yes "%f" || pip install "%f"
