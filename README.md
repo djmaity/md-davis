@@ -2,7 +2,6 @@ MD DaVis
 ========
 
 [![PyPI Package latest release][pypi-badge]][pypi-link]
-[![Travis CI][travis-badge]][travis-link]
 [![Documentation Status][docs-badge]][docs-link]
 [![PyPI Wheel][wheel-badge]][wheel-link]
 [![Supported versions][python-badge]][python-link]
@@ -34,7 +33,7 @@ It is highly recommended to install MD DaVis in a virtual environment.
 The [environment.yml](https://github.com/djmaity/md-davis/blob/master/environment.yml)
 is provided to ease the process.
 ```
-conda env create -f environment.yml
+conda env create -f environment.yml -n md_davis_env
 ```
 This automatically creates a conda environment called `md_davis_env` with all required dependencies.
 Activate the environment and install MD DaVis in it using:
@@ -51,6 +50,20 @@ For detailed installation instructions, see:
 * [Delphi](http://compbio.clemson.edu/delphi)
 * [MSMS](http://mgltools.scripps.edu/downloads#msms)
 
+Usage
+-----
+
+If MD DaVis is installed in a virtual environment, it should be activated before using MD DaVis.
+For example, to activate the virtual environment created with conda, use:
+```
+conda activate md_davis_env
+```
+
+The MD DaVis CLI can be called with:
+```
+md_davis
+```
+
 Author
 ------
 Dibyajyoti Maity - [www.djmaity.com](http://www.djmaity.com)
@@ -58,13 +71,11 @@ Dibyajyoti Maity - [www.djmaity.com](http://www.djmaity.com)
 <!--  --------------------------------------------------------------------- -->
 [pypi-badge]: https://img.shields.io/pypi/v/md-davis.svg
 [pypi-link]: https://pypi.org/project/md-davis
-[travis-badge]: https://travis-ci.org/uiri/toml.svg?branch=master
-[travis-link]: https://travis-ci.org/
 [docs-badge]: https://readthedocs.org/projects/md-davis/badge/?style=flat
 [docs-link]: https://md-davis.readthedocs.io/
 [wheel-badge]: https://img.shields.io/pypi/wheel/md-davis.svg
 [wheel-link]: https://pypi.org/project/md-davis
 [python-badge]: https://img.shields.io/pypi/pyversions/md-davis.svg
 [python-link]: https://pypi.org/project/md-davis
-[commits-badge]: https://img.shields.io/github/commits-since/djmaity/md-davis/v0.3.0.svg
-[commits-link]: https://github.com/djmaity/md-davis/compare/v0.3.0...master
+[commits-badge]: https://img.shields.io/github/last-commit/djmaity/md-davis
+[commits-link]: https://github.com/djmaity/md-davis/

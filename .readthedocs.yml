@@ -12,10 +12,11 @@ sphinx:
 # Optionally build your docs in additional formats such as PDF
 formats: all
 
+conda:
+  environment: dev_environment.yml
+
 python:
   version: "3.7"
   install:
-    - requirements: requirements.txt
-    - requirements: docs/requirements.txt
     - method: pip
       path: .

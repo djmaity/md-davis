@@ -8,7 +8,7 @@ importlib_metadata
 matplotlib
 mdtraj
 more_itertools
-numpy
+numpy>=1.17.5
 openpyxl
 pandas
 plotly

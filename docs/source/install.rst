@@ -142,13 +142,15 @@ Dependencies
 
     pip install path/to/md_davis
 
-* [Open-Source PyMOL](https://github.com/schrodinger/pymol-open-source) available from `conda-forge` is for 64-bit Linux and Windows systems only and requires Python > 3.7
+`Open-Source PyMOL <https://github.com/schrodinger/pymol-open-source>`_ available from ``conda-forge`` is for 64-bit Linux and Windows systems only and requires Python > 3.7
 Commercial version of pymol can be installed with:
-        ```console
-        conda install -c schrodinger pymol-bundle
-        ```
-This can also be used with an Educational PyMOL [license](https://pymol.org/edu/?q=educational)
 
-* mdtraj is available for linux-64, osx-64, win-32, and win-64
+.. code-block:: bash
+
+    conda install -c schrodinger pymol-bundle
+
+This can also be used with an Educational PyMOL `license <https://pymol.org/edu/?q=educational>`_
+
+mdtraj is available for linux-64, osx-64, win-32, and win-64
 
 Python dependencies are automatically installed. However, electrostatic calculation requires on following two programs which must be downloaded and installed separately.

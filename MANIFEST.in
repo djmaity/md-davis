@@ -1,10 +1,11 @@
-graft docs
-graft src
 graft ci
 graft tests
 include .bumpversion.cfg
 include .coveragerc
 include .editorconfig
+
+include md_davis/electrostatics/charmm.crg
+include md_davis/electrostatics/charmm.siz
 
 include AUTHORS.rst
 include CONTRIBUTING.rst
@@ -21,3 +22,5 @@ recursive-exclude * *.py[co]
 recursive-include docs *.rst conf.py Makefile make.bat *.jpg *.png *.gif
 
 global-exclude *.py[cod] __pycache__/* *.so *.dylib
+
+recursive-exclude docs *

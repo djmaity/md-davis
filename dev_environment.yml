@@ -21,3 +21,18 @@ dependencies:
   - pip
   - psutil                # required by plotly for png
   - openpyxl              # Required by pandas
+
+  # packaging requirements
+  - setuptools
+  - wheel
+  - twine
+
+  # linting and checking
+  - pylint
+  - flake8
+
+  # docs requirements
+  - sphinx>=1.3
+  - myst-parser
+  - pydata-sphinx-theme
+  - sphinx-panels

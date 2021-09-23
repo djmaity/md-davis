@@ -163,7 +163,7 @@ Now, we can also align the residues of the different trajectories to align the p
 
 .. code-block:: bash
 
-    md_davis sequence 2VH7\2VH7_structure.pdb -r fasta
+    md_davis sequence 2VH7/2VH7_structure.pdb -r fasta
 
 2. Use a sequence alignment program or webserver like `Clustal Omega <https://www.ebi.ac.uk/Tools/msa/clustalo/>`_ or `T-coffee <https://www.ebi.ac.uk/Tools/msa/tcoffee/>`_ to obtain the alignment of these sequences in ClustalW format.
 
@@ -216,7 +216,7 @@ Hydrogen Bond Matrix
 
 .. code-block:: bash
 
-    gmx hbond -f 2VH7_trajectory.xtc -s 2VH7_md.tpr -num 2VH7_hbnum.xvg -hbm 2VH7_hb_matrix -hbn 2VH7_hb_index
+    gmx hbond -f 2VH7/2VH7_trajectory.xtc -s 2VH7/2VH7_md.tpr -num 2VH7/2VH7_hbnum.xvg -hbm 2VH7/2VH7_hb_matrix -hbn 2VH7/2VH7_hb_index
 
 2. Open the output index file ``2VH7_hb_index.ndx`` and scroll down to find the
 title of the last section containing the list of hydrogen bonds, which is ``hbonds_Protein`` in this case, as shown below:
@@ -237,13 +237,13 @@ title of the last section containing the list of hydrogen bonds, which is ``hbon
 
 .. code-block:: bash
 
-    md_davis hbond -x 2VH7_hb_matrix.xpm -i 2VH7_hb_index.ndx -s 2VH7_structure.pdb -g hbonds_Protein --save_pickle 2VH7_hbonds.p
+    md_davis hbond -x 2VH7/2VH7_hb_matrix.xpm -i 2VH7/2VH7_hb_index.ndx -s 2VH7/2VH7_structure.pdb -g hbonds_Protein --save_pickle 2VH7/2VH7_hbonds.p
 
 4. Plot the hydrogen bonds matrix
 
 .. code-block:: bash
 
-    md_davis plot_hbond --percent --total_frames 101 --cutoff 33 -o 2VH7_hbond_matrix.html 2VH7_hbonds.p
+    md_davis plot_hbond --percent --total_frames 101 --cutoff 33 -o 2VH7_hbond_matrix.html 2VH7/2VH7_hbonds.p
 
 The above command plots the percentage of the H-bonds, which is calculated for each H-bond as follows:
 
