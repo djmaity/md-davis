@@ -75,7 +75,7 @@ def get_sequence(structure, label=None, return_type=None):
         for residue in chain.residues:
             resi.append(residue.resSeq)
             resn.append(residue.name)
-            sequence_string += THREE_TO_ONE[residue.name]
+            sequence_string += THREE_TO_ONE[residue.name] if residue.name in THREE_TO_ONE else 'X'
         output[chain.index] = (resi, resn)
         sequence[chain.index] = sequence_string
 
