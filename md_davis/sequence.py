@@ -23,6 +23,8 @@ Options:
 """
 
 import os
+import warnings
+
 import click
 import mdtraj
 import string
@@ -75,7 +77,12 @@ def get_sequence(structure, label=None, return_type=None):
         for residue in chain.residues:
             resi.append(residue.resSeq)
             resn.append(residue.name)
-            sequence_string += THREE_TO_ONE[residue.name] if residue.name in THREE_TO_ONE else 'X'
+            if residue.name in THREE_TO_ONE:
+                sequence_string += THREE_TO_ONE[residue.name]
+            else:
+                sequence_string += 'X'
+                warnings.warn(f'Non standard residue {residue.name} found, it will be represented as X in the output')
+
         output[chain.index] = (resi, resn)
         sequence[chain.index] = sequence_string
 
@@ -89,6 +96,11 @@ def get_sequence(structure, label=None, return_type=None):
         return sequence_string
     elif return_type == 'modeller':
         return '/'.join(sequence.values())
+    elif return_type == 'toml':
+        toml_string = ''
+        for ch, residues in output.items():
+            toml_string += f"'Chain {ch}' = {str([[str(resi), str(resn)] for resi, resn in zip(*residues)])}\n"
+        return toml_string
     else:
         return output
 
@@ -99,7 +111,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.command(name='sequence', context_settings=CONTEXT_SETTINGS)
 @click.option('-l', '--label', default=None, type=str)
 @click.option('-r', '--return-type', 'return_type', default=None,
-              type=click.Choice(['dict', 'fasta', 'modeller'], case_sensitive=False),
+              type=click.Choice(['dict', 'fasta', 'modeller', 'toml'], case_sensitive=False),
               help="`dict` returns a dictionary containing chain labels "
                    "as keys and each chain's sequence as values. `fasta` "
                    "returns each chain's sequence separately in FASTA format.")

@@ -39,7 +39,6 @@ extensions = [
     'sphinx.ext.autosectionlabel',
     'sphinx.ext.autosummary',
     'sphinx.ext.coverage',
-    'sphinx.ext.githubpages',
     'sphinx.ext.mathjax',
     'sphinx.ext.napoleon',
     'sphinx.ext.todo',
@@ -79,7 +78,7 @@ html_use_smartypants = True
 html_last_updated_fmt = '%b %d, %Y'
 html_split_index = False
 html_sidebars = {
-   '**': ['globaltoc.html', 'sourcelink.html', "sidebar-ethical-ads.html"]
+   '**': ['globaltoc.html', 'sidebar-ethical-ads.html']
 }
 # html_sidebars = {
 #     "**": ["search-field.html", "sidebar-nav-bs.html",]

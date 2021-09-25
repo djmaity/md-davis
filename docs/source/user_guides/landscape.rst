@@ -8,6 +8,16 @@ the plot created using MD DaVis is that it is an interactive html, and
 rotating one subplot rotates all others to the same view. These features
 facilitate the quick and efficient comparison of the free energy landscapes.
 
+The free energy landscape of a protein is a continuous function between the protein conformations and the free energy in which a limited number of collective variables represents each conformation. MD DaVis creates free energy landscapes using the method described in `Tavernelli et al., 2003 <https://doi.org/10.1016/S0006-3495(03)74687-6>`_. First, the user must provide two quantities of interest to classify the protein conformations, such as RMSD and RG, or the projection on the first two eigenvectors from principal component analysis. Then, the two variables are binned to make a 2D histogram, and the free energy landscape is obtained by Boltzmann inversion of the histogram using:
+
+.. math::
+
+    \Delta\varepsilon_i = -\mathup{k_B}\mathup{T}\ln\left(\frac{n_i}{n_{max}}\right)
+
+where, :math:`\Delta \varepsilon_i` is the change in free energy between the conformations in the ith bin and the maximally occupied bin, :math:`n_i` and :math:`n_{max}` are the number of conformations in these, respectively. This formula results in 0 energy for the most probable state and all other states having positive energy. Since the absolute free energy is impossible to calculate and only the change in free energy is meaningful, the maximum value in the free energy landscape is subtracted from all the bins so that the most probable state has the most negative free energy.
+An excellent feature of MD DaVis is that while creating the 2D histogram, it creates a data structure in which the index of each frame in a particular bin is stored. This feature allows one to find the frames in a particular bin of the landscape, and the frames in the minima are generally of particular interest. Multiple free energy landscapes can be calculated and plotted, ensuring that the range and binning of each axis are shared across all the landscapes evaluated together, enabling their direct. The interactive 3D plot of the free energy landscape can be rotated and viewed from various directions, zoomed in and out, and labels on the surface inspected to determine the valleys and wells, which is not possible in static 3D plots or contour plots. A unique feature of MD DaVis is that rotating one landscape in a plot with multiple landscapes rotates all to the same view. This feature of synchronizing the view of 3D plots is not available in any other plotting library. The trajectory points can also be animated or plotted on top of the free energy landscape; this allows inspecting the traversal of well in the free energy landscapes during the MD simulation.
+
+
 .. note::
     Plotting free energy landscapes requires a large number of frames,
     therefore, always save enough number of frames during the simulation.

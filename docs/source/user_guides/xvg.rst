@@ -13,3 +13,5 @@ matplotlib.
 It is generally intended that the when plotting multiple xvg files, they
 contain the same kind of data. Therefore, the titles and axes labels in the
 last supplied file are used.
+
+MD DaVis can also plot multiple Grace (.xvg) files, which is the format for the output files from many GROMACS analysis tools. For example, an interactive plot with RMSD and RG from multiple trajectories can be created for quick comparison.

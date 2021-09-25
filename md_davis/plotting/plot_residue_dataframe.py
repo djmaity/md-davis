@@ -226,7 +226,6 @@ def residue_data_trace(figure, data, prefix, ss_axis=None,
                         numpy.array(data.index) + 1.25)
         dih_sd = alternate_join(data['dihedral_standard_deviation'].phi,
                         data['dihedral_standard_deviation'].psi)
-
         dih_hover_text = alternate_join(seq.resn + ' ϕ ' + seq.resi.map(str),
                                         seq.resn + ' ψ ' + seq.resi.map(str))
         dihedral_traces += [go.Scatter(

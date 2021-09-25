@@ -58,7 +58,7 @@ Features
       :text: H-bond / Contact Matrix
       :classes: stretched-link font-weight-bold
 
-   .. image:: /_static/hbond_matrix.png
+   .. image:: /_static/2VH7_hbond_matrix.png
       :alt: H-bond matrix
 
    ---

@@ -56,6 +56,10 @@ Scroll down the hb_index.ndx file to find the name of the group containing the a
          62     63    725
          62     63    726
 
+Hydrogen bonds (H-bonds) and contacts in a protein or between protein and ligand are calculated to understand the interactions essential for its function. GROMACS has the hbond utility to calculate the H-bonds and contacts purely from geometric considerations. By default, the command only returns the number of H-bonds/contacts detected in each frame, which is not informative enough. However, by providing suitable options to the hbond utility, an index file with the list of the atoms involved in each H-bond/contact detected and a matrix with the H-bonds/contacts can be obtained. The matrix has H-bonds/contacts listed in the index file along one dimension and the trajectory frames along the other dimension. The elements of the matrix denote the presence of a hydrogen bond at a particular frame. Unfortunately, the matrix does not have any labels, and its size becomes huge for long simulations making it uninterpretable.
+MD DaVis processes these files to calculate the number of frames with the H-bond/contact, which can be converted to a percentage. This can then be represented as a matrix where the participating atoms are along the two dimensions of the matrix (Figure 1D).
+
+
 .. _gmx hbond: https://manual.gromacs.org/documentation/current/onlinehelp/gmx-hbond.html
 .. _X PixMap: https://en.wikipedia.org/wiki/X_PixMap
 

@@ -366,10 +366,15 @@ def main(input_files):
         with h5py.File(output, 'a') as hdf_file:
             hdf_file.attrs['name'] = data['name']
 
-            if 'sequence' not in hdf_file and 'structure' not in data:
-                print("Please provide 'structure' in the input toml file to parse the amino acid sequence")
-                return
-            else:
+            if 'sequence' in data:
+                for ch, seq in data['sequence'].items():
+                    resi, resn = zip(*seq)
+                    group = hdf_file.require_group(f'sequence/chain {ch[6:]}')  # omit 'Chain '
+                    resi = numpy.array(resi, dtype=int)
+                    resn = numpy.array(resn, dtype="S3")
+                    group.require_dataset('resi', shape=resi.shape, dtype=resi.dtype, data=resi)
+                    group.require_dataset('resn', shape=resn.shape, dtype=resn.dtype, data=resn)
+            elif 'structure' in data:
                 sequences = md_davis.sequence.get_sequence(data['structure'])
                 for ch, seq in sequences.items():
                     group = hdf_file.require_group(f'sequence/chain {ch}')
@@ -377,6 +382,11 @@ def main(input_files):
                     resn = numpy.array(seq[1], dtype="S3")
                     group.require_dataset('resi', shape=resi.shape, dtype=resi.dtype, data=resi)
                     group.require_dataset('resn', shape=resn.shape, dtype=resn.dtype, data=resn)
+            else:
+                print("Please provide 'sequence' or 'structure' in the input toml file to parse the amino acid sequence")
+                return
+
+
             # Add RMSD and radius of gyration into the HDF5 file
             if 'timeseries' in data:
                 if 'rmsd' in data['timeseries'] and 'rg' in data['timeseries']:

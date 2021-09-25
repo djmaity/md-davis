@@ -4,14 +4,14 @@ User Guide
 .. toctree::
    :maxdepth: 2
 
-   quick_start
-   landscape
-   residue_property_plot
-   secondary_structure
-   electrostatics
-   contacts
-   xvg
+   introduction
    sequence
+   xvg
+   collate
+   landscape
+   electrostatics
+   residue_property_plot
+   contacts
 
 MD Davis is a Python package to perform exploratory and comparative data
 analysis of molecular dynamics trajectories. The source code can be found

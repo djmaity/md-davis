@@ -251,5 +251,8 @@ number of frames the H-bond is observed / total number of frames * 100
 
 The cutoff of 33 % is set to plot only those H-bonds whose occurrence is greater than 33 %.
 
+.. image:: /_static/2VH7_hbond_matrix.png
+   :target: 2VH7_hbond_matrix.html
+
 .. _gmx rms: https://manual.gromacs.org/documentation/current/onlinehelp/gmx-rms.html
 .. _gmx gyrate: https://manual.gromacs.org/documentation/current/onlinehelp/gmx-gyrate.html
