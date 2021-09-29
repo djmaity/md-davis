@@ -1,7 +1,7 @@
 Acylphosphatase Homologs
 ========================
 
-In this tutorial we shall analyze the molecular dynamics (MD) trajectories of four acylphosphatase (AcP) homologs:
+In this tutorial, we shall analyze the molecular dynamics (MD) trajectories of four acylphosphatase (AcP) homologs:
 
 +------------+-----------+
 | PDB ID     | Organism  |
@@ -15,7 +15,7 @@ In this tutorial we shall analyze the molecular dynamics (MD) trajectories of fo
 | 1URR       | Fruit Fly |
 +------------+-----------+
 
-If you are new to running MD simulations using GROMACS, please refer to the legendary GROMACS tutorial `Lysozyme in Water <http://www.mdtutorials.com/gmx/lysozyme/index.html>`_ by Dr. Justin A. Lemkul at http://www.mdtutorials.com/
+If you are new to running MD simulations using GROMACS, please refer to the legendary GROMACS tutorial `Lysozyme in Water <http://www.mdtutorials.com/gmx/lysozyme/index.html>`_ by Dr. Justin A. Lemkul at http://www.mdtutorials.com/.
 
 RMSD and R\ :sub:`G`\
 ---------------------
@@ -38,7 +38,7 @@ Plot 2VH7_rmsd.xvg using:
 
 You should obtain a plot like this:
 
-To plot the RMSD from the four trajectories together use:
+To plot the RMSD from the four trajectories together, use:
 
 .. code-block:: bash
 
@@ -51,7 +51,7 @@ Similarly, the R\ :sub:`G`\  can also be plotted using the ``md_davis xvg`` comm
 
 Create Free Energy Landscapes
 -----------------------------
-Next we will create the free energy landscape using RMSD and R\ :sub:`G`\  as the `x` and `y` variables. The sample trajectories provided with this tutorial only contain 100 frames to keep their sizes small. Thus, the RMSD and R\ :sub:`G`\  files created in the beginning of this tutorial only contain 100 time steps each. Using 100 points to create a free energy landscape would not be accurate, therefore, the RMSD and R\ :sub:`G`\  files calculated from the full 1 μs trajectory containing 100,000 frames are provided with the tutorial. Use these files to create the  free energy landscape. For human acylphosphstase the free energy landscape can be created with:
+Next, we will create the free energy landscape using RMSD and R\ :sub:`G`\  as the `x` and `y` variables. The sample trajectories provided with this tutorial only contain 100 frames to keep their sizes small. Thus, the RMSD and R\ :sub:`G`\  files created at the beginning of this tutorial only contain 100 timesteps each. Using 100 points to create a free energy landscape would not be accurate. Therefore, the RMSD and R\ :sub:`G`\  files calculated from the full 1 μs trajectory containing 100,000 frames are provided with the tutorial. Use these files to create the  free energy landscape. For human acylphosphatase, the free energy landscape can be created with:
 
 .. code-block:: bash
 
@@ -63,7 +63,7 @@ Here, ``-T 300`` specifies 300 K as the temperature of the system. Now to plot a
 
     md_davis landscape_xvg -T 300 --common -x 2VH7/2VH7_rmsd_full.xvg -y 2VH7/2VH7_rg_full.xvg --name "2VH7" --label "Human AcP" -x 2GV1/2GV1_rmsd_full.xvg -y 2GV1/2GV1_rg_full.xvg --name "2GV1" --label "E. coli AcP" -x 2ACY/2ACY_rmsd_full.xvg -y 2ACY/2ACY_rg_full.xvg --name "2ACY" --label "Bovine AcP" -x 1URR/1URR_rmsd_full.xvg -y 1URR/1URR_rg_full.xvg --name "1URR" --label "Fruit Fly AcP" -o AcP_FEL.html
 
-In the command above, remember to provide ``-x``, ``-y``, ``--name``, and  ``--label`` together before those for the next trajectory. The option ``--common`` instructs MD DaVis to create the four landscapes using identical ranges and binning. This allows us to reliably compare the landscapes. The output from the above command is shown below, click the image to view the interactive html file.
+In the command above, remember to provide ``-x``, ``-y``, ``--name``, and  ``--label`` together before those for the subsequent trajectory. The option ``--common`` instructs MD DaVis to create the four landscapes using identical ranges and binning, which allows us to compare the landscapes reliably. The output from the above command is shown below; click the image to view the interactive HTML file.
 
 .. image:: /_static/AcP_FEL.png
    :target: AcP_FEL.html
@@ -78,15 +78,15 @@ Electrostatic Potential and Electric Field Dynamics
     mkdir 2VH7/2VH7_electrostatics/
     gmx trjconv -f 2VH7/2VH7_trajectory.xtc -s 2VH7/2VH7_structure.pdb -o 2VH7/2VH7_electrostatics/2VH7_frame.pdb -dt 10000 -sep
 
-2. MD DaVis has the ``electrostatics`` command which is a wrapper for running DelPhi and reporting the electrostatic potential at the vertices of a triangulated surface obtained using `MSMS <http://mgl.scripps.edu/people/sanner/html/msms_home.html>`_
+2. MD DaVis has the ``electrostatics`` command, which is a wrapper for running DelPhi and reporting the electrostatic potential at the vertices of a triangulated surface obtained using `MSMS <http://mgl.scripps.edu/people/sanner/html/msms_home.html>`_
 
 .. code-block:: bash
 
     md_davis electrostatics --surface -m ~/msms_i86_64Linux2_2.6.1/msms.x86_64Linux2.2.6.1 -d ~/delphicpp_v8.4.5_serial -o 2VH7/2VH7_electrostatics/ 2VH7/2VH7_electrostatics/2VH7_frame*.pdb
 
-In the command above the MSMS directory and the Delphi executable are placed in the home folder. Adjust the path according to your system.
+In the command above, the MSMS directory and the DelPhi executable are placed in the home folder. Adjust the path according to your system.
 
-3. The electrostatic potential on the surface and the dynamics of electric field around the molecule can be visualized with the following command:
+3. The electrostatic potential on the surface and the dynamics of the electric field around the molecule can be visualized with the following command:
 
 .. code-block:: bash
 
@@ -104,11 +104,11 @@ Residue Properties Plot
     gmx sasa -f 2VH7/2VH7_trajectory.xtc -s 2VH7/2VH7_structure.pdb -o 2VH7/2VH7_sasa.xvg -or 2VH7/2VH7_resarea.xvg
     gmx do_dssp -f 2VH7/2VH7_trajectory.xtc -s 2VH7/2VH7_structure.pdb -o 2VH7/2VH7_dssp -ssdump 2VH7/2VH7_dssp -sc 2VH7/2VH7_dssp_count
 
-Repeat for the remaining trajectories. We are also going to plot the torsional flexibility, but that will be calculated by MD DaVis later.
+Repeat for the remaining trajectories. We will also plot the torsional flexibility, but that will be calculated by MD DaVis later.
 
-.. note:: For the ``gmx do_dssp`` command to work the ``dssp`` or ``mkdssp`` binary must be available on your system. Download it from ftp://ftp.cmbi.ru.nl/pub/software/dssp/ and ensure GROMACS can find it by setting the ``DSSP`` environment variable to point to its location on your system.
+.. note:: For the ``gmx do_dssp`` command to work, the ``dssp`` or ``mkdssp`` binary must be available on your system. Download it from ftp://ftp.cmbi.ru.nl/pub/software/dssp/ and ensure GROMACS can find it by setting the ``DSSP`` environment variable to point to its location on your system.
 
-2. Collect and store all the calculated properties into a HDF file. To do that first create a TOML file as shown below telling MD DaVis the location of each file
+2. Collect and store all the calculated properties into an HDF file. To do that, first, create a TOML file as shown below, telling MD DaVis the location of each file.
 
 .. code-block:: toml
 
@@ -137,9 +137,8 @@ Repeat for the remaining trajectories. We are also going to plot the torsional f
             start = 0
             end = 100
 
-Input toml files for each trajectory is provided with the tutorial files.
-
-Next, collate all the data using MD DaVis. MD DaVis can process multiple such TOML file at once for each system and create the respective HDF file.
+Input TOML file for each trajectory is provided with the tutorial files.
+Next, collate all the data using MD DaVis, which can process multiple TOML files and create the respective HDF file.
 
 .. code-block:: bash
 
@@ -165,7 +164,7 @@ Now, we can also align the residues of the different trajectories to align the p
 
     md_davis sequence 2VH7/2VH7_structure.pdb -r fasta
 
-2. Use a sequence alignment program or webserver like `Clustal Omega <https://www.ebi.ac.uk/Tools/msa/clustalo/>`_ or `T-coffee <https://www.ebi.ac.uk/Tools/msa/tcoffee/>`_ to obtain the alignment of these sequences in ClustalW format.
+2. Use a sequence alignment program or webservers like `Clustal Omega <https://www.ebi.ac.uk/Tools/msa/clustalo/>`_ or `T-coffee <https://www.ebi.ac.uk/Tools/msa/tcoffee/>`_ to obtain the alignment of these sequences in ClustalW format.
 
 .. code-block:: text
 
@@ -184,7 +183,7 @@ Now, we can also align the residues of the different trajectories to align the p
     2ACY_structure      MQEWLETKGSPKSHIDRASFHNEKVIVKLDYTDFQIVK	98
                         : .**:.    .:::.:.         .   :.* *
 
-3. create a TOML file to specify which alignment file corresponds to which chain and which sequence label corresponds to which data as shown below:
+3. Create a TOML file to specify which alignment file corresponds to which chain and which sequence label corresponds to which data, as shown below:
 
 .. code-block:: toml
 

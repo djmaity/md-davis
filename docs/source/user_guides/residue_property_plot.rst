@@ -12,8 +12,95 @@ The data obtained from multiple trajectories can be overlaid in a single interac
     * Mean and standard deviation for the total surface     electrostatic potential per residue
     * Mean and standard deviation for the mean surface electrostatic potential per residue
 
+It can also use an alignment to align the residue level data from different proteins along the x-axis. This ensures that the peaks line up properly for better interpretation.
+
+Traditionally, each time the analysis of MD trajectories are compared new statis plots have to be created.
+
+Conventional analysis requires plotting the data each time new properties are compared. This repetitive process is alleviated by making overlaid plots of all the informative residue propertie
 
 .. note:: the paths in the input toml file is relative to the location where the md_davis command will be called from. To avoid any confusion try using absolute paths.
 
 How to interact with the plot
 -----------------------------
+
+## Step 3: Plotting overlaid residue data
+**Step 3a:** Create a pickle file with the residue dataframe using:
+
+.. code-block:: bash
+
+    md_davis residue dataframe --prefix name1 output1.h5 data1.p
+
+The optional argument ``-a annotations.json`` can be provided to place a mark at certain residue locations. The contents of ``annotations.json`` should be of the following form:
+
+.. code-block:: toml
+
+    {
+        "chain 0": {"Active Site": [23, 41], "Substrate Binding Site": [56]},
+        "chain 1": {"Nucleotide Binding Regions": [15, 18]}
+    }
+
+Each type of annotation is rendered with a different mark. Following annotations are available at present:
+* Active Site
+* Nucleotide Binding Regions
+* NADP Binding Site
+* Substrate Binding Site
+* Metal Binding Site
+* Cofactor Binding Site
+* Mutation
+
+**Step 3b:** If your proteins are of different lengths and you need the peaks to be aligned, create a JSON file as shown below.
+
+.. code-block:: toml
+
+    {
+        "alignment": "path/to/alignment_file.clustal_num",
+        "locations": {
+            "name1": "name1_residue_wise_data.p",
+            "name2": "name2_residue_wise_data.p",
+            "name3": "name3_residue_wise_data.p"
+        },
+        "output": "acylphosphatase_residue_wise_data_aligned.p"
+    }
+
+
+The contents of the alignment file, ``alignment_file.clustal_num`` must be in CLUSTAL format; for example::
+
+    CLUSTAL O(1.2.4) multiple sequence alignment
+
+    name1      --STARPLKSVDYEVFGRVQGVCFRMYAEDEARKIGVVGWVKNTSKGTVTGQVQGPEEKV	58
+    name2      --------PRLVALVKGRVQGVGYRAFAQKKALELGLSGYAENLPDGRVEVVAEGPKEAL	52
+    name3      ---VAKQIFALDFEIFGRVQGVFFRKHTSHEAKRLGVRGWCMNTRDGTVKGQLEAPMMNL	57
+                            : *:**** :*  .  :. .  : *:  *   * *     .    :
+
+    name1      NSMKSWLSKVGSPSSRIDRTNFSNEKTISKLEYSNFSVRY	98
+    name2      ELFLHHLKQ--GPRLARVEAVEVQWGEE--AGLKGFHVY-	87
+    name3      MEMKHWLENNRIPNAKVSKAEFSQIQEIEDYTFTSFDIKH	97
+                :   :     *          :           * :
+
+
+**Step 3b:** Plot the residue data pickle file from the previous command using:
+
+.. code-block:: bash
+
+    md_davis plot residue data1.p data2.p
+
+
+
+Annotations
+-----------
+
+.. code-block:: toml
+
+    {
+        "chain 0": {"Active Site": [23, 41], "Substrate Binding Site": [56]},
+        "chain 1": {"Nucleotide Binding Regions": [15, 18]}
+    }
+
+Each type of annotation is rendered with a different mark. Following annotations are available at present:
+* Active Site
+* Nucleotide Binding Regions
+* NADP Binding Site
+* Substrate Binding Site
+* Metal Binding Site
+* Cofactor Binding Site
+* Mutation

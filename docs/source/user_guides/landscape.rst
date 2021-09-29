@@ -75,3 +75,19 @@ One must save the landscape created by ``landscape_xvg`` or ``landscape`` with t
     md_davis landscape animation landscapes.h5 -i 0 --static -o trajectory.html
 
 
+## Step 4: Free energy Landscapes
+
+### Create and plot free energy landscapes using common bins and ranges
+
+.. code-block:: bash
+
+    md_davis landscape rmsd_rg -T 300 --common --select backbone output1.h5 output2.h5 -s landscapes.h5
+
+This command will create an html file with the interactive landscapes. It will not open the file like other plotting commands, so check the working directory for the output html file.
+### Plot free energy landscape overlaid with trajectory points
+One must save the landscape created by the previous command with ``-s`` before this one can be used. Since the output generated for single landscape is big, visualization of multiple landscapes becomes impractical. So, it only plots one landscape at a time. Select the desired landscape in ``landscapes.h5`` by providing its index with ``-i``. By default only the first landscape is plotted
+
+
+.. code-block:: bash
+
+    md_davis landscape animation landscapes.h5 -i 0 --static -o trajectory.html

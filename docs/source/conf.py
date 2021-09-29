@@ -78,11 +78,8 @@ html_use_smartypants = True
 html_last_updated_fmt = '%b %d, %Y'
 html_split_index = False
 html_sidebars = {
-   '**': ['globaltoc.html', 'sidebar-ethical-ads.html']
+   '**': ['search-field.html', 'globaltoc.html', 'sidebar-nav-bs.html', 'sidebar-ethical-ads.html']
 }
-# html_sidebars = {
-#     "**": ["search-field.html", "sidebar-nav-bs.html",]
-# }
 html_short_title = '%s-%s' % (project, version)
 html_css_files = [
     'css/custom.css',
@@ -92,7 +89,7 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "GitHub",
-            "url": "https://github.com/djmaity/md_davis",
+            "url": "https://github.com/djmaity/md-davis",
             "icon": "fab fa-github-square",
         },
     ],
@@ -113,12 +110,12 @@ html_theme_options = {
             "href": "apple-touch-icon-180x180.png"
         },
     ],
-    "navbar_end": ["navbar-icon-links.html", "search-field.html"]
+    "navbar_end": ["navbar-icon-links.html"]
 }
 html_context = {
     # "github_url": "https://github.com", # or your GitHub Enterprise interprise
     "github_user": "djmaity",
-    "github_repo": "md_davis",
+    "github_repo": "md-davis",
     "github_version": "master",
     "doc_path": "docs/source",
 }

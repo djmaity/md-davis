@@ -6,15 +6,13 @@ MD DaVis
 [![PyPI Wheel][wheel-badge]][wheel-link]
 [![Supported versions][python-badge]][python-link]
 [![Commits since latest release][commits-badge]][commits-link]
-
-A tool for comparative analysis of molecular dynamics simulations of proteins.
-
-* Free software: [MIT license](https://github.com/djmaity/md-davis/blob/master/LICENSE)
-* Documentation: [https://md-davis.readthedocs.io](https://md-davis.readthedocs.io)
+[![MIT License][license-badge]][license-link]
 
 Introduction
 ------------
-MD DaVis is a tool to facilitate the comparative analysis of molecular dynamics simulations of proteins.
+MD DaVis is a tool for comparative analysis of molecular dynamics simulations of proteins.
+
+Documentation: [https://md-davis.readthedocs.io](https://md-davis.readthedocs.io)
 
 Features
 --------
@@ -23,6 +21,12 @@ Features
 3. Surface electrostatics
 4. Electric field dynamics
 5. H-bond/Contact matrix
+
+System Requirements
+-------------------
+
+* A 64-bit operating system
+* A Python 3 installation with version ≥ 3.7
 
 Installation
 ------------
@@ -46,9 +50,11 @@ For detailed installation instructions, see:
 [https://md-davis.readthedocs.io/en/latest/install.html](https://md-davis.readthedocs.io/en/latest/install.html)
 
 ### Dependencies
-* [PyMOL](https://pymol.org/2/)
+
+The following dependencies will have to be obtained separately.
 * [Delphi](http://compbio.clemson.edu/delphi)
 * [MSMS](http://mgltools.scripps.edu/downloads#msms)
+* [GROMACS](https://www.gromacs.org)
 
 Usage
 -----
@@ -71,11 +77,13 @@ Dibyajyoti Maity - [www.djmaity.com](http://www.djmaity.com)
 <!--  --------------------------------------------------------------------- -->
 [pypi-badge]: https://img.shields.io/pypi/v/md-davis.svg
 [pypi-link]: https://pypi.org/project/md-davis
-[docs-badge]: https://readthedocs.org/projects/md-davis/badge/?style=flat
-[docs-link]: https://md-davis.readthedocs.io/
+[docs-badge]: https://readthedocs.org/projects/md-davis/badge/?version=latest
+[docs-link]: https://md-davis.readthedocs.io/en/latest/
 [wheel-badge]: https://img.shields.io/pypi/wheel/md-davis.svg
 [wheel-link]: https://pypi.org/project/md-davis
 [python-badge]: https://img.shields.io/pypi/pyversions/md-davis.svg
 [python-link]: https://pypi.org/project/md-davis
 [commits-badge]: https://img.shields.io/github/last-commit/djmaity/md-davis
 [commits-link]: https://github.com/djmaity/md-davis/
+[license-badge]: https://img.shields.io/pypi/l/md-davis
+[license-link]: https://github.com/djmaity/md-davis/blob/master/LICENSE

@@ -4,15 +4,13 @@ Contributing
 Contributions are welcome, and they are greatly appreciated! Every little bit
 helps, and credit will always be given.
 
-You can contribute in many ways:
-
 Types of Contributions
 ----------------------
 
 Report Bugs
 ^^^^^^^^^^^
 
-When `reporting a bug <https://github.com/djmaity/md_davis/issues>`_ please include:
+When `reporting a bug <https://github.com/djmaity/md-davis/issues>`_ please include:
 
 * Your operating system name and version.
 * Any details about your local setup that might be helpful in troubleshooting.
@@ -40,7 +38,7 @@ articles, and such.
 Feature Requests and Feedback
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The best way to send feedback is to file an `issue <https://github.com/djmaity/md_davis/issues>`_.
+The best way to send feedback is to file an `issue <https://github.com/djmaity/md-davis/issues>`_.
 
 If you are proposing a feature:
 
@@ -50,112 +48,130 @@ If you are proposing a feature:
   are welcome :)
 
 
-## Development
+Development
+-----------
+..
+    To run all the tests run::
 
-To run all the tests run::
+        tox
 
-    tox
+    Note, to combine the coverage data from all the tox environments run:
 
-Note, to combine the coverage data from all the tox environments run:
+    .. list-table::
+        :widths: 10 90
+        :stub-columns: 1
 
-.. list-table::
-    :widths: 10 90
-    :stub-columns: 1
+        - - Windows
+          - ::
 
-    - - Windows
-      - ::
+                set PYTEST_ADDOPTS=--cov-append
+                tox
 
-            set PYTEST_ADDOPTS=--cov-append
-            tox
+        - - Other
+          - ::
 
-    - - Other
-      - ::
-
-            PYTEST_ADDOPTS=--cov-append tox
+                PYTEST_ADDOPTS=--cov-append tox
 
 
-Development Environment
-^^^^^^^^^^^^^^^^^^^^^^^
+    Development Environment
+    ^^^^^^^^^^^^^^^^^^^^^^^
 
-To set up `md_davis` for local development:
+Create the development environment and install the dependencies using the
+`dev_environment.yml <https://github.com/djmaity/md-davis/blob/master/dev_environment.yml>`_ file.
+This installs packages for linting, packaging and building documentation in addition to the core dependencies.
 
-1. Fork `md_davis <https://github.com/djmaity/md_davis>`_ (look for the "Fork" button).
+.. code-block:: bash
 
-2. Clone your fork locally::
+    conda env create -f dev_environment.yml -n md_davis_dev
+    conda activate md_davis_dev
 
-    git clone git@github.com:YOURGITHUBNAME/md_davis.git
+Install md-davis in editable mode:
 
-3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development::
+.. code-block:: bash
 
-    $ mkvirtualenv md_davis
-    $ cd md_davis/
-    $ python setup.py develop
+    pip install -e md-davis
 
-4. Create a branch for local development::
+..
+    To set up `md_davis` for local development:
 
-    git checkout -b name-of-your-bugfix-or-feature
+    1. Fork `md_davis <https://github.com/djmaity/md_davis>`_ (look for the "Fork" button).
 
-   Now you can make your changes locally.
+    2. Clone your fork locally::
 
-5. When you're done making changes, check that your changes pass flake8, doc builder and the
-   tests, including testing other Python versions with tox::
+        git clone git@github.com:YOURGITHUBNAME/md_davis.git
 
-    $ flake8 md_davis tests
-    $ python setup.py test or py.test
-    $ tox
+    3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development::
 
-   To get flake8 and tox, just pip install them into your virtualenv.
+        $ mkvirtualenv md_davis
+        $ cd md_davis/
+        $ python setup.py develop
 
-6. Commit your changes and push your branch to GitHub::
+    4. Create a branch for local development::
 
-    git add .
-    git commit -m "Your detailed description of your changes."
-    git push origin name-of-your-bugfix-or-feature
+        git checkout -b name-of-your-bugfix-or-feature
 
-7. Submit a pull request through the GitHub website.
+       Now you can make your changes locally.
 
-Pull Request Guidelines
-^^^^^^^^^^^^^^^^^^^^^^^
+    5. When you're done making changes, check that your changes pass flake8, doc builder and the
+       tests, including testing other Python versions with tox::
 
-If you need some code review or feedback while you're developing the code
-just make the pull request. Before you submit a pull request, check that
-it meets these guidelines:
+        $ flake8 md_davis tests
+        $ python setup.py test or py.test
+        $ tox
 
-1. The pull request should include passing tests (run ``tox``).
+       To get flake8 and tox, just pip install them into your virtualenv.
 
-2. If the pull request adds functionality, the docs should be updated. Put
-   your new functionality into a function with a docstring, and add the
-   feature to the list in README.rst.
-   
-3. The pull request should work for Python 2.7, 3.4, 3.5 and 3.6, and for PyPy. Check
-   https://travis-ci.org/djmaity/md_davis/pull_requests
-   and make sure that the tests pass for all supported Python versions.
-   
-4. Add a note to ``HISTORY.rst`` about the changes.
+    6. Commit your changes and push your branch to GitHub::
 
-5. Add yourself to authors in ``README.md``.
+        git add .
+        git commit -m "Your detailed description of your changes."
+        git push origin name-of-your-bugfix-or-feature
 
-Tips
-^^^^
+    7. Submit a pull request through the GitHub website.
 
-To run a subset of tests::
 
-    tox -e envname -- pytest -k test_myfeature
+    Pull Request Guidelines
+    ^^^^^^^^^^^^^^^^^^^^^^^
 
-To run all the test environments in *parallel*::
+    If you need some code review or feedback while you're developing the code
+    just make the pull request. Before you submit a pull request, check that
+    it meets these guidelines:
 
-    tox -p auto
+    1. The pull request should include passing tests (run ``tox``).
 
-Deploying
-^^^^^^^^^
+    2. If the pull request adds functionality, the docs should be updated. Put
+       your new functionality into a function with a docstring, and add the
+       feature to the list in README.rst.
 
-A reminder for the maintainers on how to deploy.
-Make sure all your changes are committed (including an entry in HISTORY.rst).
-Then run::
+    3. The pull request should work for Python 3.7, 3.8 and 3.9, and for PyPy. Check
+       https://travis-ci.org/djmaity/md_davis/pull_requests
+       and make sure that the tests pass for all supported Python versions.
 
-$ bumpversion patch # possible: major / minor / patch
-$ git push
-$ git push --tags
+    4. Add a note to HISTORY.rst about the changes.
 
-Travis will then deploy to PyPI if tests pass.
+    5. Add yourself to authors in README.md.
+
+    Tips
+    ^^^^
+
+    To run a subset of tests::
+
+        tox -e envname -- pytest -k test_myfeature
+
+    To run all the test environments in *parallel*::
+
+        tox -p auto
+
+    Deploying
+    ^^^^^^^^^
+
+    A reminder for the maintainers on how to deploy.
+    Make sure all your changes are committed (including an entry in HISTORY.rst).
+    Then run::
+
+    $ bumpversion patch     # possible: major / minor / patch
+    $ git push
+    $ git push --tags
+
+    Travis will then deploy to PyPI if tests pass.
 

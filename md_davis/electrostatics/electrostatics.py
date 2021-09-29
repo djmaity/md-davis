@@ -26,6 +26,7 @@ import os
 import click
 import subprocess
 import pandas
+import warnings
 
 
 def dir_path(path):
@@ -114,6 +115,12 @@ def parse_electrostatic_potential(potential_file):
                          ],
                          widths=[5, 3, 3, 9, 10, 10, 10, 10, 10, 10]
     )
+
+    if df['chainID'].isnull().values.any():
+        warnings.warn('Chain ID missing. '
+                      'Results may be incorrect for multichain proteins. '
+                      'Check if the structure had proper chain IDs')
+
     df['chainID'].fillna('A', inplace=True)
     output = {}
     chain = 0

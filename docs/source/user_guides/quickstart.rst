@@ -1,41 +1,47 @@
-Molecular dynamics (MD) simulations are indispensable for gaining atomistic insights into the biomolecular function. MD of increasingly larger proteins has become accessible to researchers with recent advancements in computing and MD algorithms. However, the analysis of MD trajectories remains tedious. MD DaVis (Molecular Dynamics Data Visualizer) is a tool and Python 3 package to facilitate quick comparative analysis of MD trajectories of similar proteins or the same protein under different conditions. Furthermore, the ability to present the data in useful interactive visualizations provides enormous time savings.
-
- Unique calculations like free energy land-scapes, hydrogen bond (H-bond) or contact matrices, surface electrostat-ic potential per residue, and 3D electric field dynamics set MD DaVis apart from the rest.
-
-MD DaVis uses plotly, a powerful data visualization and graphing li-brary in Python with excellent support for 3D plots (https://plotly.com/python/, Collaborative Data Science, 2015). However, plotly often requires hundreds of lines of code to generate useful interac-tive plots. Therefore, using MD DaVis makes it easy, saving a considera-ble amount of time and effort. In addition, MD DaVis plots are output as HTML documents that can be viewed in any modern browser. However, the drawback of incorporating too much data into HTML is that it makes them large and slow to load.
-
-
-The two most popular libraries for analysis of MDTraj or MDAnalysis
-
-MD Davis generally does not reimplement analysis already available elsewhere.
-
-. MD DaVis uses MDTraj to calculate the backbone torsion angles from trajectories and PyMOL to visualize 3D electric field dynamics. It also relies on the powerful analysis tools already available in GROMACS. MD DaVis provides an easy way of making helpful visualization from the output of GROMACS tools like rms, rmsf, rg, sasa, do_dssp, hbond since these have performance far greater than that which is achievable by pure Py-thon code. Trajectories from other MD software may be analyzed or converted to GROMACS trajectories using MDTraj before using MD DaVis.
-
-
-There are many programs available for analysis of MD trajectories, e.g., MDTraj (McGibbon et al., 2015), MDAnalysis (Michaud-Agrawal et al., 2011), MD-TASK (Brown et al., 2017), TRAVIS (Brehm and Kirch-ner, 2011), MDTRA (Popov et al., 2013), Bio3d (Grant et al., 2006) and MDplot (Margreitter and Oostenbrink, 2017). Some MD software like GROMACS (Berendsen et al., 1995)  and AMBER (Case et al., 2020) also bundle analysis tools. However, the output from most of these pro-grams has to be visualized using another plotting library requiring a sig-nificant amount of coding.
-
 Quick Start
 ===========
 
-Step 1: Calculate the required quantities using GROMACS.
---------------------------------------------------------
+Getting Help
+------------
+
+help for each command in MD Davis can be accessed with ``--help`` or ``-h``, for example:
+
+.. code-block:: bash
+
+    md_davis -h
+
+Usage
+-----
+
+To use MD DaVis in a project
+
+.. code:: python
+
+    import md_davis
+
+Step 1: Calculate the required quantities using GROMACS
+-------------------------------------------------------
 
 Root mean squared deviation (RMSD) and radius of gyration are not required for creating overlaid residue plot, but they would be used to create energy landscapes. Ensure that the processed trajectory and structures are provided, in which the periodic boundary have been corrected for.
-### Root mean squared deviation (RMSD)
+
+Root mean squared deviation (RMSD)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 The structure provided here will be used as the reference for calculating RMSD of the trajectory.
 
 .. code-block:: bash
 
     gmx rms -f trajectory.trr -s structure.gro -o rmsd.xvg
 
-Radius of gyration
-^^^^^^^^^^^^^^^^^^
+Radius of gyration (R\ :sub:`G`\)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: bash
 
     gmx gyrate -f trajectory.trr -s structure.gro -o rg.xvg
 
-### Root mean squared fluctuation (RMSF)
+Root mean squared fluctuation (RMSF)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: bash
 
@@ -81,13 +87,8 @@ For the GROMACS command ``do_dssp`` to work the DSSP binary must be available on
 | ~    | Loop                 |
 +------+----------------------+
 
-Step2: Create HDF file with all the data
-----------------------------------------
-
-All the data from a simulation are collected into a single HDF5 file for
-easy and organized storage. The benefit of using a common binary format
-like `HDF5 <https://www.hdfgroup.org/solutions/hdf5/>`_ is that data access is much faster than storing in text files
-and later many functions can be written in C, C++ or other languages
+Step 2: Collate into HDF5 file
+---------------------------------------------
 
 **Step 2a:** Obtain the sequence of the protein from the PDB file used to start the simulation.
 
