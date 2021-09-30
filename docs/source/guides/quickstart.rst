@@ -1,5 +1,5 @@
-Quick Start
-===========
+Quickstart
+==========
 
 Getting Help
 ------------

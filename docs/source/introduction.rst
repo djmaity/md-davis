@@ -17,7 +17,7 @@ Features of MD DaVis
 .. panels::
    :body: text-center
 
-   .. link-button:: user_guides/landscape
+   .. link-button:: guides/free_energy_landscapes
       :type: ref
       :text: Free Energy Landscapes
       :classes: stretched-link font-weight-bold
@@ -27,7 +27,7 @@ Features of MD DaVis
 
    ---
 
-   .. link-button:: user_guides/residue_property_plot
+   .. link-button:: guides/residue_property_plot
       :type: ref
       :text: Residue Properties Plot
       :classes: stretched-link font-weight-bold
@@ -37,7 +37,7 @@ Features of MD DaVis
 
    ---
 
-   .. link-button:: user_guides/electrostatics
+   .. link-button:: guides/surface_electrostatics
       :type: ref
       :text: Surface Electrostatics
       :classes: stretched-link font-weight-bold
@@ -47,7 +47,7 @@ Features of MD DaVis
 
    ---
 
-   .. link-button:: user_guides/index
+   .. link-button:: guides/electric_field_dynamics
       :type: ref
       :text: Electric Field Dynamics
       :classes: stretched-link font-weight-bold
@@ -57,22 +57,12 @@ Features of MD DaVis
 
    ---
 
-   .. link-button:: user_guides/contacts
+   .. link-button:: guides/hbond_or_contact_matrix
       :type: ref
       :text: H-bond / Contact Matrix
       :classes: stretched-link font-weight-bold
 
    .. image:: /_static/2VH7_hbond_matrix.png
-      :alt: H-bond matrix
-
-   ---
-
-   .. link-button:: user_guides/index
-      :type: ref
-      :text: Checkout the user guide for more features
-      :classes: stretched-link font-weight-bold
-
-   .. image:: /_static/user_guide.png
       :alt: H-bond matrix
 
 Molecular Dynamics Analysis Tools

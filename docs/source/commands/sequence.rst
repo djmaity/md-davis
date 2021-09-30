@@ -1,5 +1,5 @@
-Obtain the sequence from PDB file
-=================================
+md_davis sequence
+=================
 
 **Step 2a:** Obtain the sequence of the protein from the PDB file used to start the simulation.
 

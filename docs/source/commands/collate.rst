@@ -1,5 +1,5 @@
-Collate Data into HDF5 File
-===========================
+md_davis collate
+================
 
 All the data from a simulation are collected into a single HDF5 file for
 easy and organized storage. The benefit of using a common binary format

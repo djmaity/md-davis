@@ -1,5 +1,5 @@
-Plotting xmgrace (.xvg) files
-=============================
+md_davis xvg
+============
 
 The GROMACS molecular dynamics software bundles numerous analysis tools. The
 output from these are in (.xvg) format to be viewed with xmgrace. Although

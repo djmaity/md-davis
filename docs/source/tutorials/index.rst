@@ -2,7 +2,7 @@ Tutorials
 =========
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
 
-   acylphosphatase
-   hemoglobin
+    acylphosphatase
+    hemoglobin

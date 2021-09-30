@@ -9,14 +9,13 @@ Documentation
 -------------
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
+    :glob:
 
-   introduction
-   install
-   user_guides/index
-   tutorials/index
-   contributing
-   history
+    introduction
+    guides/index
+    tutorials/index
+    commands/index
 
 Indices and tables
 ------------------

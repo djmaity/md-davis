@@ -78,7 +78,7 @@ html_use_smartypants = True
 html_last_updated_fmt = '%b %d, %Y'
 html_split_index = False
 html_sidebars = {
-   '**': ['search-field.html', 'globaltoc.html', 'sidebar-nav-bs.html', 'sidebar-ethical-ads.html']
+   '**': ['search-field.html', 'globaltoc.html', 'sidebar-ethical-ads.html']
 }
 html_short_title = '%s-%s' % (project, version)
 html_css_files = [

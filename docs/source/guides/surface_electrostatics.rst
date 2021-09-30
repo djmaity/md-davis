@@ -1,5 +1,5 @@
-How to calculate surface electrostatics using MD DaVis?
-=======================================================
+Surface Electrostatic Potential Per Residue
+===========================================
 
 Usually, the distribution of electrostatic potential around a protein mole-cule is visualized by solving the Poisson-Boltzmann equation and color-ing the molecular surface with obtained electrostatic potentials, which can be compared qualitatively. MD DaVis provides a wrapper to calcu-late the electrostatic potential on the vertices of a triangulated molecular surface and extract the total and mean surface electrostatic potential per residue, enabling a quantitative comparison. DelPhi versions later than 8.0 (Li et al., 2019) can calculate the electrostatic potential at user-specified points, which was leveraged to calculate the surface electrostat-ic potential at each residue. The steps involved are as follows:
 1.	Calculate the triangulated molecular surface using the MSMS program (Sanner et al., 1996).
