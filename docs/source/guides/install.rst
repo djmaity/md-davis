@@ -61,7 +61,9 @@ MD DaVis can be installed on Linux with:
 Windows Installation
 --------------------
 
-On Windows, ``pip`` may fail to install MD DaVis due to errors with compiling dependencies. Please follow the instructions under :ref:`Conda Installation`.
+On Windows, ``pip`` may fail to install MD DaVis due to errors with
+compiling dependencies. Please follow the instructions under :ref:`Conda
+Installation`.
 
 Development Version
 -------------------

@@ -9,7 +9,7 @@ MD DaVis (Molecular Dynamics Data Visualizer) is a tool and Python 3 package to 
 There are many :ref:`MD analysis tools <Molecular Dynamics Analysis Tools>`.
 However, the output from most has to be visualized using another plotting library requiring a significant amount of coding.
 The MD DaVis package provides a command-line tool to create helpful interactive visualizations easily.
-The tool can increase the productivity of researchers using MD simulations and make the analysis of such simulations accessible to everyone.
+The tool can increase the productivity of researchers simulating protein using MD and make the analysis of such simulations accessible to everyone.
 
 Features of MD DaVis
 --------------------

@@ -63,19 +63,8 @@ Each type of annotation is rendered with a different mark. Following annotations
     }
 
 
-The contents of the alignment file, ``alignment_file.clustal_num`` must be in CLUSTAL format; for example::
-
-    CLUSTAL O(1.2.4) multiple sequence alignment
-
-    name1      --STARPLKSVDYEVFGRVQGVCFRMYAEDEARKIGVVGWVKNTSKGTVTGQVQGPEEKV	58
-    name2      --------PRLVALVKGRVQGVGYRAFAQKKALELGLSGYAENLPDGRVEVVAEGPKEAL	52
-    name3      ---VAKQIFALDFEIFGRVQGVFFRKHTSHEAKRLGVRGWCMNTRDGTVKGQLEAPMMNL	57
-                            : *:**** :*  .  :. .  : *:  *   * *     .    :
-
-    name1      NSMKSWLSKVGSPSSRIDRTNFSNEKTISKLEYSNFSVRY	98
-    name2      ELFLHHLKQ--GPRLARVEAVEVQWGEE--AGLKGFHVY-	87
-    name3      MEMKHWLENNRIPNAKVSKAEFSQIQEIEDYTFTSFDIKH	97
-                :   :     *          :           * :
+The contents of the alignment file, ``alignment_file.clustal_num`` must be
+in CLUSTAL format.
 
 
 **Step 3b:** Plot the residue data pickle file from the previous command using:
@@ -85,22 +74,23 @@ The contents of the alignment file, ``alignment_file.clustal_num`` must be in CL
     md_davis plot residue data1.p data2.p
 
 
+..
 
-Annotations
------------
+    Annotations
+    -----------
 
-.. code-block:: toml
+    .. code-block:: toml
 
-    {
-        "chain 0": {"Active Site": [23, 41], "Substrate Binding Site": [56]},
-        "chain 1": {"Nucleotide Binding Regions": [15, 18]}
-    }
+        {
+            "chain 0": {"Active Site": [23, 41], "Substrate Binding Site": [56]},
+            "chain 1": {"Nucleotide Binding Regions": [15, 18]}
+        }
 
-Each type of annotation is rendered with a different mark. Following annotations are available at present:
-* Active Site
-* Nucleotide Binding Regions
-* NADP Binding Site
-* Substrate Binding Site
-* Metal Binding Site
-* Cofactor Binding Site
-* Mutation
+    Each type of annotation is rendered with a different mark. Following annotations are available at present:
+    * Active Site
+    * Nucleotide Binding Regions
+    * NADP Binding Site
+    * Substrate Binding Site
+    * Metal Binding Site
+    * Cofactor Binding Site
+    * Mutation

@@ -1,12 +1,13 @@
 MD DaVis
 ========
 
+[![Supported versions][python-badge]][python-link]
 [![PyPI Package latest release][pypi-badge]][pypi-link]
 [![Documentation Status][docs-badge]][docs-link]
 [![PyPI Wheel][wheel-badge]][wheel-link]
-[![Supported versions][python-badge]][python-link]
-[![Commits since latest release][commits-badge]][commits-link]
 [![MIT License][license-badge]][license-link]
+[![Commits since latest release][commits-badge]][commits-link]
+[![DOI][zenodo-badge]][zenodo-link]
 
 Introduction
 ------------
@@ -85,5 +86,7 @@ Dibyajyoti Maity - [www.djmaity.com](http://www.djmaity.com)
 [python-link]: https://pypi.org/project/md-davis
 [commits-badge]: https://img.shields.io/github/last-commit/djmaity/md-davis
 [commits-link]: https://github.com/djmaity/md-davis/
-[license-badge]: https://img.shields.io/pypi/l/md-davis
+[license-badge]: https://img.shields.io/pypi/l/md-davis?color=success
 [license-link]: https://github.com/djmaity/md-davis/blob/master/LICENSE
+[zenodo-badge]: https://zenodo.org/badge/186578728.svg
+[zenodo-link]: https://zenodo.org/badge/latestdoi/186578728

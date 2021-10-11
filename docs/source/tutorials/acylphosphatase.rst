@@ -15,10 +15,11 @@ In this tutorial, we shall analyze the molecular dynamics (MD) trajectories of f
 | 1URR       | Fruit Fly |
 +------------+-----------+
 
+Download the data from :target:`acylphosphatase.tar.gz`
 If you are new to running MD simulations using GROMACS, please refer to the legendary GROMACS tutorial `Lysozyme in Water <http://www.mdtutorials.com/gmx/lysozyme/index.html>`_ by Dr. Justin A. Lemkul at http://www.mdtutorials.com/.
 
-RMSD and R\ :sub:`G`\
----------------------
+RMSD and R\ :sub:`G`
+--------------------
 Often the first step after a successful MD simulation is to calculate the root-mean-square deviation (RMSD) and radius of gyration (R\ :sub:`G`\ ). In GROMACS, these can be calculated using `gmx rms`_ and `gmx gyrate`_, respectively.
 
 .. code-block:: bash
@@ -26,7 +27,8 @@ Often the first step after a successful MD simulation is to calculate the root-m
     gmx rms -f 2VH7/2VH7_trajectory.xtc -s 2VH7/2VH7_structure.pdb -o 2VH7/2VH7_rmsd
     gmx gyrate -f 2VH7/2VH7_trajectory.xtc -s 2VH7/2VH7_structure.pdb -o 2VH7/2VH7_rg
 
-2VH7_rmsd.xvg and 2VH7_rg.xvg are text files containing the RMSD and R\ :sub:`G`\ , respectively. Repeat the process for all the other trajectories.
+2VH7_rmsd.xvg and 2VH7_rg.xvg are text files containing the RMSD and R\
+:sub:`G`\ , respectively. Repeat the process for all the other trajectories.
 
 .. note:: If you have installed MD DaVis in a virtual or conda environment as suggested in the installation instructions, make sure to activate it before running the ``md_davis`` commands.
 
