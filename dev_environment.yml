@@ -36,3 +36,4 @@ dependencies:
   - myst-parser
   - pydata-sphinx-theme
   - sphinx-panels
+  - sphinx-click

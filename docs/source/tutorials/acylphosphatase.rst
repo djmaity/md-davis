@@ -15,8 +15,12 @@ In this tutorial, we shall analyze the molecular dynamics (MD) trajectories of f
 | 1URR       | Fruit Fly |
 +------------+-----------+
 
-Download the data from :target:`acylphosphatase.tar.gz`
-If you are new to running MD simulations using GROMACS, please refer to the legendary GROMACS tutorial `Lysozyme in Water <http://www.mdtutorials.com/gmx/lysozyme/index.html>`_ by Dr. Justin A. Lemkul at http://www.mdtutorials.com/.
+Download the data from `acylphosphatase.tar.gz <https://github.com/djmaity/md-davis/blob/master/tests/test_data/acylphosphatase.tar.gz?raw=true>`_
+
+If you are new to running MD simulations using GROMACS, please refer to the
+legendary GROMACS tutorial
+`Lysozyme in Water <http://www.mdtutorials.com/gmx/lysozyme/index.html>`_
+by Dr. Justin A. Lemkul at http://www.mdtutorials.com/.
 
 RMSD and R\ :sub:`G`
 --------------------

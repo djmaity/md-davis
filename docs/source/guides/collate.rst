@@ -15,6 +15,15 @@ It uses HDF5 file format to store the heterogeneous data obtained from consolida
 
 If file exists delete it
 
+**Step 2a:** Obtain the sequence of the protein from the PDB file used to start the simulation.
+
+.. code-block:: bash
+
+    md_davis sequence structure_used_for_simulation.pdb
+
+The most important property here is the **sequence**, which tells ``md_davis
+collect`` of the number of chains in the molecule and the number of residues in each chain. The **short_html** will determine the labels for the data in the final plots. This file is named ``information.json`` in the next command.z
+
 **Step 2b:** Provide this sequence in JSON file below, along with a few other properties. Note that for multi-chain proteins the sequence for each chain would be separated by a '/'.
 
 .. code-block:: toml

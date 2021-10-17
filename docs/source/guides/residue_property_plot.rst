@@ -75,7 +75,6 @@ in CLUSTAL format.
 
 
 ..
-
     Annotations
     -----------
 
@@ -94,3 +93,57 @@ in CLUSTAL format.
     * Metal Binding Site
     * Cofactor Binding Site
     * Mutation
+
+
+Note the numbers at the end of the ``--rmsf`` options are the start and end
+time for the RMSF calculation in nanosecond. These will be inserted as
+attributes in the HDF file and must be provided. In case, the RMSF for each
+chain was calculated separately, the files may be provided to ``--rmsf``
+option in the correct order followed by the start and end times.
+
+The optional argument ``-a annotations.json`` can be provided to place a mark at certain residue locations. The contents of ``annotations.json`` should be of the following form:
+
+.. code-block:: toml
+
+    {
+        "chain 0": {"Active Site": [23, 41], "Substrate Binding Site": [56]},
+        "chain 1": {"Nucleotide Binding Regions": [15, 18]}
+    }
+
+Each type of annotation is rendered with a different mark. Following annotations are available at present:
+* Active Site
+* Nucleotide Binding Regions
+* NADP Binding Site
+* Substrate Binding Site
+* Metal Binding Site
+* Cofactor Binding Site
+* Mutation
+
+**Step 3b:** If your proteins are of different lengths and you need the peaks to be aligned, create a JSON file as shown below.
+
+.. code-block:: toml
+
+    {
+        "alignment": "path/to/alignment_file.clustal_num",
+        "locations": {
+            "name1": "name1_residue_wise_data.p",
+            "name2": "name2_residue_wise_data.p",
+            "name3": "name3_residue_wise_data.p"
+        },
+        "output": "acylphosphatase_residue_wise_data_aligned.p"
+    }
+
+The contents of the alignment file, ``alignment_file.clustal_num`` must be in CLUSTAL format; for example::
+
+    CLUSTAL O(1.2.4) multiple sequence alignment
+
+    name1      --STARPLKSVDYEVFGRVQGVCFRMYAEDEARKIGVVGWVKNTSKGTVTGQVQGPEEKV	58
+    name2      --------PRLVALVKGRVQGVGYRAFAQKKALELGLSGYAENLPDGRVEVVAEGPKEAL	52
+    name3      ---VAKQIFALDFEIFGRVQGVFFRKHTSHEAKRLGVRGWCMNTRDGTVKGQLEAPMMNL	57
+                            : *:**** :*  .  :. .  : *:  *   * *     .    :
+
+    name1      NSMKSWLSKVGSPSSRIDRTNFSNEKTISKLEYSNFSVRY	98
+    name2      ELFLHHLKQ--GPRLARVEAVEVQWGEE--AGLKGFHVY-	87
+    name3      MEMKHWLENNRIPNAKVSKAEFSQIQEIEDYTFTSFDIKH	97
+                :   :     *          :           * :
+

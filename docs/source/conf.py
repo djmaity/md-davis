@@ -45,6 +45,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'myst_parser',
     'sphinx_panels',
+    'sphinx_click',
 ]
 
 autosummary_generate = True  # Turn on sphinx.ext.autosummary

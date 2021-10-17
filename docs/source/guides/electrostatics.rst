@@ -26,7 +26,7 @@ information into the analysis. The steps involved are as follows:
     are aligned to reduce discrepancy caused by grid selection during
     electrostatics calculation.
 
-#.  Use :ref:`md_davis electrostatics` to run MSMS and DelPhi on each PDB file.
+#.  Use ``md_davis electrostatics`` to run MSMS and DelPhi on each PDB file.
 
     .. code-block::
 
@@ -86,3 +86,85 @@ information into the analysis. The steps involved are as follows:
     was observed for buried residues in multimeric proteins. DelPhi uses a
     different dielectric constant for the molecule's interior, so the potential
     on these residues was very high.
+
+
+
+
+.. code-block:: bash
+
+    md_davis electrostatics --surface -m <MSMS_EXECUTABLE> -d <DELPHI_EXECUTABLE> -o <OUTPUT_DIRECTORY> [PDB_FILES]
+
+``md_davis electrostatics`` is a wrapper for running
+`Delphi <http://compbio.clemson.edu/delphi>`_ and reporting
+the electrostatic potential at the vertices of a triangulated surface obtained using
+`MSMS <http://mgl.scripps.edu/people/sanner/html/msms_home.html>`_. Therefore, these must
+be installed for this command to work, which may be downloaded from
+http://compbio.clemson.edu/delphi and
+http://mgltools.scripps.edu/downloads#msms, respectively.
+
+The default parameters used for running Delphi are:
+
+* 2000 linear interations
+* maximum change in potential of 10\ :sup:`-10` kT/e.
+* The salt concentration is set to 0.15 M
+* solvent dielectric value of 80 (dielectric of water)
+
+If you want to use different set of parameters, you may run Delphi without
+the md
+
+The atomic charges and radii from the CHARMM force field are provided by
+default. The parameter files containing the atomic charges and radii for
+DelPhi are available at:
+http://compbio.clemson.edu/downloadDir/delphi/parameters.tar.gz
+
+The output potential map is saved in the cube file format (used by Gaussian
+software); the other formats do not load in molecular visualization software.
+
+
+
+The following charge and radius files are provided with the source code for
+MD DaVis.
+
+    ``md_davis/md_davis/electrostatics/charmm.crg``
+    ``md_davis/md_davis/electrostatics/charmm.siz``
+
+If you receive a warning during Delphi run regarding missing charge or
+radius. Then the missing properties must be added to these files or
+whichever files you provide to ``md_davis electrostatics``.
+
+
+
+Electric Field Dynamics
+=======================
+
+The electrostatic potentials calculated in :ref:`Surface Electrostatic
+Potential Per Residue` can be visualized as a 3D animation of
+electric field lines using:
+
+.. code-block:: bash
+
+    md_davis electrodynamics --ss_color --surface --name Human_AcP 2VH7/2VH7_electrostatics
+
+This creates a `PyMOL <https://pymolwiki.org/>`_ session with the
+conformations as frames in the animation as shown below:
+
+.. image:: /_static/2VH7_electrodynamics.webp
+
+1. The coordinates of the reference structure are translated to place the
+   center of mass of the molecule at the origin and rotated so that the first,
+   second, and third principal axes are along the x, y, and z-axes,
+   respectively.
+
+2. The frames sampled from the trajectory are aligned to the reference.
+
+3. The electrostatic potentials are obtained for each sampled structure
+   using Delphi. The box for each calculation is centered at the origin, and
+   the number of grid points is manually set to the same value for each
+   structure to ensure the same box size during each calculation.
+
+4. The surface electrostatic potentials calculated per residue or atom are
+   written into the output PDB file's B-factor or occupancy column.
+
+5. The output PDB file and the corresponding electric field from the sample
+   are visualized as frames in PyMOL (Schrödinger, LLC, 2015), which can
+   animate the dynamics of the electric field lines.

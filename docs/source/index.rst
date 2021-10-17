@@ -15,7 +15,7 @@ Documentation
     introduction
     guides/index
     tutorials/index
-    commands/index
+    commands
 
 Indices and tables
 ------------------

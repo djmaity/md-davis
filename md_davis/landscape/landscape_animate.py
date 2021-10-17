@@ -242,8 +242,8 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.option('--orthographic/--perspective', default=False,
               help='Orthographic projection for 3D plots')
 @click.option('--axis_labels',
-              default=dict(x=' <br>RMSD (in  Å)',
-                           y=' <br>Rg (in  Å)',
+              default=dict(x=' <br>RMSD (in nm)',
+                           y=' <br>Rg (in nm)',
                            z='Free Energy (kJ mol<sup>-1</sup>)<br> '),
               help='A dictionary of strings specifying the labels for '
                    'the x, y and z-axis')
@@ -277,8 +277,8 @@ def main(hdf_file, output, static=True, select=None, begin=0, end=None, step=1,
     data = numpy.array(data)
 
     if axis_labels is None:
-        axis_labels = dict(x=' <br>RMSD (in  Å)',
-                           y=' <br>Rg (in  Å)',
+        axis_labels = dict(x=' <br>RMSD (in nm)',
+                           y=' <br>Rg (in nm)',
                            z='Free Energy (kJ mol<sup>-1</sup>)<br> ')
     else:
         if isinstance(axis_labels, str):

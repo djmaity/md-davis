@@ -37,7 +37,7 @@ Features of MD DaVis
 
    ---
 
-   .. link-button:: guides/surface_electrostatics
+   .. link-button:: Surface Electrostatic Potential Per Residue
       :type: ref
       :text: Surface Electrostatics
       :classes: stretched-link font-weight-bold
@@ -47,7 +47,7 @@ Features of MD DaVis
 
    ---
 
-   .. link-button:: guides/electric_field_dynamics
+   .. link-button:: Electric Field Dynamics
       :type: ref
       :text: Electric Field Dynamics
       :classes: stretched-link font-weight-bold

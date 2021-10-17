@@ -26,7 +26,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.option('-o', '--output', type=str, default='landscapes.html',
               help='Name for the output HTML file containing the plots')
 @click.option('--shape', nargs=2, default=[100, 100], type=int,
-              metavar=('X-bins', 'Y-bins'),
+              metavar="('X-bins', 'Y-bins')",
               help='Number of bins in the X and Y direction')
 @click.option('-b', '--begin', type=int, metavar='<int>', default=0,
               help='Starting index for the data to include')
@@ -65,8 +65,8 @@ def landscape_xvg(x, y, name, label, common, temperature, output, save, title,
         data2 = Xvg(f2)
 
         time = data1.data[begin:end, 0]
-        x_data = data1.data[begin:end, 1] * 10  # Convert from nm to Å
-        y_data = data2.data[begin:end, 1] * 10    # Convert from nm to Å
+        x_data = data1.data[begin:end, 1]
+        y_data = data2.data[begin:end, 1]
 
         if len(time) < 1 or len(x_data) < 1 or len(y_data) < 1:
             raise ValueError('Invalid value for begin or end')
@@ -98,14 +98,14 @@ def landscape_xvg(x, y, name, label, common, temperature, output, save, title,
         for ls in landscapes:
             ls.save(filename=save,
                     name=ls.name,
-                    xlabel='RMSD (in Å)',
-                    ylabel='Radius of Gyration (in Å)')
+                    xlabel='RMSD',
+                    ylabel='Radius of Gyration')
 
     if hide_labels:
         x_label, y_label, z_label = '', '', ''
     else:
-        x_label = ' <br>RMSD (in  Å)'
-        y_label = ' <br>Rg (in  Å)'
+        x_label = ' <br>RMSD'
+        y_label = ' <br>Rg'
         if temperature:
             z_label = 'Free Energy (kJ mol<sup>-1</sup>)<br> '
         else:
