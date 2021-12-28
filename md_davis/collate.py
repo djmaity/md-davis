@@ -28,6 +28,8 @@ SECSTR_CODES = {
     '~': 'Loop',
 }
 
+def is_list(obj):
+    return isinstance(obj, (list, tuple, numpy.ndarray))
 
 def split_increasing(array, use_col=0):
     """ Split an array when it is not increasing """
@@ -64,10 +66,22 @@ def split_chains(array, lengths):
 def add_rmsd_rg(hdf_file, rmsd, rg, group_name, dataset,
                 unit=None, time_unit=None, comment=None):
     """ Make RMSD & Rg dataset in HDF5 file """
+
+    if not os.path.exists(rmsd) and not os.path.exists(rg):
+        print(f'{rmsd} and {rg} files not found')
+        return
+    if not os.path.exists(rmsd):
+        print(f'{rmsd} file not found')
+        return
+    if not os.path.exists(rg):
+        print(f'{rg} file not found')
+        return
+
     group = hdf_file.require_group(group_name)
     if comment:
         group.attrs['comment'] = comment
-    print('Collecting data into HDF5 file:\n'
+
+    print(f'Collecting data into {hdf_file.filename}:\n'
           f'RMSD from {rmsd}\n'
           f'Radius of gyration from {rg}\n')
     rmsd_data = numpy.loadtxt(rmsd, comments=('#', '@'))
@@ -359,12 +373,14 @@ def main(input_files):
 
         output = data['output']
         if os.path.exists(output):
-            print(f"The existing file {output} will be amended.")
+            print(f"\nThe existing file {output} will be amended.\n")
         else:
-            print(f"The file {output} does not exist and will be created.")
+            print(f"\nThe file {output} does not exist and will be created.\n")
 
         with h5py.File(output, 'a') as hdf_file:
             hdf_file.attrs['name'] = data['name']
+            hdf_file.attrs['label'] = data['label']
+            hdf_file.attrs['text_label'] = data['text_label']
 
             if 'sequence' in data:
                 for ch, seq in data['sequence'].items():
@@ -383,34 +399,50 @@ def main(input_files):
                     group.require_dataset('resi', shape=resi.shape, dtype=resi.dtype, data=resi)
                     group.require_dataset('resn', shape=resn.shape, dtype=resn.dtype, data=resn)
             else:
-                print("Please provide 'sequence' or 'structure' in the input toml file to parse the amino acid sequence")
-                return
-
+                print("Note: The amino acid sequence could not be parsed, "
+                      "since 'sequence' or 'structure' was not provided in "
+                      "the input TOML file. This is not an issue if you are "
+                      "only plotting free energy landscapes. However, it may "
+                      "be critical for other visualizations.\n")
 
             # Add RMSD and radius of gyration into the HDF5 file
             if 'timeseries' in data:
-                if 'rmsd' in data['timeseries'] and 'rg' in data['timeseries']:
+                ts = data['timeseries']
+                if 'rmsd' in ts and 'rg' in ts:
                     time_unit, unit, comment = None, None, None
-                    if 'time_unit' in data['timeseries']:
-                        time_unit = data['timeseries']['time_unit']
-                    if 'unit' in data['timeseries']:
-                        unit = data['timeseries']['unit']
-                    if 'comment' in data['timeseries']:
-                        comment = data['timeseries']['comment']
+                    if 'time_unit' in ts:
+                        time_unit = ts['time_unit']
+                    if 'unit' in ts:
+                        unit = ts['unit']
+                    if 'comment' in ts:
+                        comment = ts['comment']
 
-                    add_rmsd_rg(hdf_file=hdf_file,
-                                rmsd=data['timeseries']['rmsd'],
-                                rg=data['timeseries']['rg'],
-                                group_name='timeseries',
-                                dataset='rmsd_rg',
-                                time_unit=time_unit,
-                                unit=unit,
-                                comment=comment,
-                                )
-                elif 'rmsd' not in data['timeseries']:
+                    if is_list(ts['rmsd']) and is_list(ts['rg']):
+                        rmsd_rg = zip(ts['rmsd'], ts['rg'])
+                        for ind, (rmsd, rg) in enumerate(rmsd_rg):
+                            add_rmsd_rg(hdf_file=hdf_file,
+                                        rmsd=rmsd,
+                                        rg=rg,
+                                        group_name=f'timeseries/rmsd_rg',
+                                        dataset=f'{ind}',
+                                        time_unit=time_unit,
+                                        unit=unit,
+                                        comment=comment,
+                                        )
+                    else:
+                        add_rmsd_rg(hdf_file=hdf_file,
+                                    rmsd=ts['rmsd'],
+                                    rg=ts['rg'],
+                                    group_name='timeseries',
+                                    dataset='rmsd_rg',
+                                    time_unit=time_unit,
+                                    unit=unit,
+                                    comment=comment,
+                                    )
+                elif 'rmsd' not in ts:
                     print(f"Please provide 'rmsd' under "
                           f"[timeseries] in {toml_file}")
-                elif 'rg' not in data['timeseries']:
+                elif 'rg' not in ts:
                     print(f"Please provide 'rg' under "
                           "[timeseries] in {toml_file}")
                 else:

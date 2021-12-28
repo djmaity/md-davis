@@ -68,24 +68,13 @@ def run_msms(pdb_file, output_directory=None, msms=None):
 
 
 def run_delphi(pdb_file, output_directory, output_filename,
-    delphi_path, radius_file=None, charge_file=None, grid_size=101, surface=None, center=False):
+    delphi_path, radius_file=None, charge_file=None, pqr=False, grid_size=101, surface=None, center=False):
     """ Run Delphi on protein surface created by MSMS program """
     # TODO: Rewrite using template string
     if not os.path.isdir(output_directory):
         os.mkdir(output_directory)
 
-    this_script_path = os.path.dirname(os.path.realpath(__file__))
-
-    if radius_file is None:
-        radius_file = this_script_path + '/charmm.siz'
-
-    if charge_file is None:
-        charge_file = this_script_path + '/charmm.crg'
-
     parameters = [
-        f'in(pdb,file="{pdb_file}")',
-        f'in(siz,file="{radius_file}")',
-        f'in(crg,file="{charge_file}")',
         f'gsize={grid_size}',
         f'salt=0.15',
         f'exdi=80',
@@ -93,6 +82,23 @@ def run_delphi(pdb_file, output_directory, output_filename,
         f'maxc=0.0000000001',
         f'out(phi, file="{output_directory}/{output_filename}.cub", format="cube")',
     ]
+
+    if pqr:
+        parameters += [f'in(pdb,file="{pdb_file}")']
+    else:
+        this_script_path = os.path.dirname(os.path.realpath(__file__))
+        if radius_file is None:
+            radius_file = this_script_path + '/charmm.siz'
+
+        if charge_file is None:
+            charge_file = this_script_path + '/charmm.crg'
+
+        parameters += [
+            f'in(pdb,file="{pdb_file}")',
+            f'in(siz,file="{radius_file}")',
+            f'in(crg,file="{charge_file}")'
+        ]
+
     if center:
         parameters += ['acenter(0,0,0)']
     if surface:

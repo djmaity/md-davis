@@ -15,10 +15,10 @@ import numpy
 import h5py
 import itertools
 
-import plotly.offline as py
-import plotly.subplots
+import plotly
+# import plotly.subplots
 
-# Exact value after redifinition of SI units in May 2019
+# Exact value after redefinition of SI units in May 2019
 R = 0.00831446261815324  # Energy in KJ / mol
 
 
@@ -134,29 +134,43 @@ class Landscape:
         return
 
     @classmethod
-    def open(cls, filename):
+    def open(cls, filename, select=None):
+        """ Open landscapes saved into an HDF file"""
+
+        def load_landscape(group):
+            dset = group['zValues']
+            name = dset.attrs['name']
+            label = dset.attrs['label']
+            xbins = group['xbins']
+            ybins = group['ybins']
+            t_dset = group['data']
+
+            print(f'Loading landscape for {name} ...')
+
+            landscape = cls(name=name,
+                            xbins=xbins,
+                            ybins=ybins,
+                            label=label)
+            landscape.zValues = dset[...]
+            for i, j in itertools.product(range(len(xbins)),
+                                          range(len(ybins))):
+                if t_dset[i, j]:
+                    landscape.binned_data[i][j] = hdf_file[t_dset[i, j]][...]
+            if group['ranges']:
+                for axis in ['x', 'y', 'z']:
+                    landscape.limits[axis] = group['ranges'][axis][...]
+            return landscape
+
         landscapes = {}
         with h5py.File(filename, 'r') as hdf_file:
-            for key, group in hdf_file['/landscapes/'].items():
-                print(f'Loading landscape for {key} ...')
-                dset = group['zValues']
-                name = dset.attrs['name']
-                label = dset.attrs['label']
-                xbins = group['xbins']
-                ybins = group['ybins']
-                t_dset = group['data']
-                landscape = cls(name=name,
-                                xbins=xbins,
-                                ybins=ybins,
-                                label=label)
-                landscape.zValues = dset[...]
-                for i, j in itertools.product(range(len(xbins)), range(len(ybins))):
-                    if t_dset[i, j]:
-                        landscape.binned_data[i][j] = hdf_file[t_dset[i, j]][...]
-                if group['ranges']:
-                    for axis in ['x', 'y', 'z']:
-                        landscape.limits[axis] = group['ranges'][axis][...]
+            if select is not None and select in hdf_file['/landscapes/'].keys():
+                group = hdf_file[f'/landscapes/{select}']
+                landscape = load_landscape(group)
                 landscapes[landscape.name] = landscape
+            else:
+                for key, group in hdf_file['/landscapes/'].items():
+                    landscape = load_landscape(group)
+                    landscapes[landscape.name] = landscape
             return landscapes
 
     @staticmethod
@@ -266,7 +280,7 @@ class Landscape:
     def plot_landscapes(cls, landscapes,
                         title='Landscapes',
                         filename='landscape.html',
-                        xlabel='x', ylabel='y', zlabel='z',
+                        axis_labels=dict(x='x', y='y', z='z'),
                         width=None, height=None, layout=None,
                         othrographic=False, dtick=None,
                         font_family='Courier New, monospace', font_size=None):
@@ -295,7 +309,7 @@ class Landscape:
                 cmax=landscape.limits['z'][1],
                 colorbar=dict(
                     title=dict(
-                        text=zlabel,
+                        text=axis_labels['z'],
                         font=dict(size=font_size),
                         side='right',
                     ),
@@ -320,9 +334,9 @@ class Landscape:
             )
 
             fig['layout'][f'scene{i}'].update(
-                xaxis_title=xlabel,
-                yaxis_title=ylabel,
-                zaxis_title=zlabel,
+                xaxis_title=axis_labels['x'],
+                yaxis_title=axis_labels['y'],
+                zaxis_title=axis_labels['z'],
             )
             # fig['layout'][f'scene{i}'].colorbar.update(len=0.5)
             if othrographic:
@@ -362,14 +376,18 @@ class Landscape:
                 annotation.font = dict(family=font_family,
                                        size=font_size)
 
-        div = py.plot(fig, include_plotlyjs=False, output_type='div')
+        div = plotly.io.to_html(fig, full_html=False, include_plotlyjs=False)
+
         # retrieve the div id for the figure
         div_id = div.split('=')[1].split()[0].replace("'", "").replace('"', '')
 
         # Header for the output HTML file
-        header = ('<!DOCTYPE html><html>\n<head><metacharset="utf-8"/>\n'
-                  '<script src="https://cdn.plot.ly/plotly-latest.min.js">'
-                  '</script>\n</head>\n<body>\n')
+        header = """
+<html>
+<head><meta charset="utf-8" /></head>
+<body>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+"""
 
         # Custom JS code to sync the view of the plots
         if othrographic:
@@ -434,10 +452,11 @@ if ( !isUnderRelayout ) {{
 isUnderRelayout = true;
 }})
 </script>'''.format(div_id=div_id)
+
         # merge everything
         div = header + div + js + '\n</body>\n</html>'
-        print(div, file=open(filename, "w"))
-
+        with open(filename, "w") as html_file:
+            html_file.write(div)
 
 def main():
     pass

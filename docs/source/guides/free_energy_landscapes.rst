@@ -143,3 +143,11 @@ One must save the landscape created by the previous command with ``-s`` before t
 .. code-block:: bash
 
     md_davis landscape animation landscapes.h5 -i 0 --static -o trajectory.html
+
+
+.. note::
+    The first rotation may not sync across all subplots.
+    Please rotate again to sync the view of all the subplots.
+    Also, zooming a subplot is also not synchronized immediately.
+    After zooming a subplot rotate the same subplot to sync the zoom on all
+    subplots.

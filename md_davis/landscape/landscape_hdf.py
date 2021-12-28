@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python3
 """
 Plot free energy landscapes using RMSD and radius of gyration stored in HDF5 files.
 
@@ -43,179 +43,204 @@ import numpy
 import itertools
 import click
 import h5py
+import numpy as np
 
 from md_davis.landscape.landscape import Landscape
 
 
+import click
+
+from md_davis.landscape.landscape import Landscape
+from md_davis.xvg import Xvg
+
+
+def get_sorted_dset_keys(group):
+    dataset_keys = []
+    for key in group.keys():
+        if isinstance(group[key], h5py.Dataset):
+            dataset_keys.append(key)
+    return sorted(dataset_keys)
+
+
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.command(name='landscape', context_settings=CONTEXT_SETTINGS)
-@click.option('--layout', nargs=2, help='Layout of subplots')
-@click.option('--select', default='all_atom',
-              type=click.Choice(['all_atom', 'backbone', 'c-alpha'],
-                                 case_sensitive=False),
-              help='Select which data to plot: all_atom, c-alpha or backbone')
-# @click.option('--axis_labels',
-#               default=dict(x=' <br>RMSD (in  Å)',
-#                            y=' <br>Rg (in  Å)',
-#                            z='Free Energy (kJ mol<sup>-1</sup>)<br> '),
-#               help='A dictionary of strings specifying the labels for '
-#                    'the x, y and z-axis')
-# @click.option('-l', '--labels', nargs=-1, type=str,
-#               help='Label to show in plots')
-# @click.option('-n', '--name', action='append', type=str,
-#               help='Name for the landscape object plots')
-# @click.option('-c', '--common', action='store_true',
-#               help='Use the same ranges for all landscapes')
-# @click.option('-T', '--temperature', type=float, metavar='<float>',
-#               help='Temperature of the system. If this option is provided '
-#                    'the energy landscape is calculated using Boltzmann '
-#                    'inversion, else only the histogram is evaluated')
-# @click.option('--shape', nargs=2, default=[100, 100], type=int,
-#               help='Number of bins in the X and Y direction')
-# @click.option('-s', '--save',
-#               help='Name for HDF5 file to save the landscapes')
-# @click.option('-o', '--output', type=str, default='landscapes.html',
-#               help='Name for the output HTML file containing the plots')
-# @click.option('-t', '--title', type=str, help='Title for the figure')
-# @click.option('-b', '--begin', type=int, default=0,
-#               help='Starting index for the data to include')
-# @click.option('-e', '--end', type=int, help='Last index for the data to include')
-# @click.option('-p', '--plot', help='Plot the precomputed energy landscape')
-# @click.option('--ortho', is_flag=True,
-#               help='Orthographic projection for 3D plots')
-# @click.option('-d', '--dict', help='Dictionary containing input data')
-# @click.option('--width', type=int, help='Width of the plot')
-# @click.option('--height', type=int, help='Height of the plot')
-# @click.option('--font', type=str, help='Font style')
-# @click.option('--font_size',
-#     help='Size of text and labels in the plot')
-# @click.option('--dtick', help='Tick interval on each axes')
+# Options required for plotting .xvg files
+@click.option('-x', type=click.File('r'), multiple=True,
+              help='Data to plot on x-axis')
+@click.option('-y', type=click.File('r'), multiple=True,
+              help='Data to plot on y-axis')
+@click.option('-n', '--name', type=str, multiple=True,
+              help='Names of each landscape object')
+@click.option('-l', '--label', type=str, multiple=True,
+              help='Label to show in plots')
+# Common options
+@click.option('-c', '--common', is_flag=True,
+              help='Use common ranges for all the landscapes')
+@click.option('-T', '--temperature', type=float,
+              help='Temperature of the system. If this option is provided the '
+              'energy landscape is calculated using Boltzmann inversion, '
+              'else only the histogram is evaluated')
+@click.option('--shape', nargs=2, default=[100, 100], type=int,
+              metavar="('X-bins', 'Y-bins')",
+              help='Number of bins in the X and Y direction')
+@click.option('-o', '--output', type=str, default='landscapes.html',
+              help='Name for the output HTML file containing the plots')
+@click.option('-s', '--save', metavar='FILENAME',
+              help='Name for HDF5 file to save the landscapes')
+@click.option('-b', '--begin', type=int, metavar='<int>', default=0,
+              help='Starting index for the data to include')
+@click.option('-e', '--end', type=int, metavar='<int>',
+              help='Last index for the data to include')
+@click.option('--limits', type=dict,
+              help='A dictionary containing the limits for x, y, and x axes')
+# Plotting options
+@click.option('--width', type=int, metavar='<int>', help='Width of the plot')
+@click.option('--height', type=int, metavar='<int>', help='Height of the plot')
+@click.option('--layout', help='Layout of subplots')
+@click.option('--title', type=str, metavar='<str>', help='Title for the figure')
+@click.option('--axis_labels', type=dict,
+              default=dict(x=' <br>RMSD (in  nm)',
+                           y=' <br>Rg (in  nm)',
+                           z='Free Energy (kJ mol<sup>-1</sup>)<br> '),
+              help='A dictionary of strings specifying the labels for '
+                   'the x, y and z-axis')
+@click.option('--orthographic/--perspective', default=False,
+              help='Orthographic projection for 3D plots')
+@click.option('--font', type=str, metavar='<str>', help='Font style')
+@click.option('--font_size', type=int, metavar='<int>',
+              help='Size of text and labels in the plot')
+@click.option('--dtick', help='Tick interval on each axes')
+# TODO: Options
+@click.option('-p', '--plot', is_flag=True, help='Plot the precomputed energy landscape')
+@click.option('-d', '--dict', help='Dictionary containing input data')
+@click.option('--order', type=list, help='Array specifying the order in '
+              'which to plot the landscapes')
+@click.option('--columns', help='Columns to use (start from second column = 1)')
+# HDF option
 @click.argument('hdf_files', nargs=-1)
-def main(hdf_files=None,
-         layout=None,
-         select=None,
-         axis_labels=None,
-         label=None,
-         name=None,
-         common=None,
-         temperature=None,
-         shape=None,
-         dict=None,
-         save=None,
-         output=None,
-         title=None,
-         plot=None,
-         ortho=False,
-         width=None,
-         height=None,
-         start=0,
-         end=None,
-         font=None,
-         font_size=None,
-         dtick=None
-    ):
+def main(hdf_files, x, y, name, label, common, temperature, shape, output,
+         save, begin, end, limits, width, height, layout, title, axis_labels,
+         orthographic, font, font_size, dtick, plot, dict, order, columns):
+    """Plot free energy landscapes from .xvg files generated by GROMACS
+    or HDF files created by md_davis collate
+    """
 
-    print(hdf_files,
-         layout,
-         select,
-         axis_labels,
-         label,
-         name,
-         common,
-         temperature,
-         shape,
-         dict,
-         save,
-         output,
-         title,
-         plot,
-         ortho,
-         width,
-         height,
-         start,
-         end,
-         font,
-         font_size,
-         dtick)
-    # shape = (int(x_bins), int(y_bins))
-    # if temperature:
-    #     temperature = float(temperature)
-    # else:
-    #     temperature = None
-    #
-    # num_files = len(HDF_FILES)
-    # landscapes = []
-    # if plot:
-    #     for filename in HDF_FILES:
-    #         landscapes += Landscape.open(filename)
-    #     if order:
-    #         landscape_dict = {}
-    #         for landscape in landscapes:
-    #             landscape_dict[landscape.name] = landscape
-    #         landscapes = []
-    #         for key in eval(order):
-    #             if key in landscape_dict:
-    #                 landscapes.append(landscape_dict[key])
-    #                 del landscape_dict[key]
-    #         landscapes += landscape_dict.values()
-    # else:
-    #     if dict:
-    #         landscapes = Landscape.common_landscapes(data=dict,
-    #             shape=shape, temperature=temperature)
-    #     else:
-    #         input_data = {}
-    #         for filename in HDF_FILES:
-    #             with h5py.File(filename, 'r') as hdf_file:
-    #                 name = hdf_file.attrs['short_label
-    #                 label = hdf_file.attrs['short_html
-    #                 group = hdf_file['/rmsd_rg/' + select]
-    #                 time = group['time[start:end]
-    #                 rmsd = group['rmsd[start:end] * 10  # Convert from nm to Å
-    #                 rg = group['rg[start:end] * 10    # Convert from nm to Å
-    #                 if len(time) < 1 or len(rmsd) < 1 or len(rg) < 1:
-    #                     raise ValueError('Invalid value for begin or end')
-    #                 if common:
-    #                     input_data[name] = [time, rmsd, rg, label]
-    #                 else:
-    #                     print(f'Generating Landscape for {name}')
-    #                     landscape = Landscape.landscape(
-    #                         name=name,
-    #                         time=time,
-    #                         x_data=rmsd,
-    #                         y_data=rg,
-    #                         shape=shape,
-    #                         label=label,
-    #                         temperature=temperature,
-    #                     )
-    #                     landscapes.append(landscape)
-    #
-    #     if common and len(input_data) > 0:
-    #         landscapes = Landscape.common_landscapes(data=input_data,
-    #             shape=shape, temperature=temperature,
-    #             # dimensions={'x': (0.5, 5.5), 'y': (23.2, 25), 'z': (-20, 0)}  # Hardcoded values remember to remove
-    #             )
-    #
-    #     if save:
-    #         for ls in landscapes:
-    #             ls.save(filename=save,
-    #                     name=ls.name,
-    #                     xlabel='RMSD (in Å)',
-    #                     ylabel='Radius of Gyration (in Å)',
-    #             )
-    #
-    # Landscape.plot_landscapes(
-    #     landscapes=landscapes,
-    #     title=title,
-    #     filename=output,
-    #     axis_labels=eval(axis_labels),
-    #     width=int(width) if width else None,
-    #     height=int(height) if height else None,
-    #     font_size=int(font_size) if font_size else None,
-    #     othrographic=ortho,
-    #     dtick=eval(dtick) if dtick else None,
-    #     layout=eval(layout) if layout else None,
-    #     font_family=font_family)
+    # TODO: Add checks to ensure the correct number of arguments are passed
 
+    if len(hdf_files) > 0:
+        landscapes = []
+        if plot:
+            print(hdf_files)
+            for filename in hdf_files:
+                landscapes += Landscape.open(filename)
+            if order:
+                landscape_dict = {}
+                for landscape in landscapes:
+                    landscape_dict[landscape.name] = landscape
+                landscapes = []
+                for key in eval(order):
+                    if key in landscape_dict:
+                        landscapes.append(landscape_dict[key])
+                        del landscape_dict[key]
+                landscapes += landscape_dict.values()
+        else:
+            if dict:
+                landscapes = Landscape.common_landscapes(data=dict,
+                    shape=shape, temperature=temperature)
+            else:
+                input_data = {}
+                for filename in hdf_files:
+                    with h5py.File(filename, 'r') as hdf_file:
+                        name = hdf_file.attrs['name']
+                        label = hdf_file.attrs['label']
+                        rmsd_rg = hdf_file['/timeseries/rmsd_rg']
+                        if isinstance(rmsd_rg, h5py.Dataset):
+                            time = rmsd_rg['time'][begin:end]
+                            rmsd = rmsd_rg['rmsd'][begin:end]
+                            rg = rmsd_rg['rg'][begin:end]
+                        else:
+                            time, rmsd, rg = [], [], []
+                            for key in get_sorted_dset_keys(rmsd_rg):
+                                time.append(rmsd_rg[key]['time'])
+                                rmsd.append(rmsd_rg[key]['rmsd'])
+                                rg.append(rmsd_rg[key]['rg'])
+                            time = np.hstack(time)
+                            rmsd = np.hstack(rmsd)
+                            rg = np.hstack(rg)
+                        if len(time) < 1 or len(rmsd) < 1 or len(rg) < 1:
+                            raise ValueError('Invalid value for begin or end')
+                        if common:
+                            input_data[name] = [time, rmsd, rg, label]
+                        else:
+                            print(f'Generating Landscape for {name}')
+                            landscape = Landscape.landscape(
+                                name=name,
+                                time=time,
+                                x_data=rmsd,
+                                y_data=rg,
+                                shape=shape,
+                                label=label,
+                                temperature=temperature,
+                            )
+                            landscapes.append(landscape)
+    else:
+        input_data = {}
+        landscapes = []
+        for f1, f2, name, label in zip(x, y, name, label):
+            data1 = Xvg(f1)
+            data2 = Xvg(f2)
+
+            time = data1.data[begin:end, 0]
+            x_data = data1.data[begin:end, 1]
+            y_data = data2.data[begin:end, 1]
+
+            if len(time) < 1 or len(x_data) < 1 or len(y_data) < 1:
+                raise ValueError('Invalid value for begin or end')
+
+            if common:
+                input_data[name] = [time, x_data, y_data, label]
+            else:
+                print(f'Generating Landscape for {name}')
+                landscape = Landscape.landscape(
+                    name=name,
+                    time=time,
+                    x_data=x_data,
+                    y_data=y_data,
+                    shape=shape,
+                    label=label,
+                    temperature=temperature,
+                    limits=limits,
+                )
+                landscapes.append(landscape)
+
+    if common and len(input_data) > 0:
+        landscapes = Landscape.common_landscapes(
+            data=input_data,
+            shape=shape, temperature=temperature,
+            limits=limits,
+        )
+
+        if save:
+            for ls in landscapes:
+                ls.save(filename=save,
+                        name=ls.name,
+                        xlabel='RMSD (in nm)',
+                        ylabel='Radius of Gyration (in nm)',
+                )
+
+    Landscape.plot_landscapes(
+        landscapes=landscapes,
+        title=title,
+        filename=output,
+        axis_labels=axis_labels,
+        width=width,
+        height=height,
+        othrographic=orthographic,
+        dtick=dtick,
+        layout=layout,
+        font_family=font,
+        font_size=font_size,
+    )
 
 if __name__ == '__main__':
     main()

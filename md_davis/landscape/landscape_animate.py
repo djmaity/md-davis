@@ -57,7 +57,7 @@ def frame_args(duration):
 def landscape_trajectory(landscape, data, filename='landscape.html',
                          save_image=None, xlabel='x', ylabel='y', zlabel='z',
                          width=None, height=None, hide_surface=False,
-                         marker_size=10, title=None, camera=None,
+                         marker_size=None, title=None, camera=None,
                          othrographic=False, font_family=None,
                          font_size=None, dtick=None, hide_ticks=False):
     """ Show the X and Y values from the trajectory on the landscape """
@@ -252,6 +252,8 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.option('--font', type=str, metavar='<str>', help='Font style')
 @click.option('--font_size', type=int, metavar='<int>',
               help='Size of text and labels in the plot')
+@click.option('--marker_size', type=int, metavar='<int>',
+              help='Size of markers in the plot')
 @click.option('--dtick', help='Tick interval on each axes')
 @click.option('--hide_surface', help='Hide the energy landscape surface')
 @click.option('--camera', type=str, metavar='dict(eye=dict())',
@@ -259,10 +261,10 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.argument('hdf_file')
 def main(hdf_file, output, static=True, select=None, begin=0, end=None, step=1,
          title=None, orthographic=False, axis_labels=None, width=None,
-         height=None, font=None, font_size=12, dtick=None, hide_surface=False,
-         camera=None,):
+         height=None, font=None, marker_size=None, font_size=None, dtick=None,
+         hide_surface=False, camera=None,):
     """  """
-    landscapes = Landscape.open(hdf_file)
+    landscapes = Landscape.open(hdf_file, select=select)
 
     if select is not None:
         if select not in landscapes:
@@ -300,6 +302,7 @@ def main(hdf_file, output, static=True, select=None, begin=0, end=None, step=1,
             dtick=dtick,
             othrographic=orthographic,
             camera=camera,
+            marker_size=marker_size,
         )
     else:
         landscape_animation(

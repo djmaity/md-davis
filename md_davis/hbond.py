@@ -36,6 +36,7 @@ import pickle
 import pandas
 import collections
 import numpy
+import operator
 from biopandas.pdb import PandasPdb
 
 
@@ -183,7 +184,7 @@ class Contacts():
             return output
 
         if df:
-            df = pandas.read_pickle(pickle_file)
+            df = pandas.read_pickle(df)
         else:
             df = self.to_df
 
@@ -236,8 +237,40 @@ class Hbond():
     def __iter__(self):
         return iter(list(self.donor) + list(self.hydrogen) + list(self.recipient) + [self.count])
 
+    def __eq__(self, other):
+        if self.donor == other.donor and \
+           self.hydrogen == other.hydrogen and \
+           self.recipient == other.recipient:
+            return True
+        else:
+            return False
+
+    def __sub__(self, other):
+        """Calculates the frames in which the first bond is present and
+        not the second bond """
+        output = Hbond()
+        output.donor = self.donor
+        output.hydrogen = self.hydrogen
+        output.recipient = self.recipient
+        tmp = numpy.array(self.time_series) - numpy.array(other.time_series)
+        output.time_series = tmp
+        output.count = sum(tmp)
+        return output
+
+    def __neg__(self, other):
+        """Calculates the frames in which the first bond is present and
+        not the second bond """
+        output = Hbond()
+        output.donor = self.donor
+        output.hydrogen = self.hydrogen
+        output.recipient = self.recipient
+        output.time_series = -numpy.array(self.time_series)
+        output.count = -self.count
+        return output
+
+
 # Subclass the Contacts to get Hbonds Class
-class Hbonds():
+class Hbonds(Contacts):
     """ All hydrogen bonds """
 
     def __init__(self, structure):
@@ -257,6 +290,17 @@ class Hbonds():
     def __iter__(self):
         return iter([list(_) for _ in self.bonds])
 
+    def __sub__(self, other):
+        output = Hbonds()
+        output.structure = self.structure
+        for bond1 in self.bonds:
+            for bond2 in other.bonds:
+                if bond1 == bond2:
+                    output.bonds.append(bond1 - bond2)
+                else:
+                    output.bonds.append(bond1)
+                    output.bonds.append(-bond2)
+
     def parse_indices(self, index_file, group):
         save = False
         with open(index_file) as ndx_file:
@@ -267,17 +311,6 @@ class Hbonds():
                 if line == f'[ {group} ]\n':
                     save = True
 
-    def add_counts(self, xpm_file):
-        bond_idx = 0
-        with open(xpm_file, 'r') as xpm_data:
-            for line in xpm_data:
-                if line.startswith('"') and len(line) > 1000:  # Read data
-                    bond_seires_array = [1 if char ==
-                                         'o' else 0 for char in line]
-                    self.bonds[bond_idx].time_series = bond_seires_array
-                    self.bonds[bond_idx].count = sum(bond_seires_array)
-                    bond_idx += 1
-
     @property
     def to_df(self):
         columns = ['Segment1', 'Chain1', 'Residue1', 'ResSeq1', 'Atom1',
@@ -285,6 +318,16 @@ class Hbonds():
                    'Segment2', 'Chain2', 'Residue2', 'ResSeq2', 'Atom2', 'Count']
         df = pandas.DataFrame(data=list(self), columns=columns)
         return df
+
+
+class Contact_Matrix():
+    """ All hydrogen bonds """
+
+    def __init__(self, structure):
+        self.atoms1 = PandasPdb().read_pdb(structure)
+        self.atoms2 = PandasPdb().read_pdb(structure)
+        self.matrix = []
+
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
@@ -299,7 +342,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.option('-g', '--group', metavar='<string>', required=True,
               help='Group to match from index file to get the list of Contacts/H-bonds')
 @click.option('-o', '--output', metavar='<.p>', help='Output Pickle file')
-@click.option('--hbonds/--contacts',
+@click.option('--contacts/--hbonds',
               help='Select the type of input: contacts or H-bonds')
 @click.option('--silent/--verbose', default=False, help='Choose silent to '
               'suppress the displaying to result to standard output')
@@ -310,14 +353,15 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
               help='Save a file containing the contact matrix')
 @click.option('--save_pdb', help='Save a pdb file with percentage of '
               'frames in the B-factor column')
-def main(xpm_file, index_file, structure, group, hbonds, silent=False,
+def main(xpm_file, index_file, structure, group, contacts, silent=False,
          output=None, save_pickle=None, save_hdf=None, save_csv=None,
          save_pdb=None, save_matrix=None):
     """Parse contacts evaluated by gmx hbonds"""
-    if hbonds:
-        molecular_contacts = Hbonds(structure)
-    else:
+    if contacts:
         molecular_contacts = Contacts(structure)
+    else:
+        molecular_contacts = Hbonds(structure)
+
     molecular_contacts.parse_indices(index_file=index_file, group=group)
     molecular_contacts.add_counts(xpm_file=xpm_file)
 
@@ -336,8 +380,8 @@ def main(xpm_file, index_file, structure, group, hbonds, silent=False,
     if save_pdb:
         molecular_contacts.to_pdb(save_pdb)
     if save_matrix:
-        molecular_contacts.to_pdb(save_matrix)
-
+        # molecular_contacts.plot_matrix()
+        raise NotImplementedError
 
 if __name__ == '__main__':
     main()
