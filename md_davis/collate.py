@@ -386,7 +386,7 @@ def main(input_files):
                 for ch, seq in data['sequence'].items():
                     resi, resn = zip(*seq)
                     group = hdf_file.require_group(f'sequence/chain {ch[6:]}')  # omit 'Chain '
-                    resi = numpy.array(resi, dtype=int)
+                    resi = numpy.array(resi, dtype=numpy.int32)
                     resn = numpy.array(resn, dtype="S3")
                     group.require_dataset('resi', shape=resi.shape, dtype=resi.dtype, data=resi)
                     group.require_dataset('resn', shape=resn.shape, dtype=resn.dtype, data=resn)
@@ -394,7 +394,7 @@ def main(input_files):
                 sequences = md_davis.sequence.get_sequence(data['structure'])
                 for ch, seq in sequences.items():
                     group = hdf_file.require_group(f'sequence/chain {ch}')
-                    resi = numpy.array(seq[0], dtype=int)
+                    resi = numpy.array(seq[0], dtype=numpy.int32)
                     resn = numpy.array(seq[1], dtype="S3")
                     group.require_dataset('resi', shape=resi.shape, dtype=resi.dtype, data=resi)
                     group.require_dataset('resn', shape=resn.shape, dtype=resn.dtype, data=resn)

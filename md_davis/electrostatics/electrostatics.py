@@ -152,7 +152,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
               help='path to radius file')
 @click.option('-c', '--charge', metavar='PATH', type=click.Path(exists=True),
               help='path to charge file')
-@click.option('-g', '--grid_size', metavar='<odd_int>',
+@click.option('-g', '--grid_size', metavar='<odd_int>', default=101,
               help='Grid size to use for Delphi calculation')
 @click.option('--surface', is_flag=True,
               help='Calculate electrostatic potential on the surface')
