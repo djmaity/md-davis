@@ -1,9 +1,12 @@
+import os
 from tkinter import Tk
 from tkinter import ttk
 
+dirname = os.path.dirname(__file__)
+
 root = Tk()
 root.title('MD DaVis')
-root.iconbitmap('MD_DaVis.ico')
+root.iconbitmap(os.path.join(dirname, 'MD_DaVis.ico'))
 
 frm = ttk.Frame(root, padding=10)
 frm.grid()
