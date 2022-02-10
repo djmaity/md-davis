@@ -67,6 +67,7 @@ setup(
                       'scipy',
                       'toml',
                       'mdtraj',
+                      'wxpython'
                       # 'pymol', # Cannot Install automatically using pip
                       ],
     include_package_data=True,

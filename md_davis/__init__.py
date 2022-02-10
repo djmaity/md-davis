@@ -17,3 +17,5 @@ __author__ = """Dibyajyoti Maity"""
 __email__ = 'djdibs@gmail.com'
 __version__ = '0.3.0'
 name = "md_davis"
+
+from . import sequence

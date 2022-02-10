@@ -16,7 +16,6 @@ import warnings
 
 import md_davis
 
-
 SECSTR_CODES = {
     'H': 'α-helix',
     'G': '3_10-helix',
@@ -28,8 +27,10 @@ SECSTR_CODES = {
     '~': 'Loop',
 }
 
+
 def is_list(obj):
     return isinstance(obj, (list, tuple, numpy.ndarray))
+
 
 def split_increasing(array, use_col=0):
     """ Split an array when it is not increasing """
@@ -87,8 +88,7 @@ def add_rmsd_rg(hdf_file, rmsd, rg, group_name, dataset,
     rmsd_data = numpy.loadtxt(rmsd, comments=('#', '@'))
     rg_data = numpy.loadtxt(rg, comments=('#', '@'))
     if not numpy.array_equal(rmsd_data[:, 0], rg_data[:, 0]):
-        print('The times in RMSD file do not match '
-              'those in radius of gyration file')
+        print('The times in RMSD file do not match those in radius of gyration file')
     data = numpy.core.records.fromarrays(
         numpy.hstack([rmsd_data, rg_data[:, 1:]]).T,
         names='time, rmsd, rg, rg_x, rg_y, rg_z'
@@ -101,7 +101,8 @@ def add_rmsd_rg(hdf_file, rmsd, rg, group_name, dataset,
     dset.attrs['time_unit'] = 'ps' if time_unit is None else time_unit
 
 
-def add_rmsf(hdf_file, rmsf, **attributes):
+def add_rmsf(hdf_file, rmsf):
+
     group = hdf_file.require_group('residue_property/rmsf')
     if isinstance(rmsf, list) and len(rmsf) > 1:
         rmsf_split_by_chains = []
@@ -122,8 +123,6 @@ def add_rmsf(hdf_file, rmsf, **attributes):
                               shape=chain_rmsf.shape,
                               dtype=chain_rmsf.dtype,
                               data=chain_rmsf)
-    for key, value in attributes.items():
-        group.attrs['key'] = value
 
 
 def parse_secondary_structure(filename):
@@ -196,8 +195,7 @@ def get_dihedrals(hdf_file, trajectory, structure,
     psi_array = [psi]
     omega_array = [omega]
     for trj_chunk in trj_iterator:
-        print(f'Calculating dihedrals for trajectory between '
-              f'{trj_chunk.time[0]} and {trj_chunk.time[-1]} ps')
+        print(f'Calculating dihedrals for trajectory between {trj_chunk.time[0]} and {trj_chunk.time[-1]} ps')
         time.append(trj_chunk.time)
         phi_array.append(mdtraj.compute_phi(trj_chunk)[1])
         psi_array.append(mdtraj.compute_psi(trj_chunk)[1])
@@ -255,8 +253,7 @@ def get_dihedral_sd(hdf_file, chain_lengths, start=0, end=1000, step=200):
         _, num_angles = numpy.shape(hdf_file[f'/dihedrals/{angle}'])
 
         if sum(chain_lengths) != num_angles:
-            warnings.warn(f'Number of {angle} angles is inconsistent '
-                          'with the number of residues.')
+            warnings.warn(f'Number of {angle} angles is inconsistent with the number of residues.')
         circ_sd = scipy.stats.circstd(
             hdf_file[f'/dihedrals/{angle}'][start:end], axis=0, high=numpy.pi)
         for ch, dih_sd in enumerate(split_chains(circ_sd, chain_lengths)):
@@ -324,11 +321,15 @@ def add_surface_potential(hdf_file, surface_potential):
                 if chain not in total_df:
                     total_df[chain] = potential_df[['resSeq', 'total']]
                 else:
-                    total_df[chain] = total_df[chain].merge(potential_df[['resSeq', 'total']], how='outer', left_on='resSeq', right_on='resSeq', suffixes=(None, str(index)))
+                    total_df[chain] = total_df[chain].merge(potential_df[['resSeq', 'total']], how='outer',
+                                                            left_on='resSeq', right_on='resSeq',
+                                                            suffixes=(None, str(index)))
                 if chain not in mean_df:
                     mean_df[chain] = potential_df[['resSeq', 'mean']]
                 else:
-                    mean_df[chain] = mean_df[chain].merge(potential_df[['resSeq', 'mean']], how='outer', left_on='resSeq', right_on='resSeq', suffixes=(None, str(index)))
+                    mean_df[chain] = mean_df[chain].merge(potential_df[['resSeq', 'mean']], how='outer',
+                                                          left_on='resSeq', right_on='resSeq',
+                                                          suffixes=(None, str(index)))
             index += 1
 
     for chain in total_df.keys():
@@ -348,6 +349,127 @@ def add_surface_potential(hdf_file, surface_potential):
                               data=surface_potential_df)
 
 
+def create_hdf(data):
+    output = data['output']
+    if os.path.exists(output):
+        print(f"\nThe existing file {output} will be amended.\n")
+    else:
+        print(f"\nThe file {output} does not exist and will be created.\n")
+
+    with h5py.File(output, 'a') as hdf_file:
+        if 'name' in data:
+            hdf_file.attrs['name'] = data['name']
+        if 'label' in data:
+            hdf_file.attrs['label'] = data['label']
+        if 'text_label' in data:
+            hdf_file.attrs['text_label'] = data['text_label']
+
+        if 'sequence' in data:
+            for ch, seq in data['sequence'].items():
+                resi, resn = zip(*seq)
+                group = hdf_file.require_group(f'sequence/chain {ch[6:]}')  # omit 'Chain '
+                resi = numpy.array(resi, dtype=numpy.int32)
+                resn = numpy.array(resn, dtype="S3")
+                group.require_dataset('resi', shape=resi.shape, dtype=resi.dtype, data=resi)
+                group.require_dataset('resn', shape=resn.shape, dtype=resn.dtype, data=resn)
+        elif 'structure' in data:
+            sequences = md_davis.sequence.get_sequence(data['structure'])
+            for ch, seq in sequences.items():
+                group = hdf_file.require_group(f'sequence/chain {ch}')
+                resi = numpy.array(seq[0], dtype=numpy.int32)
+                resn = numpy.array(seq[1], dtype="S3")
+                group.require_dataset('resi', shape=resi.shape, dtype=resi.dtype, data=resi)
+                group.require_dataset('resn', shape=resn.shape, dtype=resn.dtype, data=resn)
+        else:
+            print("Note: The amino acid sequence could not be parsed, "
+                  "since 'sequence' or 'structure' was not provided in "
+                  "the input TOML file. This is not an issue if you are "
+                  "only plotting free energy landscapes. However, it may "
+                  "be critical for other visualizations.\n")
+
+        # Add RMSD and radius of gyration into the HDF5 file
+        if 'timeseries' in data:
+            ts = data['timeseries']
+            if 'rmsd' in ts and 'rg' in ts:
+                time_unit, unit, comment = None, None, None
+                if 'time_unit' in ts:
+                    time_unit = ts['time_unit']
+                if 'unit' in ts:
+                    unit = ts['unit']
+                if 'comment' in ts:
+                    comment = ts['comment']
+
+                if is_list(ts['rmsd']) and is_list(ts['rg']):
+                    rmsd_rg = zip(ts['rmsd'], ts['rg'])
+                    for ind, (rmsd, rg) in enumerate(rmsd_rg):
+                        add_rmsd_rg(hdf_file=hdf_file,
+                                    rmsd=rmsd,
+                                    rg=rg,
+                                    group_name=f'timeseries/rmsd_rg',
+                                    dataset=f'{ind}',
+                                    time_unit=time_unit,
+                                    unit=unit,
+                                    comment=comment,
+                                    )
+                else:
+                    add_rmsd_rg(hdf_file=hdf_file, rmsd=ts['rmsd'], rg=ts['rg'], group_name='timeseries',
+                                dataset='rmsd_rg', time_unit=time_unit, unit=unit, comment=comment)
+
+        if 'residue_property' in data:
+            residue = data['residue_property']
+
+            # Add RMSF into the residue_property group of the HDF5 file
+            if 'rmsf' in residue:
+                add_rmsf(hdf_file=hdf_file, rmsf=residue['rmsf'])
+
+            if 'secondary_structure' in residue:
+                add_secondary_structure(
+                    hdf_file=hdf_file,
+                    secondary_structure=residue['secondary_structure'])
+
+            if 'sasa' in data['residue_property']:
+                add_sasa(hdf_file=hdf_file, sasa=residue['sasa'])
+            #
+            # if 'dipoles' in data['residue_property']:
+            #     add_dipoles(
+            #     hdf_file=hdf_file,
+            #     dipoles=data['residue_property']['--dipoles'])
+
+            if 'surface_potential' in data['residue_property']:
+                add_surface_potential(hdf_file=hdf_file, surface_potential=residue['surface_potential'])
+
+        # Evaluate and add dihedral angles into the HDF5 file
+        if 'dihedral' in data:
+            if 'atoms' in data['dihedral']:
+                atoms = data['dihedral']['atoms']
+            else:
+                atoms = None
+            if 'chunk' in data['dihedral']:
+                chunk = data['dihedral']['chunk']
+            else:
+                chunk = None
+
+            time = get_dihedrals(hdf_file=hdf_file,
+                                 trajectory=data['trajectory'],
+                                 structure=data['structure'],
+                                 chunk=chunk,
+                                 atoms=atoms)
+
+            # hdf_file.require_dataset('time',
+            #                          data=time,
+            #                          shape=time.shape,
+            #                          dtype=time.dtype)
+            # hdf_file.attrs['time_unit'] = 'picosecond'
+            if 'chain_lengths' in data['dihedral']:
+                ch_len = data['dihedral']['chain_lengths']
+            else:
+                ch_len = [_.n_residues for _ in
+                          mdtraj.load(data['structure']).topology.chains]
+
+            get_dihedral_sd(hdf_file=hdf_file,
+                            chain_lengths=ch_len)
+    return True
+
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
@@ -358,6 +480,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 def main(input_files):
     """Input TOML files."""
     for toml_file in input_files:
+        # TODO: Correct for relative paths in TOML files
         data = toml.load(toml_file)
 
         stop = False
@@ -367,155 +490,20 @@ def main(input_files):
         if 'name' not in data:
             print(f"Please specify 'name' in {toml_file}")
             stop = True
+        if 'timeseries' in data:
+            if 'rmsd' not in data['timeseries'] and 'rg' not in data['timeseries']:
+                print(f"Please provide 'rmsd' and 'rg' under [timeseries] in {toml_file}")
+                stop = True
+            if 'rmsd' not in data['timeseries']:
+                print(f"Please provide 'rmsd' under [timeseries] in {toml_file}")
+                stop = True
+            if 'rg' not in data['timeseries']:
+                print(f"Please provide 'rg' under [timeseries] in {toml_file}")
+                stop = True
 
         if stop:
             return
-
-        output = data['output']
-        if os.path.exists(output):
-            print(f"\nThe existing file {output} will be amended.\n")
-        else:
-            print(f"\nThe file {output} does not exist and will be created.\n")
-
-        with h5py.File(output, 'a') as hdf_file:
-            hdf_file.attrs['name'] = data['name']
-            hdf_file.attrs['label'] = data['label']
-            hdf_file.attrs['text_label'] = data['text_label']
-
-            if 'sequence' in data:
-                for ch, seq in data['sequence'].items():
-                    resi, resn = zip(*seq)
-                    group = hdf_file.require_group(f'sequence/chain {ch[6:]}')  # omit 'Chain '
-                    resi = numpy.array(resi, dtype=numpy.int32)
-                    resn = numpy.array(resn, dtype="S3")
-                    group.require_dataset('resi', shape=resi.shape, dtype=resi.dtype, data=resi)
-                    group.require_dataset('resn', shape=resn.shape, dtype=resn.dtype, data=resn)
-            elif 'structure' in data:
-                sequences = md_davis.sequence.get_sequence(data['structure'])
-                for ch, seq in sequences.items():
-                    group = hdf_file.require_group(f'sequence/chain {ch}')
-                    resi = numpy.array(seq[0], dtype=numpy.int32)
-                    resn = numpy.array(seq[1], dtype="S3")
-                    group.require_dataset('resi', shape=resi.shape, dtype=resi.dtype, data=resi)
-                    group.require_dataset('resn', shape=resn.shape, dtype=resn.dtype, data=resn)
-            else:
-                print("Note: The amino acid sequence could not be parsed, "
-                      "since 'sequence' or 'structure' was not provided in "
-                      "the input TOML file. This is not an issue if you are "
-                      "only plotting free energy landscapes. However, it may "
-                      "be critical for other visualizations.\n")
-
-            # Add RMSD and radius of gyration into the HDF5 file
-            if 'timeseries' in data:
-                ts = data['timeseries']
-                if 'rmsd' in ts and 'rg' in ts:
-                    time_unit, unit, comment = None, None, None
-                    if 'time_unit' in ts:
-                        time_unit = ts['time_unit']
-                    if 'unit' in ts:
-                        unit = ts['unit']
-                    if 'comment' in ts:
-                        comment = ts['comment']
-
-                    if is_list(ts['rmsd']) and is_list(ts['rg']):
-                        rmsd_rg = zip(ts['rmsd'], ts['rg'])
-                        for ind, (rmsd, rg) in enumerate(rmsd_rg):
-                            add_rmsd_rg(hdf_file=hdf_file,
-                                        rmsd=rmsd,
-                                        rg=rg,
-                                        group_name=f'timeseries/rmsd_rg',
-                                        dataset=f'{ind}',
-                                        time_unit=time_unit,
-                                        unit=unit,
-                                        comment=comment,
-                                        )
-                    else:
-                        add_rmsd_rg(hdf_file=hdf_file,
-                                    rmsd=ts['rmsd'],
-                                    rg=ts['rg'],
-                                    group_name='timeseries',
-                                    dataset='rmsd_rg',
-                                    time_unit=time_unit,
-                                    unit=unit,
-                                    comment=comment,
-                                    )
-                elif 'rmsd' not in ts:
-                    print(f"Please provide 'rmsd' under "
-                          f"[timeseries] in {toml_file}")
-                elif 'rg' not in ts:
-                    print(f"Please provide 'rg' under "
-                          "[timeseries] in {toml_file}")
-                else:
-                    print(f"Please provide 'rmsd' and 'rg' under "
-                          f"[timeseries] in {toml_file}")
-
-            if 'residue_property' in data:
-                residue = data['residue_property']
-
-                # Add RMSF into the residue_property group of the HDF5 file
-                if 'rmsf' in residue:
-                    rmsf = residue['rmsf']
-
-                    # TODO: allow arbitrary key words pairs through toml files
-                    start, end = None, None
-                    if 'start' in rmsf:
-                        start = rmsf['start']
-                    if 'end' in rmsf:
-                        end = rmsf['end']
-
-                    add_rmsf(
-                        hdf_file=hdf_file,
-                        rmsf=rmsf['rmsf_files'],
-                        start=start,
-                        end=end,
-                    )
-
-                if 'secondary_structure' in residue:
-                    add_secondary_structure(
-                        hdf_file=hdf_file,
-                        secondary_structure=residue['secondary_structure'])
-
-                if 'sasa' in data['residue_property']:
-                    add_sasa(hdf_file=hdf_file, sasa=residue['sasa'])
-                #
-                # if 'dipoles' in data['residue_property']:
-                #     add_dipoles(
-                #     hdf_file=hdf_file,
-                #     dipoles=data['residue_property']['--dipoles'])
-
-                if 'surface_potential' in data['residue_property']:
-                    add_surface_potential(hdf_file=hdf_file, surface_potential=residue['surface_potential'])
-
-            # Evaluate and add dihedral angles into the HDF5 file
-            if 'dihedral' in data:
-                if 'atoms' in data['dihedral']:
-                    atoms = data['dihedral']['atoms']
-                else:
-                    atoms = None
-                if 'chunk' in data['dihedral']:
-                    chunk = data['dihedral']['chunk']
-                else:
-                    chunk = None
-
-                time = get_dihedrals(hdf_file=hdf_file,
-                                     trajectory=data['trajectory'],
-                                     structure=data['structure'],
-                                     chunk=chunk,
-                                     atoms=atoms)
-
-                # hdf_file.require_dataset('time',
-                #                          data=time,
-                #                          shape=time.shape,
-                #                          dtype=time.dtype)
-                # hdf_file.attrs['time_unit'] = 'picosecond'
-                if 'chain_lengths' in data['dihedral']:
-                    ch_len = data['dihedral']['chain_lengths']
-                else:
-                    ch_len = [_.n_residues for _ in
-                            mdtraj.load(data['structure']).topology.chains]
-
-                get_dihedral_sd(hdf_file=hdf_file,
-                                chain_lengths=ch_len)
+        create_hdf(data)
 
 
 if __name__ == '__main__':

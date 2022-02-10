@@ -21,6 +21,7 @@ dependencies:
   - pip
   - psutil                # required by plotly for png
   - openpyxl              # Required by pandas
+  - wxpython
 
   # packaging requirements
   - setuptools

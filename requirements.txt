@@ -22,4 +22,5 @@ setuptools
 toml
 twine
 wheel
+wxpython
 zipp
