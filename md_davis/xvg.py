@@ -19,6 +19,12 @@ class Xvg:
     def __init__(self, xvg_file) -> None:
         """ Parse header of .xvg files and create an Xvg object """
 
+        self.title = None
+        self.subtitle = None
+        self.xlabel = None
+        self.ylabel = None
+        self.legend = None
+
         title = re.compile(r'\s+title\s+\"(.+)\"')
         subtitle = re.compile(r'\s+subtitle\s+\"(.+)\"')
         xlabel = re.compile(r'\s+xaxis  label\s+\"(.+)\"')
