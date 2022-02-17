@@ -80,7 +80,7 @@ def run_delphi(pdb_file, output_directory, output_filename,
         f'exdi=80',
         f'linit=2000',
         f'maxc=0.0000000001',
-        f'out(phi, file="{output_directory}/{output_filename}.cub", format="cube")',
+        f'out(phi, file="{output_directory}/{output_filename}.cube", format="cube")',
     ]
 
     if pqr:

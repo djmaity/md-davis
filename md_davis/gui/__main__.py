@@ -1,8 +1,12 @@
+import os
 import wx
+
 from md_davis.gui.sequence_panel import SequencePanel
 from md_davis.gui.collate_panel import CollatePanel
 from md_davis.gui.landscape_panel import LandscapePanel
-# from md_davis.gui.residue_panel import ResiduePanel
+from md_davis.gui.electrostatics_panel import ElectrostaticsPanel
+from md_davis.gui.electrodynamics_panel import ElectrodynamicsPanel
+from md_davis.gui.residue_panel import ResiduePanel
 
 
 class MainPanel(wx.Panel):
@@ -12,9 +16,11 @@ class MainPanel(wx.Panel):
 
         main_sizer = wx.BoxSizer(orient=wx.VERTICAL)
         notebook = wx.Notebook(self)
+        notebook.AddPage(ElectrodynamicsPanel(notebook), 'Electrodynamics')
         notebook.AddPage(LandscapePanel(notebook), 'Landscape')
         notebook.AddPage(CollatePanel(notebook), 'Collate')
         notebook.AddPage(SequencePanel(notebook), 'Sequence')
+        # notebook.AddPage(ElectrostaticsPanel(notebook), 'Electrostatics')
         # notebook.AddPage(ResiduePanel(notebook), 'Residue')
         main_sizer.Add(notebook, 1, wx.ALL | wx.EXPAND, 5)
         self.SetSizer(main_sizer)
@@ -25,7 +31,8 @@ class MainFrame(wx.Frame):
 
     def __init__(self):
         super().__init__(None, title='MD DaVis')
-        self.SetIcon(wx.Icon('MD_DaVis.ico'))
+        icon = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'MD_DaVis.ico')
+        self.SetIcon(wx.Icon(icon))
         self.panel = MainPanel(self)
 
         # # Status Bar
@@ -62,7 +69,7 @@ class MainFrame(wx.Frame):
         #
         # self.SetMenuBar(self.menubar)
 
-        self.SetMinSize(wx.Size(width=400, height=400))
+        self.SetMinSize(wx.Size(width=600, height=400))
         self.Center()
         self.Show()
 

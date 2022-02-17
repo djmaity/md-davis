@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-import argparse
+
 import fnmatch
 import os
 import re
@@ -18,26 +18,7 @@ def initialize_pymol(window=False):
     return pymol.cmd
 
 
-CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
-
-
-@click.command(name='electrodynamics', context_settings=CONTEXT_SETTINGS)
-@click.option('-n', '--name', required=True, help='Name for the PyMOL obeject to be created for the molecule. (No spaces!)')
-@click.option('--surface', default=False, is_flag=True,
-                        help='Show molecular surface')
-@click.option('--ss_color', default=False, is_flag=True,
-                        help='Color the structure based on secondary structure')
-@click.option('--spacing', default=4, type=int,
-                        help='Spacing of field lines')
-@click.option('-t', '--time_step', default=1, type=int,
-                        help='time step for frames to show')
-@click.option('-l', '--length', default=10, type=int,
-                        help='length of field lines')
-@click.option('--light/--dark', help='Enable dark or light mode')
-@click.option('-o', '--output', help='Name for saving the PyMOL session', type=click.Path())
-@click.option('--hide', default=True, is_flag=True, help='Hide PyMOL window')
-@click.argument('electrostatics_directory', metavar='DIRECTORY')
-def main(electrostatics_directory, name, surface, ss_color, spacing, time_step, length, output, hide, light):
+def get_electrodynamics(electrostatics_directory, name, surface, ss_color, spacing, time_step, length, output, hide, light):
     """ Create pymol session showing dynamics of electric field lines.
     DIRECTORY   directory containing structures and electrostatics calculation from md_davis electrostatics
     """
@@ -66,7 +47,7 @@ def main(electrostatics_directory, name, surface, ss_color, spacing, time_step, 
     regex = re.compile(r'\d+')
     for root, dirs, files in os.walk(electrostatics_directory):
         for fname in files:
-            if fnmatch.fnmatch(fname, "*.cub"):
+            if fnmatch.fnmatch(fname, "*.cube"):
                 basename = os.path.splitext(os.path.basename(fname))[0]
                 frame = int(regex.findall(basename)[-1])
 
@@ -102,6 +83,33 @@ def main(electrostatics_directory, name, surface, ss_color, spacing, time_step, 
     cmd.group(name, f'{name}_structure {name}_surface {name}_field_lines {name}_potentials {name}_ramps')
     if output:
         cmd.save(output, format='pse')
+
+
+CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
+
+
+@click.command(name='electrodynamics', context_settings=CONTEXT_SETTINGS)
+@click.option('-n', '--name', required=True,
+              help='Name for the PyMOL obeject to be created for the molecule. (No spaces!)')
+@click.option('--surface', default=False, is_flag=True,
+              help='Show molecular surface')
+@click.option('--ss_color', default=False, is_flag=True,
+              help='Color the structure based on secondary structure')
+@click.option('--spacing', default=4, type=int,
+              help='Spacing of field lines')
+@click.option('-t', '--time_step', default=1, type=int,
+              help='time step for frames to show')
+@click.option('-l', '--length', default=10, type=int,
+              help='length of field lines')
+@click.option('--light/--dark', help='Enable dark or light mode')
+@click.option('-o', '--output', help='Name for saving the PyMOL session', type=click.Path())
+@click.option('--hide', default=True, is_flag=True, help='Hide PyMOL window')
+@click.argument('electrostatics_directory', metavar='DIRECTORY')
+def main(electrostatics_directory, name, surface, ss_color, spacing,
+         time_step, length, output, hide, light):
+    """ Click wrapper for get_electrodynamics. Otherwise GUI was giving an error """
+    get_electrodynamics(electrostatics_directory,name,surface,ss_color,spacing,
+                        time_step,length,output,hide,light)
 
 
 if __name__ == "__main__":

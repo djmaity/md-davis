@@ -106,7 +106,21 @@ GROMACS
 
 Currently, most analyses have to be performed with GROMACS,
 and the output is provided to MD DaVis for visualization.
+We have successfully used MD DaVis on simulations and analysis performed
+with various GROMACS versions from 5.1.4 to 2021.3.
 Other analysis tools may be used as long as the input to MD DaVis can be appropriately formatted.
+
+DSSP
+""""
+
+The secondary structure of a trajectory is calculated by the GROMACS tool
+‘do_dssp’, which requires `DSSP <https://github.com/cmbi/dssp>`_.
+The latest and only available version of `DSSP is 2.3.0 <https://github.com/cmbi/dssp>`_.
+The executable is called ‘mkdssp’ now. Help GROMACS find it by any of the following:
+
+* Rename ‘mkdssp’ to ‘dssp,’
+* Make a symlink called ‘dssp’ to ‘mkdssp’
+* Set the DSSP environment
 
 PyMOL
 ^^^^^
@@ -137,12 +151,11 @@ Commercial/Educational PyMOL
 """"""""""""""""""""""""""""
 
 `Commercial/Educational PyMOL <https://pymol.org/2/buy.html?q=buy>`_ from
-`Schrödinger <https://pymol.org/2/#download>`_ can be installed with:
+`Schrodinger <https://pymol.org/2/#download>`_ can be installed with:
 
 .. code-block:: bash
 
     conda install -c schrodinger pymol-bundle
-
 
 DelPhi and MSMS
 ^^^^^^^^^^^^^^^
@@ -151,7 +164,7 @@ Python dependencies are automatically installed.
 However, the electrostatics calculation requires the following two programs,
 which must be obtained separately.
 
-* `Delphi <http://compbio.clemson.edu/delphi>`_
+* `Delphi C++ version greater than or equal to 8.1 <http://compbio.clemson.edu/delphi>`_
 * `MSMS <http://mgltools.scripps.edu/downloads#msms>`_
 
 Uninstall

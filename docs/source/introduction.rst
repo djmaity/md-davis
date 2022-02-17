@@ -74,14 +74,30 @@ However, other analysis tools may be used as well, depending on the format of th
 In such cases, the output may be formatted to that accepted by MD DaVis.
 The following is a non-exhaustive list of tools for analysis of MD simulations:
 
-* MDTraj (McGibbon et al., 2015)
-* MDAnalysis (Michaud-Agrawal et al., 2011)
-* MD-TASK (Brown et al., 2017)
-* TRAVIS (Brehm and Kirch-ner, 2011)
-* MDTRA (Popov et al., 2013)
-* Bio3d (Grant et al., 2006)
-* MDplot (Margreitter and Oostenbrink, 2017)
+* `AMBER (Case et al., 2021) <https://ambermd.org/>`_
+* `Bio3d (Grant et al., 2006) <http://thegrantlab.org/bio3d/>`_
+* `CPPTRAJ (Roe and Cheatham, 2013) <https://github.com/Amber-MD/cpptraj>`_
+* `MDAnalysis (Michaud-Agrawal et al., 2011) <https://www.mdanalysis.org/>`_
+* `GROMACS (Berendsen et al., 1995) <http://www.gromacs.org/>`_
+* `GROMOS++ (Eichenberger, et al., 2011) <http://gromos.net/>`_
+* `MD-TASK (Brown et al., 2017) <https://md-task.readthedocs.io/en/latest/index.html>`_
+* `MDplot (Margreitter and Oostenbrink, 2017) <https://github.com/MDplot/MDplot>`_
+* `MDTraj (McGibbon et al., 2015) <https://www.mdtraj.org/>`_
+* `MDTRA (Popov et al., 2013) <http://bison.niboch.nsc.ru/mdtra.html>`_
+* `TRAVIS (Brehm and Kirch-ner, 2011) <http://www.travis-analyzer.de/>`_
 
-* GROMACS (Berendsen et al., 1995)
-* AMBER (Case et al., 2020)
 
+References
+^^^^^^^^^^
+
+#. Berendsen, H. J. C. et al. (1995) GROMACS: A message-passing parallel molecular dynamics implementation. `Computer Physics Communications, 91, 43-56 <https://doi.org/10.1016/0010-4655(95)00042-E>`_.
+#. Brehm, M. and Kirchner, B. (2011) TRAVIS - A Free Analyzer and Visualizer for Monte Carlo and Molecular Dynamics Trajectories. `J. Chem. Inf. Model. , 51, 2007-2023 <https://doi.org/10.1021/ci200217w>`_.
+#. Brown, D. K. et al. (2017) MD-TASK: a software suite for analyzing molecular dynamics trajectories. `Bioinformatics, 33, 2768-2771 <https://doi.org/10.1093/bioinformatics/btx349>`_.
+#. Case, D. A. et al. (2021) Amber 2021 University of California, San Francisco.
+#. Eichenberger, A. P. et al. (2011) GROMOS++ Software for the Analysis of Biomolecular Simulation Trajectories. `J. Chem. Theory Comput. , 7, 3379-3390 <https://doi.org/10.1021/ct2003622>`_.
+#. Grant, B. J. et al. (2006) Bio3d: an R package for the comparative analysis of protein structures. `Bioinformatics, 22, 2695-2696 <https://doi.org/10.1093/bioinformatics/btl461>`_.
+#. Margreitter, C. and Oostenbrink, C. (2017) MDplot: Visualise Molecular Dynamics. `The R Journal, 9, 164-186 <https://doi.org/10.32614/RJ-2017-007>`_.
+#. McGibbon, R. T. et al. (2015) MDTraj: A Modern Open Library for the Analysis of Molecular Dynamics Trajectories. `Biophys J, 109, 1528-1532 <https://dx.doi.org/10.1016%2Fj.bpj.2015.08.015>`_.
+#. Michaud-Agrawal, N. et al. (2011) MDAnalysis: A toolkit for the analysis of molecular dynamics simulations. `J. Comput. Chem. , 32, 2319-2327 <https://doi.org/10.1002/jcc.21787>`_.
+#. Popov, A. V. et al. (2013) MDTRA: A molecular dynamics trajectory analyzer with a graphical user interface. `Journal of Computational Chemistry, 34, 319-325 <https://doi.org/10.1002/jcc.23135>`_.
+#. Roe, D. R. and Cheatham, T. E. (2013) PTRAJ and CPPTRAJ: Software for Processing and Analysis of Molecular Dynamics Trajectory Data. `J. Chem. Theory Comput., 9, 3084-3095 <https://doi.org/10.1021/ct400341p>`_.

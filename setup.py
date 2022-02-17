@@ -63,6 +63,7 @@ setup(
                       'numpy',  # numpy should be before mdtraj
                       'pandas',
                       'plotly>=4.0',
+                      'pmw',
                       'scikit-learn',
                       'scipy',
                       'toml',
