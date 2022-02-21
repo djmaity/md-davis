@@ -1,5 +1,6 @@
 import wx
 from wx.lib.scrolledpanel import ScrolledPanel
+from wx.lib.agw.floatspin import FloatSpin
 import md_davis
 
 
@@ -31,7 +32,7 @@ class ElectrodynamicsPanel(wx.lib.scrolledpanel.ScrolledPanel):
 
         self.time_step_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         self.panel_sizer.Add(self.time_step_sizer, 0, wx.EXPAND, 5)
-        self.time_step_label = wx.StaticText(self, label='Line spacing',
+        self.time_step_label = wx.StaticText(self, label='Time Step',
                                               size=(120, -1))
         self.time_step = wx.SpinCtrl(self, min=1, max= 10000, initial=1)
         self.time_step_sizer.Add(self.time_step_label, 0, wx.ALL, 5)
@@ -51,16 +52,21 @@ class ElectrodynamicsPanel(wx.lib.scrolledpanel.ScrolledPanel):
 
         self.line_space_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         self.panel_sizer.Add(self.line_space_sizer, 0, wx.EXPAND, 5)
-        self.line_space_label = wx.StaticText(self, label='Line spacing',
-                                              size=(120, -1))
-        self.line_spacing = wx.SpinCtrl(self, min=1, initial=4)
-        self.line_length_label = wx.StaticText(self, label='Length of Field Lines',
-                                              size=(115, -1))
-        self.line_length = wx.SpinCtrl(self, min=1, initial=10)
+        self.line_space_label = wx.StaticText(self, label='Spacing',
+                                              size=(60, -1))
+        self.line_spacing = FloatSpin(self, min_val=0, value=4, digits=2)
+        self.line_length_label = wx.StaticText(self, label='Length',
+                                              size=(60, -1))
+        self.line_length = FloatSpin(self, min_val=0, value=10, digits=2)
+        self.line_thickness_label = wx.StaticText(self, label='Thickness',
+                                              size=(60, -1))
+        self.line_thickness = FloatSpin(self, min_val=0, value=1, digits=2)
         self.line_space_sizer.Add(self.line_space_label, 0, wx.ALL, 5)
         self.line_space_sizer.Add(self.line_spacing, 1, wx.ALL, 5)
         self.line_space_sizer.Add(self.line_length_label, 0, wx.ALL, 5)
         self.line_space_sizer.Add(self.line_length, 1, wx.ALL, 5)
+        self.line_space_sizer.Add(self.line_thickness_label, 0, wx.ALL, 5)
+        self.line_space_sizer.Add(self.line_thickness, 1, wx.ALL, 5)
 
         self.theme_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         self.panel_sizer.Add(self.theme_sizer, 0, wx.EXPAND, 5)
@@ -75,7 +81,7 @@ class ElectrodynamicsPanel(wx.lib.scrolledpanel.ScrolledPanel):
 
         self.output_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         self.panel_sizer.Add(self.output_sizer, 0, wx.EXPAND, 5)
-        self.output_label = wx.StaticText(self, label="Output Filename", size=(120, -1))
+        self.output_label = wx.StaticText(self, label="Output File", size=(120, -1))
         self.output_sizer.Add(window=self.output_label, proportion=0, flag=wx.ALL, border=5)
         self.output_picker = wx.FilePickerCtrl(
             self, path='', message="Name for PyMOL session file",
@@ -99,15 +105,21 @@ class ElectrodynamicsPanel(wx.lib.scrolledpanel.ScrolledPanel):
         Animate the electric field dynamics in PyMOL
         @param event: The event object
         """
-        md_davis.electrostatics.electrodynamics.get_electrodynamics(
-            electrostatics_directory = self.electrodynamics_picker.GetPath(),
-            name = self.name_textbox.GetValue(),
-            surface = self.surface_checkbox.GetValue(),
-            ss_color = self.secstr_checkbox.GetValue(),
-            spacing = self.line_spacing.GetValue(),
-            time_step = self.time_step.GetValue(),
-            length = self.line_length.GetValue(),
-            output = self.output_picker.GetPath(),
-            hide = self.pymol_checkbox.GetValue(),
-            light = self.light_radio.GetValue(),
-        )
+
+        if self.output_picker.GetPath() or self.pymol_checkbox.GetValue():
+            md_davis.electrostatics.electrodynamics.get_electrodynamics(
+                electrostatics_directory=self.electrodynamics_picker.GetPath(),
+                name=self.name_textbox.GetValue(),
+                surface=self.surface_checkbox.GetValue(),
+                ss_color=self.secstr_checkbox.GetValue(),
+                spacing=self.line_spacing.GetValue(),
+                time_step=self.time_step.GetValue(),
+                length=self.line_length.GetValue(),
+                width=self.line_thickness.GetValue(),
+                output=self.output_picker.GetPath(),
+                hide=self.pymol_checkbox.GetValue(),
+                light=self.light_radio.GetValue(),
+            )
+        else:
+            wx.MessageBox("Please provide output file to save or select 'Show PyMOL Window'", "Message",
+                          wx.OK | wx.ICON_INFORMATION)

@@ -80,6 +80,8 @@ setup(
         'console_scripts': [
             'md_davis=md_davis.cli:main',
             'md-davis=md_davis.cli:main',
+            'md_davis_gui=md_davis.gui.__main__:main',
+            'md-davis-gui=md_davis.gui.__main__:main',
         ],
     },
 )

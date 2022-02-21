@@ -33,8 +33,8 @@ class Xvg:
 
         data = []
         legend_dict = {}
-        for current_line in xvg_file:
 
+        for current_line in open(xvg_file, 'r'):
             # Parse header lines
             if current_line.startswith("@"):
                 title_match = title.search(current_line)
@@ -65,7 +65,7 @@ class Xvg:
                 data.append([float(_) for _ in row])
 
         self.mode = 'lines'
-        self.name = os.path.splitext(os.path.basename(xvg_file.name))[0]
+        self.name = os.path.splitext(os.path.basename(xvg_file))[0]
         self.data = numpy.array(data)
         self.legend = legend_dict
 

@@ -16,12 +16,12 @@ class MainPanel(wx.Panel):
 
         main_sizer = wx.BoxSizer(orient=wx.VERTICAL)
         notebook = wx.Notebook(self)
-        notebook.AddPage(ElectrodynamicsPanel(notebook), 'Electrodynamics')
+        # notebook.AddPage(ResiduePanel(notebook), 'Residue')
         notebook.AddPage(LandscapePanel(notebook), 'Landscape')
+        notebook.AddPage(ElectrostaticsPanel(notebook), 'Electrostatics')
+        notebook.AddPage(ElectrodynamicsPanel(notebook), 'Electrodynamics')
         notebook.AddPage(CollatePanel(notebook), 'Collate')
         notebook.AddPage(SequencePanel(notebook), 'Sequence')
-        # notebook.AddPage(ElectrostaticsPanel(notebook), 'Electrostatics')
-        # notebook.AddPage(ResiduePanel(notebook), 'Residue')
         main_sizer.Add(notebook, 1, wx.ALL | wx.EXPAND, 5)
         self.SetSizer(main_sizer)
         self.Layout()
@@ -74,7 +74,11 @@ class MainFrame(wx.Frame):
         self.Show()
 
 
-if __name__ == '__main__':
+def main():
     app = wx.App()
     frame = MainFrame()
     app.MainLoop()
+
+
+if __name__ == '__main__':
+    main()

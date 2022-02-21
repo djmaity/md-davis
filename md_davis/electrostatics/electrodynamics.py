@@ -18,9 +18,11 @@ def initialize_pymol(window=False):
     return pymol.cmd
 
 
-def get_electrodynamics(electrostatics_directory, name, surface, ss_color, spacing, time_step, length, output, hide, light):
+def get_electrodynamics(electrostatics_directory, name, output, surface,
+                        ss_color, time_step=1, spacing=4, length=10, width=20,
+                        hide=True, light=False):
     """ Create pymol session showing dynamics of electric field lines.
-    DIRECTORY   directory containing structures and electrostatics calculation from md_davis electrostatics
+    DIRECTORY directory containing structures and electrostatics calculation from md_davis electrostatics
     """
     cmd = initialize_pymol(hide)
 
@@ -33,7 +35,7 @@ def get_electrodynamics(electrostatics_directory, name, surface, ss_color, spaci
     cmd.set('gradient_spacing', spacing)
     cmd.set('gradient_min_length', length)
     cmd.set('gradient_max_length', length + 2)
-    cmd.set('line_radius', 20)
+    cmd.set('mesh_width', width)
 
     if light:
         cmd.set('bg_rgb', 'white')
@@ -83,6 +85,7 @@ def get_electrodynamics(electrostatics_directory, name, surface, ss_color, spaci
     cmd.group(name, f'{name}_structure {name}_surface {name}_field_lines {name}_potentials {name}_ramps')
     if output:
         cmd.save(output, format='pse')
+        print("PyMOL session saved to", output)
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
@@ -95,21 +98,34 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
               help='Show molecular surface')
 @click.option('--ss_color', default=False, is_flag=True,
               help='Color the structure based on secondary structure')
-@click.option('--spacing', default=4, type=int,
+@click.option('--spacing', default=4, type=float,
               help='Spacing of field lines')
 @click.option('-t', '--time_step', default=1, type=int,
               help='time step for frames to show')
-@click.option('-l', '--length', default=10, type=int,
+@click.option('-l', '--length', default=10, type=float,
+              help='length of field lines')
+@click.option('-w', '--width', default=10, type=float,
               help='length of field lines')
 @click.option('--light/--dark', help='Enable dark or light mode')
 @click.option('-o', '--output', help='Name for saving the PyMOL session', type=click.Path())
 @click.option('--hide', default=True, is_flag=True, help='Hide PyMOL window')
 @click.argument('electrostatics_directory', metavar='DIRECTORY')
-def main(electrostatics_directory, name, surface, ss_color, spacing,
-         time_step, length, output, hide, light):
+def main(electrostatics_directory, name, output, surface, ss_color,
+         time_step=1, spacing=4, length=10, width=20, hide=True, light=False):
     """ Click wrapper for get_electrodynamics. Otherwise GUI was giving an error """
-    get_electrodynamics(electrostatics_directory,name,surface,ss_color,spacing,
-                        time_step,length,output,hide,light)
+    get_electrodynamics(
+        electrostatics_directory=electrostatics_directory,
+        name=name,
+        surface=surface,
+        ss_color=ss_color,
+        spacing=spacing,
+        time_step=time_step,
+        length=length,
+        width=width,
+        output=output,
+        hide=hide,
+        light=light,
+    )
 
 
 if __name__ == "__main__":

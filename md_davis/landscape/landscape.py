@@ -184,9 +184,9 @@ class Landscape:
                     max_value = item
         return min_value, max_value
 
-    def energy_landscape(self, temperature=298):
+    def energy_landscape(self, temperature=300):
         """ Perform Boltzmann inversion to get the energy landscape """
-        def boltzmann_inversion(p, p_max, T=298):
+        def boltzmann_inversion(p, p_max, T=300):
             return numpy.NaN if p <= 0 else -R*T*numpy.log(p/p_max)
         boltzmann_inversion = numpy.vectorize(boltzmann_inversion)
 
@@ -198,6 +198,7 @@ class Landscape:
     @classmethod
     def landscape(cls, name, time, x_data, y_data, shape=(100, 100),
                   temperature=None, limits=None, label=None):
+        """ Create free energy landscape """
         if len(time) < 1 or len(x_data) < 1 or len(y_data) < 1:
             raise ValueError('Empty array provided in input')
         if len(time) != len(x_data) != len(y_data):
@@ -277,14 +278,17 @@ class Landscape:
             return 4, math.ceil(num_subplots/4.0)
 
     @classmethod
-    def plot_landscapes(cls, landscapes,
-                        title='Landscapes',
-                        filename='landscape.html',
-                        axis_labels=dict(x='x', y='y', z='z'),
-                        width=None, height=None, layout=None,
-                        othrographic=False, dtick=None,
-                        font_family='Courier New, monospace', font_size=None):
+    def plot_landscapes(cls, landscapes, title='Landscapes',
+                        filename='landscape.html', axis_labels=None, width=None,
+                        height=None, layout=None, othrographic=False,
+                        dtick=None, font_family='Courier New, monospace',
+                        font_size=None):
         """ Make 2 subplots """
+        if not axis_labels:
+            axis_labels = dict(x='X', y='Y', z='Z')
+        else:
+            axis_labels = eval(axis_labels)
+
         subtitles = [ls.label for ls in landscapes]
         if layout:
             columns, rows = layout

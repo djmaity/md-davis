@@ -9,7 +9,7 @@ import md_davis
 
 class MultipleFileBrowseButton(FileBrowseButton):
 
-    def OnBrowse (self, event = None):
+    def OnBrowse(self, event=None):
         """ Going to browse for file... """
         current = self.GetValue()
         directory = os.path.split(current)
@@ -203,22 +203,6 @@ class CollatePanel(wx.lib.scrolledpanel.ScrolledPanel):
             self.Layout()
             self.SetupScrolling(scrollToTop=False)
 
-    def onOpenFile(self, event):
-        """
-        Create and show the Open FileDialog
-        """
-        dlg = wx.FileDialog(
-            self, message="Select RMSF files",
-            style=wx.FD_OPEN | wx.FD_MULTIPLE | wx.FD_CHANGE_DIR
-        )
-        if dlg.ShowModal() == wx.ID_OK:
-            paths = dlg.GetPaths()
-            print
-            "You chose the following file(s):"
-            for path in paths:
-                print
-                path
-        dlg.Destroy()
 
     def on_button_press(self, event):
         """

@@ -28,6 +28,7 @@ import click
 import sys
 import md_davis
 
+
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
@@ -45,21 +46,13 @@ main.add_command(md_davis.xvg.main)
 main.add_command(md_davis.collate.main)
 main.add_command(md_davis.residue.main)
 main.add_command(md_davis.landscape.landscape_hdf.main)
-main.add_command(md_davis.landscape.landscape_xvg.landscape_xvg)
+main.add_command(md_davis.landscape.landscape_xvg.main)
 main.add_command(md_davis.landscape.landscape_animate.main)
 main.add_command(md_davis.hbond.main)
 main.add_command(md_davis.plotting.plot_hbond.main)
 main.add_command(md_davis.plotting.plot_residue_dataframe.main)
 main.add_command(md_davis.electrostatics.electrostatics.main)
 main.add_command(md_davis.electrostatics.electrodynamics.main)
-
-
-
-#     elif args['<command>'] == 'surface':
-#         from .structure import surface
-#         surface.main(argv=argv)
-
-#             plot_dipoles.main(argv=argv)
 
 
 if __name__ == "__main__":
