@@ -19,7 +19,7 @@ def read(*names, **kwargs):
 
 setup(
     name='md_davis',
-    version='0.3.0',
+    version='0.4.0',
     description='A tool for comparative analysis of molecular dynamics '
                 'simulations of proteins.',
     long_description='%s' % (re.compile('^.. start-badges.*^.. end-badges', re.M | re.S).sub('', read('README.md'))),
@@ -27,7 +27,7 @@ setup(
     author='Dibyajyoti Maity',
     author_email='djdibs@gmail.com',
     url='https://github.com/djmaity/md-davis',
-    packages=find_packages(),
+    packages=find_packages(exclude=['tests']),
     py_modules=[os.path.splitext(os.path.basename(path))[0] for path in glob('src/*.py')],
     classifiers=[
         'Development Status :: 4 - Beta',
