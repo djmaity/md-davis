@@ -14,7 +14,7 @@ dependencies:
   - numpy
   - pandas
   - plotly>=4.0
-  - pymol=2.2.3
+  - pymol-bundle
   - scikit-learn
   - scipy
   - toml

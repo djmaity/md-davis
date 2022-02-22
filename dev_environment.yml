@@ -4,17 +4,17 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python>3
+  - python>3.7
   - biopandas
   - biopython
   - click
-  - h5py
+  - h5py>=3.0
   - matplotlib
   - mdtraj
   - numpy
   - pandas
-  - plotly
-  - pymol=2.2.*
+  - plotly>=4.0
+  - pymol-bundle
   - scikit-learn
   - scipy
   - toml
