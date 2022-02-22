@@ -23,7 +23,7 @@ copyright = '2019, Dibyajyoti Maity'
 author = 'Dibyajyoti Maity'
 
 # The short X.Y version.
-version = release = '0.3.0'
+version = release = '0.4.0'
 
 # -- General configuration ---------------------------------------------------
 
