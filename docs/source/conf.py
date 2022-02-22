@@ -13,8 +13,6 @@
 import os
 import sys
 
-import md_davis
-
 sys.path.insert(0, os.path.abspath('../..'))
 
 # -- Project information -----------------------------------------------------
@@ -25,9 +23,7 @@ copyright = '2019, Dibyajyoti Maity'
 author = 'Dibyajyoti Maity'
 
 # The short X.Y version.
-version = md_davis.__version__
-# The full version, including alpha/beta/rc tags.
-release = md_davis.__version__
+version = release = '0.3.0'
 
 # -- General configuration ---------------------------------------------------
 
