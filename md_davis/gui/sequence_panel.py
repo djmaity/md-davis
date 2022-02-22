@@ -20,7 +20,7 @@ class SequencePanel(wx.Panel):
 
         self.run_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         self.panel_sizer.Add(self.run_sizer, 0, wx.EXPAND, 5)
-        self.select_output = wx.StaticText(self, label="Select Output", size=(85, -1))
+        self.select_output = wx.StaticText(self, label="Select Output")
         self.run_sizer.Add(window=self.select_output, proportion=0, flag=wx.ALL, border=10)
 
         self.output_type = ['TOML', 'FASTA', 'MODELLER', 'Python Dictionary']
@@ -35,7 +35,7 @@ class SequencePanel(wx.Panel):
 
         self.label_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         self.panel_sizer.Add(self.label_sizer, 0, wx.EXPAND, 5)
-        self.label_for_fasta = wx.StaticText(self, label="Label for FASTA", size=(85, -1))
+        self.label_for_fasta = wx.StaticText(self, label="Label for FASTA")
         self.label_sizer.Add(window=self.label_for_fasta, proportion=0, flag=wx.ALL, border=10)
         self.label_box = wx.TextCtrl(self)
         self.label_sizer.Add(self.label_box, 1, wx.ALL, 5)

@@ -4,7 +4,7 @@ import wx
 from md_davis.gui.sequence_panel import SequencePanel
 from md_davis.gui.collate_panel import CollatePanel
 from md_davis.gui.landscape_panel import LandscapePanel
-from md_davis.gui.electrostatics_panel import ElectrostaticsPanel
+# from md_davis.gui.electrostatics_panel import ElectrostaticsPanel
 from md_davis.gui.electrodynamics_panel import ElectrodynamicsPanel
 from md_davis.gui.residue_panel import ResiduePanel
 
@@ -18,7 +18,7 @@ class MainPanel(wx.Panel):
         notebook = wx.Notebook(self)
         # notebook.AddPage(ResiduePanel(notebook), 'Residue')
         notebook.AddPage(LandscapePanel(notebook), 'Landscape')
-        notebook.AddPage(ElectrostaticsPanel(notebook), 'Electrostatics')
+        # notebook.AddPage(ElectrostaticsPanel(notebook), 'Electrostatics')
         notebook.AddPage(ElectrodynamicsPanel(notebook), 'Electrodynamics')
         notebook.AddPage(CollatePanel(notebook), 'Collate')
         notebook.AddPage(SequencePanel(notebook), 'Sequence')

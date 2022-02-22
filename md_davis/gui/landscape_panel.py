@@ -92,12 +92,11 @@ class LandscapePanel(wx.lib.scrolledpanel.ScrolledPanel):
         self.type_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         self.run_sizer.Add(self.type_sizer, 0, wx.ALL, 5)
         self.hist_radio = wx.RadioButton(self, label='Histogram',
-                                         size=(110, 25), style=wx.RB_GROUP)
+                                         style=wx.RB_GROUP)
         self.hist_radio.Bind(wx.EVT_RADIOBUTTON, self.on_radio_choice)
         self.type_sizer.Add(self.hist_radio, 0,
                             wx.TOP | wx.BOTTOM | wx.ALIGN_CENTER_VERTICAL, 5)
-        self.fel_radio = wx.RadioButton(self, label='Free Energy',
-                                        size=(100, 25))
+        self.fel_radio = wx.RadioButton(self, label='Free Energy')
         self.fel_radio.Bind(wx.EVT_RADIOBUTTON, self.on_radio_choice)
         self.fel_radio.SetValue(True)
         self.type_sizer.Add(self.fel_radio, 0,
@@ -111,13 +110,11 @@ class LandscapePanel(wx.lib.scrolledpanel.ScrolledPanel):
         self.view_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         self.run_sizer.Add(self.view_sizer, 0, wx.EXPAND, 5)
         self.perspective_radio = wx.RadioButton(self, label='Perspective',
-                                                size=(100, -1),
                                                 style=wx.RB_GROUP)
         self.perspective_radio.SetValue(True)
         self.view_sizer.Add(self.perspective_radio, 0,
                             wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
-        self.orthographic_radio = wx.RadioButton(self, label='Orthographic',
-                                                 size=(100, -1))
+        self.orthographic_radio = wx.RadioButton(self, label='Orthographic')
         self.view_sizer.Add(self.orthographic_radio, 0,
                             wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
 
@@ -157,8 +154,7 @@ class LandscapePanel(wx.lib.scrolledpanel.ScrolledPanel):
         self.bins_sizer.Add(self.y_bins, proportion=1,
                             flag=wx.ALL,
                             border=5)
-        self.common_checkbox = wx.CheckBox(self, label='Use Common Ranges',
-                                           size=(140, -1))
+        self.common_checkbox = wx.CheckBox(self, label='Use Common Ranges')
         self.common_checkbox.SetValue(True)
         self.bins_sizer.Add(self.common_checkbox, proportion=0,
                             flag=wx.LEFT | wx.ALIGN_CENTER_VERTICAL,
@@ -191,12 +187,12 @@ class LandscapePanel(wx.lib.scrolledpanel.ScrolledPanel):
         self.run_sizer.Add(self.plot_shape_sizer, proportion=1,
                            flag=wx.EXPAND | wx.ALL, border=5)
 
-        self.width_text = wx.StaticText(self, label="Width", size=(85, -1))
+        self.width_text = wx.StaticText(self, label="Width")
         self.plot_shape_sizer.Add(window=self.width_text, proportion=0,
                                   flag=wx.ALL, border=10)
         self.width = wx.SpinCtrl(self, value='', min=800, max=10000, initial=1920)
         self.plot_shape_sizer.Add(self.width, 1, wx.ALL, 5)
-        self.height_text = wx.StaticText(self, label="Height", size=(85, -1))
+        self.height_text = wx.StaticText(self, label="Height")
         self.plot_shape_sizer.Add(window=self.height_text, proportion=0,
                                   flag=wx.ALL, border=10)
         self.height = wx.SpinCtrl(self, value='', min=600, max=10000, initial=1080)
@@ -204,8 +200,7 @@ class LandscapePanel(wx.lib.scrolledpanel.ScrolledPanel):
 
         self.save_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         self.run_sizer.Add(self.save_sizer, 0, wx.EXPAND, 5)
-        self.save_label = wx.StaticText(self, label='Save landscapes to',
-                                        size=(100, -1))
+        self.save_label = wx.StaticText(self, label='Save landscapes to')
         self.save_sizer.Add(self.save_label, 0,
                             wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
         self.save_picker = wx.FilePickerCtrl(
@@ -216,8 +211,7 @@ class LandscapePanel(wx.lib.scrolledpanel.ScrolledPanel):
 
         self.output_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         self.run_sizer.Add(self.output_sizer, 0, wx.EXPAND, 5)
-        self.output_label = wx.StaticText(self, label='Output HTML file',
-                                          size=(100, -1))
+        self.output_label = wx.StaticText(self, label='Output HTML file')
         self.output_sizer.Add(self.output_label, 0,
                               wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
         self.output_picker = wx.FilePickerCtrl(

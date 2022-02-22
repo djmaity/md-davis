@@ -1,4 +1,4 @@
-name: md_davis_env
+name: md-davis
 channels:
   - schrodinger
   - conda-forge
@@ -14,7 +14,7 @@ dependencies:
   - numpy
   - pandas
   - plotly>=4.0
-  - pymol-bundle
+  - pymol=2.2.3
   - scikit-learn
   - scipy
   - toml

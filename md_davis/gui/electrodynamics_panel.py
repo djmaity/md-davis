@@ -14,7 +14,7 @@ class ElectrodynamicsPanel(wx.lib.scrolledpanel.ScrolledPanel):
         self.electrodynamics_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         self.panel_sizer.Add(self.electrodynamics_sizer, 0, wx.EXPAND, 5)
         self.electrodynamics_label = wx.StaticText(
-            self, label='Electrostatics Directory', size=(120, -1))
+            self, label='Electrostatics Directory')
         self.electrodynamics_sizer.Add(window=self.electrodynamics_label,
                                       proportion=0, flag=wx.ALL, border=5)
         self.electrodynamics_picker = wx.DirPickerCtrl(
@@ -25,7 +25,7 @@ class ElectrodynamicsPanel(wx.lib.scrolledpanel.ScrolledPanel):
 
         self.name_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         self.panel_sizer.Add(self.name_sizer, 0, wx.EXPAND, 5)
-        self.text_name = wx.StaticText(self, label='Name',  size=(120, -1))
+        self.text_name = wx.StaticText(self, label='Name',)
         self.name_sizer.Add(window=self.text_name, proportion=0, flag=wx.ALL, border=5)
         self.name_textbox = wx.TextCtrl(self)
         self.name_sizer.Add(self.name_textbox, 1, wx.ALL, 5)
@@ -33,7 +33,7 @@ class ElectrodynamicsPanel(wx.lib.scrolledpanel.ScrolledPanel):
         self.time_step_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         self.panel_sizer.Add(self.time_step_sizer, 0, wx.EXPAND, 5)
         self.time_step_label = wx.StaticText(self, label='Time Step',
-                                              size=(120, -1))
+                                        )
         self.time_step = wx.SpinCtrl(self, min=1, max= 10000, initial=1)
         self.time_step_sizer.Add(self.time_step_label, 0, wx.ALL, 5)
         self.time_step_sizer.Add(self.time_step, 1, wx.ALL, 5)
@@ -52,14 +52,11 @@ class ElectrodynamicsPanel(wx.lib.scrolledpanel.ScrolledPanel):
 
         self.line_space_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         self.panel_sizer.Add(self.line_space_sizer, 0, wx.EXPAND, 5)
-        self.line_space_label = wx.StaticText(self, label='Spacing',
-                                              size=(60, -1))
+        self.line_space_label = wx.StaticText(self, label='Spacing')
         self.line_spacing = FloatSpin(self, min_val=0, value=4, digits=2)
-        self.line_length_label = wx.StaticText(self, label='Length',
-                                              size=(60, -1))
+        self.line_length_label = wx.StaticText(self, label='Length')
         self.line_length = FloatSpin(self, min_val=0, value=10, digits=2)
-        self.line_thickness_label = wx.StaticText(self, label='Thickness',
-                                              size=(60, -1))
+        self.line_thickness_label = wx.StaticText(self, label='Thickness')
         self.line_thickness = FloatSpin(self, min_val=0, value=1, digits=2)
         self.line_space_sizer.Add(self.line_space_label, 0, wx.ALL, 5)
         self.line_space_sizer.Add(self.line_spacing, 1, wx.ALL, 5)
@@ -71,8 +68,8 @@ class ElectrodynamicsPanel(wx.lib.scrolledpanel.ScrolledPanel):
         self.theme_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         self.panel_sizer.Add(self.theme_sizer, 0, wx.EXPAND, 5)
         self.theme_label = wx.StaticText(self, label='Select Theme',
-                                         size=(120, -1))
-        self.dark_radio = wx.RadioButton(self, label='Dark', size=(100, -1))
+                                    )
+        self.dark_radio = wx.RadioButton(self, label='Dark')
         self.dark_radio.SetValue(True)
         self.light_radio = wx.RadioButton(self, label='Light')
         self.theme_sizer.Add(self.theme_label, 0, wx.ALL, 5)
@@ -81,7 +78,7 @@ class ElectrodynamicsPanel(wx.lib.scrolledpanel.ScrolledPanel):
 
         self.output_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         self.panel_sizer.Add(self.output_sizer, 0, wx.EXPAND, 5)
-        self.output_label = wx.StaticText(self, label="Output File", size=(120, -1))
+        self.output_label = wx.StaticText(self, label="Output File")
         self.output_sizer.Add(window=self.output_label, proportion=0, flag=wx.ALL, border=5)
         self.output_picker = wx.FilePickerCtrl(
             self, path='', message="Name for PyMOL session file",

@@ -17,19 +17,17 @@ class ElectrostaticsPanel(wx.lib.scrolledpanel.ScrolledPanel):
 
         self.name_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         self.panel_sizer.Add(self.name_sizer, 0, wx.EXPAND, 5)
-        self.text_name = wx.StaticText(self, label='Name',  size=(120, -1))
-        self.name_sizer.Add(window=self.text_name, proportion=0, flag=wx.ALL, border=5)
+        self.text_name = wx.StaticText(self, label='Name')
+        self.name_sizer.Add(window=self.text_name, proportion=0, flag=wx.ALL,
+                            border=5)
         self.name_textbox = wx.TextCtrl(self)
         self.name_sizer.Add(self.name_textbox, 1, wx.ALL, 5)
 
-
-
         self.output_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         self.panel_sizer.Add(self.output_sizer, 0, wx.EXPAND, 5)
-        self.output_label = wx.StaticText(
-            self, label='Output Directory', size=(120, -1))
-        self.output_sizer.Add(window=self.output_label,
-                                      proportion=0, flag=wx.ALL, border=5)
+        self.output_label = wx.StaticText(self, label='Output Directory')
+        self.output_sizer.Add(window=self.output_label, proportion=0,
+                              flag=wx.ALL, border=5)
         self.output_picker = wx.DirPickerCtrl(
             self,
             message='Select directory containing MD DaVis electrostatic files')
@@ -61,5 +59,7 @@ class ElectrostaticsPanel(wx.lib.scrolledpanel.ScrolledPanel):
         if self.output_picker.GetPath() or self.pymol_checkbox.GetValue():
             pass
         else:
-            wx.MessageBox("Please provide output file to save or select 'Show PyMOL Window'", "Message",
-                          wx.OK | wx.ICON_INFORMATION)
+            wx.MessageBox(
+                "Please provide output file to save or select 'Show PyMOL Window'",
+                "Message",
+                wx.OK | wx.ICON_INFORMATION)
