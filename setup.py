@@ -52,17 +52,17 @@ setup(
     keywords=[
         'analysis', 'data visualization', 'molecular dynamics', 'protein'
     ],
-    python_requires='>=3.7',
+    python_requires='>=3.6',
     install_requires=['biopandas',
                       'biopython',  # TODO: Refactor dependency
                       'click',
                       'docopt',  # TODO: Refactor dependency
-                      'h5py>=3.0',
+                      'h5py',
                       'matplotlib',
                       'more_itertools',
                       'numpy',  # numpy should be before mdtraj
                       'pandas',
-                      'plotly>=4.0',
+                      'plotly',
                       'pmw',
                       'scikit-learn',
                       'scipy',
