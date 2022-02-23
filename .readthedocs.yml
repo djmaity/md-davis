@@ -13,10 +13,10 @@ sphinx:
 formats: all
 
 conda:
-  environment: dev_environment.yml
+  environment: docs/doc_environment.yml
 
 python:
-  version: "3.7"
+  version: "3.8"
   install:
     - method: pip
       path: .
