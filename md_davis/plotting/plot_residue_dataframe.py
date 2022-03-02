@@ -270,9 +270,13 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
               help='Height of the plot in pixels')
 @click.option('-t', '--title', type=str, default=None,
               help="title for the plot")
+@click.option('-l', '--line_color', type=str, default=None,
+              help="Array of colors for lines")
+@click.option('-f', '--fill_color', type=str, default=None,
+              help="Array of colors for shaded error bars")
 @click.argument('pickle_file', type=click.Path(exists=True))
 def main(pickle_file, output='residue_data.html', title=None,
-         width=None, height=None):
+         width=None, height=None, line_color=None, fill_color=None):
     """ main function """
     pickled_data = pickle.load(open(pickle_file, 'rb'))
 
@@ -323,8 +327,14 @@ def main(pickle_file, output='residue_data.html', title=None,
                 })
             y_axis += 1
 
-    lcolor = itertools.cycle(colors.line_color)
-    fcolor = itertools.cycle(colors.fill_color)
+    if line_color:
+        lcolor = itertools.cycle(eval(line_color))
+    else:
+        lcolor = itertools.cycle(colors.line_color)
+    if fill_color:
+        fcolor = itertools.cycle(eval(fill_color))
+    else:
+        fcolor = itertools.cycle(colors.fill_color)
 
     for j, (prefix, residue_data) in enumerate(pickled_data['data'].items()):
         rows = len(residue_data)

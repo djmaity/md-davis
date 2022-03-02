@@ -34,13 +34,13 @@ Often the first step after a successful MD simulation is to calculate the root-m
 2VH7_rmsd.xvg and 2VH7_rg.xvg are text files containing the RMSD and R\
 :sub:`G`\ , respectively. Repeat the process for all the other trajectories.
 
-.. note:: If you have installed MD DaVis in a virtual or conda environment as suggested in the installation instructions, make sure to activate it before running the ``md_davis`` commands.
+.. note:: If you have installed MD DaVis in a virtual or conda environment as suggested in the installation instructions, make sure to activate it before running the ``md-davis`` commands.
 
 Plot 2VH7_rmsd.xvg using:
 
 .. code-block:: bash
 
-    md_davis xvg 2VH7/2VH7_rmsd.xvg -o 2VH7/2VH7_rmsd.html
+    md-davis xvg 2VH7/2VH7_rmsd.xvg -o 2VH7/2VH7_rmsd.html
 
 You should obtain a plot like this:
 
@@ -48,12 +48,12 @@ To plot the RMSD from the four trajectories together, use:
 
 .. code-block:: bash
 
-    md_davis xvg 2VH7/2VH7_rmsd.xvg 2GV1/2GV1_rmsd.xvg 2ACY/2ACY_rmsd.xvg 1URR/1URR_rmsd.xvg -o AcP_rmsd.html
+    md-davis xvg 2VH7/2VH7_rmsd.xvg 2GV1/2GV1_rmsd.xvg 2ACY/2ACY_rmsd.xvg 1URR/1URR_rmsd.xvg -o AcP_rmsd.html
 
 .. image:: /_static/AcP_rmsd.png
     :target: AcP_rmsd.html
 
-Similarly, the R\ :sub:`G`\  can also be plotted using the ``md_davis xvg`` command.
+Similarly, the R\ :sub:`G`\  can also be plotted using the ``md-davis xvg`` command.
 
 Create Free Energy Landscapes
 -----------------------------
@@ -61,13 +61,13 @@ Next, we will create the free energy landscape using RMSD and R\ :sub:`G`\  as t
 
 .. code-block:: bash
 
-    md_davis landscape_xvg -T 300 -x 2VH7/2VH7_rmsd_full.xvg -y 2VH7/2VH7_rg_full.xvg -n "2VH7" -l "Human AcP" -o 2VH7_landscape.html
+    md-davis landscape_xvg -T 300 -x 2VH7/2VH7_rmsd_full.xvg -y 2VH7/2VH7_rg_full.xvg -n "2VH7" -l "Human AcP" -o 2VH7_landscape.html
 
 Here, ``-T 300`` specifies 300 K as the temperature of the system. Now to plot all four landscapes together:
 
 .. code-block:: bash
 
-    md_davis landscape_xvg -T 300 --common -x 2VH7/2VH7_rmsd_full.xvg -y 2VH7/2VH7_rg_full.xvg --name "2VH7" --label "Human AcP" -x 2GV1/2GV1_rmsd_full.xvg -y 2GV1/2GV1_rg_full.xvg --name "2GV1" --label "E. coli AcP" -x 2ACY/2ACY_rmsd_full.xvg -y 2ACY/2ACY_rg_full.xvg --name "2ACY" --label "Bovine AcP" -x 1URR/1URR_rmsd_full.xvg -y 1URR/1URR_rg_full.xvg --name "1URR" --label "Fruit Fly AcP" -o AcP_FEL.html
+    md-davis landscape_xvg -T 300 --common -x 2VH7/2VH7_rmsd_full.xvg -y 2VH7/2VH7_rg_full.xvg --name "2VH7" --label "Human AcP" -x 2GV1/2GV1_rmsd_full.xvg -y 2GV1/2GV1_rg_full.xvg --name "2GV1" --label "E. coli AcP" -x 2ACY/2ACY_rmsd_full.xvg -y 2ACY/2ACY_rg_full.xvg --name "2ACY" --label "Bovine AcP" -x 1URR/1URR_rmsd_full.xvg -y 1URR/1URR_rg_full.xvg --name "1URR" --label "Fruit Fly AcP" -o AcP_FEL.html
 
 In the command above, remember to provide ``-x``, ``-y``, ``--name``, and  ``--label`` together before those for the subsequent trajectory. The option ``--common`` instructs MD DaVis to create the four landscapes using identical ranges and binning, which allows us to compare the landscapes reliably. The output from the above command is shown below; click the image to view the interactive HTML file.
 
@@ -88,7 +88,7 @@ Electrostatic Potential and Electric Field Dynamics
 
 .. code-block:: bash
 
-    md_davis electrostatics --surface -m ~/msms_i86_64Linux2_2.6.1/msms.x86_64Linux2.2.6.1 -d ~/delphicpp_v8.4.5_serial -o 2VH7/2VH7_electrostatics/ 2VH7/2VH7_electrostatics/2VH7_frame*.pdb
+    md-davis electrostatics --surface -m ~/msms_i86_64Linux2_2.6.1/msms.x86_64Linux2.2.6.1 -d ~/delphicpp_v8.4.5_serial -o 2VH7/2VH7_electrostatics/ 2VH7/2VH7_electrostatics/2VH7_frame*.pdb
 
 In the command above, the MSMS directory and the DelPhi executable are placed in the home folder. Adjust the path according to your system.
 
@@ -96,7 +96,7 @@ In the command above, the MSMS directory and the DelPhi executable are placed in
 
 .. code-block:: bash
 
-    md_davis electrodynamics --ss_color --surface --name Human_AcP 2VH7/2VH7_electrostatics
+    md-davis electrodynamics --ss_color --surface --name Human_AcP 2VH7/2VH7_electrostatics
 
 
 Residue Properties Plot
@@ -148,19 +148,19 @@ Next, collate all the data using MD DaVis, which can process multiple TOML files
 
 .. code-block:: bash
 
-    md_davis collate 2VH7/2VH7_input.toml 2GV1/2GV1_input.toml 2ACY/2ACY_input.toml 1URR/1URR_input.toml
+    md-davis collate 2VH7/2VH7_input.toml 2GV1/2GV1_input.toml 2ACY/2ACY_input.toml 1URR/1URR_input.toml
 
 3. Combine the data from the HDF file into a pandas dataframe with:
 
 .. code-block:: bash
 
-    md_davis residue 2VH7_data.h5 2GV1_data.h5 2ACY_data.h5 1URR_data.h5 -o AcP_residue_data.p
+    md-davis residue 2VH7_data.h5 2GV1_data.h5 2ACY_data.h5 1URR_data.h5 -o AcP_residue_data.p
 
 4. Plot the residue properties:
 
 .. code-block:: bash
 
-    md_davis plot_residue AcP_residue_data.p -o AcP_residue_data.html
+    md-davis plot_residue AcP_residue_data.p -o AcP_residue_data.html
 
 Now, we can also align the residues of the different trajectories to align the peaks in the data.
 
@@ -168,7 +168,7 @@ Now, we can also align the residues of the different trajectories to align the p
 
 .. code-block:: bash
 
-    md_davis sequence 2VH7/2VH7_structure.pdb -r fasta
+    md-davis sequence 2VH7/2VH7_structure.pdb -r fasta
 
 2. Use a sequence alignment program or webservers like `Clustal Omega <https://www.ebi.ac.uk/Tools/msa/clustalo/>`_ or `T-coffee <https://www.ebi.ac.uk/Tools/msa/tcoffee/>`_ to obtain the alignment of these sequences in ClustalW format.
 
@@ -202,17 +202,17 @@ Now, we can also align the residues of the different trajectories to align the p
     [alignment]
     'chain 0' = 'AcP_alingment.clustal_num'
 
-4. Run the ``md_davis residue`` command passing the TOML file with the ``--alignment`` option to generate the pandas dataframes.
+4. Run the ``md-davis residue`` command passing the TOML file with the ``--alignment`` option to generate the pandas dataframes.
 
 .. code-block:: bash
 
-    md_davis residue 2VH7_data.h5 2GV1_data.h5 2ACY_data.h5 1URR_data.h5 --alignment Acp_alignment_input.toml -o AcP_residue_data_aligned.p
+    md-davis residue 2VH7_data.h5 2GV1_data.h5 2ACY_data.h5 1URR_data.h5 --alignment Acp_alignment_input.toml -o AcP_residue_data_aligned.p
 
 5. Plot the aligned data frames.
 
 .. code-block:: bash
 
-    md_davis plot_residue AcP_residue_data_aligned.p -o AcP_residue_data_aligned.html
+    md-davis plot_residue AcP_residue_data_aligned.p -o AcP_residue_data_aligned.html
 
 Hydrogen Bond Matrix
 ---------------------
@@ -242,13 +242,13 @@ title of the last section containing the list of hydrogen bonds, which is ``hbon
 
 .. code-block:: bash
 
-    md_davis hbond -x 2VH7/2VH7_hb_matrix.xpm -i 2VH7/2VH7_hb_index.ndx -s 2VH7/2VH7_structure.pdb -g hbonds_Protein --save_pickle 2VH7/2VH7_hbonds.p
+    md-davis hbond -x 2VH7/2VH7_hb_matrix.xpm -i 2VH7/2VH7_hb_index.ndx -s 2VH7/2VH7_structure.pdb -g hbonds_Protein --save_pickle 2VH7/2VH7_hbonds.p
 
 4. Plot the hydrogen bonds matrix
 
 .. code-block:: bash
 
-    md_davis plot_hbond --percent --total_frames 101 --cutoff 33 -o 2VH7_hbond_matrix.html 2VH7/2VH7_hbonds.p
+    md-davis plot_hbond --percent --total_frames 101 --cutoff 33 -o 2VH7_hbond_matrix.html 2VH7/2VH7_hbonds.p
 
 The above command plots the percentage of the H-bonds, which is calculated for each H-bond as follows:
 

@@ -1,5 +1,5 @@
 .. click:: md_davis.xvg:main
-   :prog: md_davis xvg
+   :prog: md-davis xvg
    :nested: full
 
 The GROMACS molecular dynamics software bundles numerous analysis tools. The
@@ -41,7 +41,7 @@ MD DaVis can also plot multiple Grace (.xvg) files, which is the format for the 
 
 .. code-block:: bash
 
-    md_davis xvg <path/to/file.xvg>
+    md-davis xvg <path/to/file.xvg>
 
 Replace `<path/to/file.xvg>` with the location of your ``.xvg`` file.
 

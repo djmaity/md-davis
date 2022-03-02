@@ -301,7 +301,7 @@ def main(hdf_file, output, static=True, select=None, begin=0, end=None, step=1,
             font_size=font_size,
             dtick=dtick,
             othrographic=orthographic,
-            camera=camera,
+            camera=eval(camera),
             marker_size=marker_size,
         )
     else:

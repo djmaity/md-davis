@@ -26,11 +26,11 @@ information into the analysis. The steps involved are as follows:
     are aligned to reduce discrepancy caused by grid selection during
     electrostatics calculation.
 
-#.  Use ``md_davis electrostatics`` to run MSMS and DelPhi on each PDB file.
+#.  Use ``md-davis electrostatics`` to run MSMS and DelPhi on each PDB file.
 
     .. code-block::
 
-         md_davis electrostatics --surface -m <MSMS> -d <DELPHI> -o <OUTPUT_DIR> [PDB_FILES]
+         md-davis electrostatics --surface -m <MSMS> -d <DELPHI> -o <OUTPUT_DIR> [PDB_FILES]
 
     This calculates the triangulated molecular surface using the
     `MSMS <http://mgl.scripps.edu/people/sanner/html/msms_home.html>`_ program
@@ -50,7 +50,7 @@ information into the analysis. The steps involved are as follows:
 
 #.  Specify the path to the directory containing the surface potential
     files in the input `TOML <https://toml.io/en/>`_ file used by
-    :ref:`md_davis collate`.
+    :ref:`md-davis collate`.
 
     .. code-block:: toml
 
@@ -58,11 +58,11 @@ information into the analysis. The steps involved are as follows:
             surface_potential = '<OUTPUT_DIR>'
 
 #.  The total and mean electrostatic potential per residue is calculated
-    when the data is :ref:`collated <md_davis collate>` into an HDF file.
+    when the data is :ref:`collated <md-davis collate>` into an HDF file.
 
     .. code-block::
 
-        md_davis collate input.toml
+        md-davis collate input.toml
 
     This will search for all ``.pot`` files in the specified
     ``<OUTPUT_DIRECTORY>``. The vertices corresponding to each residue are
@@ -79,7 +79,7 @@ information into the analysis. The steps involved are as follows:
 
     .. code-block::
 
-        md_davis plot residue output_residue_wise_data.p
+        md-davis plot residue output_residue_wise_data.p
 
 .. note:: A discrepancy between the molecular surface calculated by MSMS and
     the molecular surface used by DelPhi to detect the protein's interior
@@ -92,9 +92,9 @@ information into the analysis. The steps involved are as follows:
 
 .. code-block:: bash
 
-    md_davis electrostatics --surface -m <MSMS_EXECUTABLE> -d <DELPHI_EXECUTABLE> -o <OUTPUT_DIRECTORY> [PDB_FILES]
+    md-davis electrostatics --surface -m <MSMS_EXECUTABLE> -d <DELPHI_EXECUTABLE> -o <OUTPUT_DIRECTORY> [PDB_FILES]
 
-``md_davis electrostatics`` is a wrapper for running
+``md-davis electrostatics`` is a wrapper for running
 `Delphi <http://compbio.clemson.edu/delphi>`_ and reporting
 the electrostatic potential at the vertices of a triangulated surface obtained using
 `MSMS <http://mgl.scripps.edu/people/sanner/html/msms_home.html>`_. Therefore, these must
@@ -130,7 +130,7 @@ MD DaVis.
 
 If you receive a warning during Delphi run regarding missing charge or
 radius. Then the missing properties must be added to these files or
-whichever files you provide to ``md_davis electrostatics``.
+whichever files you provide to ``md-davis electrostatics``.
 
 
 
@@ -143,7 +143,7 @@ electric field lines using:
 
 .. code-block:: bash
 
-    md_davis electrodynamics --ss_color --surface --name Human_AcP 2VH7/2VH7_electrostatics
+    md-davis electrodynamics --ss_color --surface --name Human_AcP 2VH7/2VH7_electrostatics
 
 This creates a `PyMOL <https://pymolwiki.org/>`_ session with the
 conformations as frames in the animation as shown below:

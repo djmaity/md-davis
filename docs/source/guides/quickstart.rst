@@ -20,13 +20,13 @@ The list of available commands can be seen with ``--help`` or ``-h``:
 
 .. code-block:: bash
 
-    md_davis --help
+    md-davis --help
 
 Similarly, the help for each command can be accessed with ``--help`` or ``-h``:
 
 .. code-block:: bash
 
-    md_davis <command> -h
+    md-davis <command> -h
 
 The following steps walks you through the process of using the MD DaVis
 command line interface (CLI) to assimilate the analysis data and creating
@@ -160,14 +160,14 @@ file using the following command:
 
 .. code-block:: bash
 
-    md_davis collate input.toml
+    md-davis collate input.toml
 
 Step 3: Plot the free energy landscape
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: bash
 
-    md_davis landscape -T 300 --common --select backbone output1.h5 output2.h5 -s landscapes.h5
+    md-davis landscape -T 300 --common --select backbone output1.h5 output2.h5 -s landscapes.h5
 
 This command will create an html file with the interactive landscapes. It
 will not open the file like other plotting commands, so check the working
@@ -180,13 +180,13 @@ Step 4: Plot the residue property plot
 
 .. code-block:: bash
 
-    md_davis residue protein_data.h5 -o residue_dataframe.p
+    md-davis residue protein_data.h5 -o residue_dataframe.p
 
 **Step 4b:** Plot the residue data pickle file from the previous command using:
 
 .. code-block:: bash
 
-    md_davis plot_residue residue_dataframe.p -o plot.html
+    md-davis plot_residue residue_dataframe.p -o plot.html
 
 
 
