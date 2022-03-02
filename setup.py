@@ -19,7 +19,7 @@ def read(*names, **kwargs):
 
 setup(
     name='md_davis',
-    version='0.4.0',
+    version='0.4.1',
     description='A tool for comparative analysis of molecular dynamics '
                 'simulations of proteins.',
     long_description='%s' % (re.compile('^.. start-badges.*^.. end-badges', re.M | re.S).sub('', read('README.md'))),

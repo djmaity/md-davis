@@ -15,7 +15,7 @@ import md_davis.xvg
 
 __author__ = """Dibyajyoti Maity"""
 __email__ = 'djdibs@gmail.com'
-__version__ = '0.4.0'
+__version__ = '0.4.1'
 name = "md_davis"
 
 from . import sequence
