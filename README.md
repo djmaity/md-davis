@@ -48,7 +48,7 @@ pip install md-davis
 ```
 
 For detailed installation instructions, see:
-[https://md-davis.readthedocs.io/en/latest/install.html](https://md-davis.readthedocs.io/en/latest/install.html)
+[https://md-davis.readthedocs.io/en/latest/guides/install.html](https://md-davis.readthedocs.io/en/latest/guides/install.html)
 
 ### Dependencies
 

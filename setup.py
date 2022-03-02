@@ -56,11 +56,10 @@ setup(
     install_requires=['biopandas',
                       'biopython',  # TODO: Refactor dependency
                       'click',
-                      'docopt',  # TODO: Refactor dependency
                       'h5py',
                       'matplotlib',
                       'more_itertools',
-                      'numpy',  # numpy should be before mdtraj
+                      'numpy',
                       'pandas',
                       'plotly',
                       'pmw',
@@ -69,7 +68,6 @@ setup(
                       'toml',
                       'mdtraj',
                       'wxpython'
-                      # 'pymol', # Cannot Install automatically using pip
                       ],
     include_package_data=True,
     setup_requires=['flake8', 'pytest-runner'],

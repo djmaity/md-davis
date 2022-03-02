@@ -1,8 +1,7 @@
 name: md-davis-dev
 channels:
-  - schrodinger
   - conda-forge
-  - defaults
+  - nodefaults
 dependencies:
   - python>3.7
   - biopandas
@@ -14,7 +13,7 @@ dependencies:
   - numpy
   - pandas
   - plotly>=4.0
-  - pymol-bundle
+  - pymol-open-source=2.5.0
   - scikit-learn
   - scipy
   - toml
@@ -25,7 +24,7 @@ dependencies:
   - wxpython
 
   # packaging requirements
-  - pyinstaller
+  - cx_freeze
   - setuptools
   - wheel
   - twine
