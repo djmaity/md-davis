@@ -5,8 +5,9 @@ User Guide
     :maxdepth: 2
 
     quickstart
-    install
+    gui
     xvg
+    sequence
     collate
     free_energy_landscapes
     electrostatics

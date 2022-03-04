@@ -43,14 +43,14 @@ information into the analysis. The steps involved are as follows:
     molecule are also saved by DelPhi in
     `Gaussian CUBE format <https://gaussian.com/cubegen/>`_. This can be
     used for 3D vislization of the surface electrostatic potentials (Figure
-    above) or :ref:`electric field dynamics <Electric Field Dynamics>`.
+    above) or :ref:`electric field dynamics <guides/electrostatics:Electric Field Dynamics>`.
     It is advisable to align the PDB files and specify the grid size for
     Delphi calculation, so that the same grid points are used for each
     calculation.
 
 #.  Specify the path to the directory containing the surface potential
     files in the input `TOML <https://toml.io/en/>`_ file used by
-    :ref:`md-davis collate`.
+    :ref:`guides/collate:md-davis collate`.
 
     .. code-block:: toml
 
@@ -58,7 +58,7 @@ information into the analysis. The steps involved are as follows:
             surface_potential = '<OUTPUT_DIR>'
 
 #.  The total and mean electrostatic potential per residue is calculated
-    when the data is :ref:`collated <md-davis collate>` into an HDF file.
+    when the data is :ref:`collated <guides/collate:md-davis collate>` into an HDF file.
 
     .. code-block::
 
@@ -74,7 +74,7 @@ information into the analysis. The steps involved are as follows:
     standard deviation of both are calculated and saved in the
     output HDF file.
 
-#.  Follow the steps for creating a :ref:`residue property plot <Residue
+#.  Follow the steps for creating a :ref:`residue property plot <guides/residue_property_plot:Residue
     Property Plot>` to visualize the data.
 
     .. code-block::
@@ -137,7 +137,7 @@ whichever files you provide to ``md-davis electrostatics``.
 Electric Field Dynamics
 =======================
 
-The electrostatic potentials calculated in :ref:`Surface Electrostatic
+The electrostatic potentials calculated in :ref:`guides/electrostatics:Surface Electrostatic
 Potential Per Residue` can be visualized as a 3D animation of
 electric field lines using:
 

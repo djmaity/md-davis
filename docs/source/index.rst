@@ -13,10 +13,11 @@ Documentation
     :glob:
 
     introduction
+    install
     guides/index
+    GUI <guides/gui>
     tutorials/index
-    gui/index
-    commands
+    Reference <reference>
 
 Indices and tables
 ------------------

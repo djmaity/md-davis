@@ -1,3 +1,3 @@
 .. click:: md_davis.cli:main
-   :prog: Commands
+   :prog: md-davis
    :nested: full

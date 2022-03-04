@@ -5,7 +5,7 @@ System Requirements
 -------------------
 
 * A 64-bit operating system
-* A Python 3 installation with version ≥ 3.7
+* A Python 3 installation with version ≥ 3.9
 
 Conda Installation
 ------------------
@@ -56,13 +56,13 @@ MD DaVis can be installed on Linux with:
 
     pip install md-davis
 
-.. note:: PyMOL is required to run MD DaVis, which may be challenging to install in a virtual environment without ``conda``. (see :ref:`External Dependencies`)
+.. note:: PyMOL is required to run MD DaVis, which may be challenging to install in a virtual environment without ``conda``. (see :ref:`install:External Dependencies`)
 
 Windows Installation
 --------------------
 
 On Windows, ``pip`` may fail to install MD DaVis due to errors with
-compiling dependencies. Please follow the instructions under :ref:`Conda
+compiling dependencies. Please follow the instructions under :ref:`install:Conda
 Installation`.
 
 Development Version

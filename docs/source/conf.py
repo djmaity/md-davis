@@ -42,6 +42,7 @@ extensions = [
     'myst_parser',
     'sphinx_panels',
     'sphinx_click',
+    'sphinx_tabs.tabs',
 ]
 
 autosummary_generate = True  # Turn on sphinx.ext.autosummary
@@ -117,6 +118,7 @@ html_context = {
     "doc_path": "docs/source",
 }
 
+autosectionlabel_prefix_document = True
 
 napoleon_use_ivar = True
 napoleon_use_rtype = False

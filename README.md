@@ -27,7 +27,7 @@ System Requirements
 -------------------
 
 * A 64-bit operating system
-* A Python 3 installation with version ≥ 3.7
+* A Python 3 installation with version ≥ 3.9
 
 Installation
 ------------
@@ -48,7 +48,7 @@ pip install md-davis
 ```
 
 For detailed installation instructions, see:
-[https://md-davis.readthedocs.io/en/latest/guides/install.html](https://md-davis.readthedocs.io/en/latest/guides/install.html)
+[https://md-davis.readthedocs.io/en/latest/install.html](https://md-davis.readthedocs.io/en/latest/guides/install.html)
 
 ### Dependencies
 

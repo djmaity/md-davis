@@ -72,7 +72,7 @@ containing the two properties of interest.
 
     md-davis landscape_xvg -c -T 300 -x rmsd_1.xvg -y rg_1.xvg -n "name_1" -l "FEL for 1"
 
-Here, :ref:`.xvg <md-davis xvg>` the file containing the RMSD and R\ :sub:`G`
+Here, :ref:`.xvg <guides/xvg:md-davis xvg>` the file containing the RMSD and R\ :sub:`G`
 precalculated using GROMACS is provided as the ``-x`` and ``-y`` input files.
 
 While providing other properties or files not created by GROMACS ensure that
@@ -97,7 +97,7 @@ To plot multiple free energy landscapes as subplots just provide the inputs one 
 
 .. code-block:: bash
 
-    md-davis landscape_xvg -c -T 300 -x rmsd_file_1.xvg -y rg_file_1.xvg -n "name_1" -l "Free Energy Landscape for 1" -x rmsd_file_1.xvg -y rg_file_1.xvg -n "name_2" -l "Free Energy Landscape for 2" -x rmsd_file_1.xvg -y rg_file_1.xvg -n "name_3" -l "Free Energy Landscape for 3"
+   md-davis landscape_xvg -c -T 300 -x rmsd_file_1.xvg -y rg_file_1.xvg -n "name_1" -l "Free Energy Landscape for 1" -x rmsd_file_1.xvg -y rg_file_1.xvg -n "name_2" -l "Free Energy Landscape for 2" -x rmsd_file_1.xvg -y rg_file_1.xvg -n "name_3" -l "Free Energy Landscape for 3"
 
 Plot Free Energy Landscapes from HDF Files
 ------------------------------------------
@@ -151,3 +151,21 @@ One must save the landscape created by the previous command with ``-s`` before t
     Also, zooming a subplot is also not synchronized immediately.
     After zooming a subplot rotate the same subplot to sync the zoom on all
     subplots.
+
+Plot Free Energy Landscapes using the MD DaVis GUI
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The free energy landscapes from xvg files can also be created using the
+Landscape tab in the MD DaVis GUI. Plotting from HDF files and
+animated/overlaid trajectories is not supported using the GUI but shall be
+incorporated soon.
+
+.. tabs::
+
+   .. group-tab:: Linux
+
+      .. image:: /_static/gui/gui-landscape-linux.png
+
+   .. group-tab:: Windows
+
+      .. image:: /_static/gui/gui-landscape-windows.png

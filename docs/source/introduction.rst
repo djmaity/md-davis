@@ -6,7 +6,7 @@ MD of increasingly larger proteins has become accessible to researchers with rec
 However, the analysis of MD trajectories still remains tedious.
 MD DaVis (Molecular Dynamics Data Visualizer) is a tool and Python 3 package to perform comparative data analysis of MD trajectories of similar proteins or the same protein under different conditions.
 
-There are many :ref:`MD analysis tools <Molecular Dynamics Analysis Tools>`.
+There are many :ref:`MD analysis tools <introduction:Molecular Dynamics Analysis Tools>`.
 However, the output from most has to be visualized using another plotting library requiring a significant amount of coding.
 The MD DaVis package provides a command-line tool to create helpful interactive visualizations easily.
 The tool can increase the productivity of researchers simulating protein using MD and make the analysis of such simulations accessible to everyone.
@@ -37,7 +37,7 @@ Features of MD DaVis
 
    ---
 
-   .. link-button:: Surface Electrostatic Potential Per Residue
+   .. link-button:: guides/electrostatics:Surface Electrostatic Potential Per Residue
       :type: ref
       :text: Surface Electrostatics
       :classes: stretched-link font-weight-bold
@@ -47,7 +47,7 @@ Features of MD DaVis
 
    ---
 
-   .. link-button:: Electric Field Dynamics
+   .. link-button:: guides/electrostatics:Electric Field Dynamics
       :type: ref
       :text: Electric Field Dynamics
       :classes: stretched-link font-weight-bold
