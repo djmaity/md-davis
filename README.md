@@ -66,15 +66,16 @@ Remember to activate the `md-davis` environment before using MD DaVis.
 conda activate md-davis
 ```
 
-The MD DaVis GUI can be invoked with:
+The MD DaVis graphical user interface can be invoked with:
 ```
 md-davis-gui
 ```
-The MD DaVis CLI can be called with:
+The MD DaVis command line tool can be called with:
 ```
 md-davis
 ```
-The MD DaVis package can be used in a Python script with an import statement:
+The MD DaVis package can be used in a Python script with a standard import 
+statement like:
 ```
 import md_davis
 ```

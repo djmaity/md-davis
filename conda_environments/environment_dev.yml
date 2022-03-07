@@ -1,0 +1,48 @@
+# This conda environment file is for creating the development environment.
+# This includes packaging, linting, and documentation requirements
+# in addition to the core dependencies of MD DaVis. Use the following command:
+#
+#     conda env create --file environment_dev.yml
+
+name: md-davis-dev
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python>3.7
+  - biopandas
+  - biopython
+  - click
+  - h5py>=3.0
+  - matplotlib
+  - mdtraj
+  - numpy
+  - pandas
+  - plotly>=4.0
+  - pymol-open-source=2.5.0
+  - scikit-learn
+  - scipy
+  - toml
+  - pip
+  - pmw
+  - psutil                # required by plotly for png
+  - openpyxl              # Required by pandas
+  - wxpython
+
+  # packaging requirements
+  - cx_freeze
+  - setuptools
+  - wheel
+  - twine
+
+  # linting and checking
+  - pylint
+  - flake8
+
+  # docs requirements
+  - sphinx
+  - myst-parser
+  - pydata-sphinx-theme
+  - sphinx-panels
+  - sphinx-click
+  - sphinx-tabs

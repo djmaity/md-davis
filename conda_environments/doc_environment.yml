@@ -1,3 +1,5 @@
+# This conda environment file is for readthedocs
+
 name: md-davis-doc
 channels:
   - conda-forge

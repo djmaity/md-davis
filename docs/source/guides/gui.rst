@@ -1,18 +1,8 @@
 Graphical User Interface
 ========================
 
-..
-   toctree::
-   :maxdepth: 2
-   gui-sequence
-   gui-collate
-   gui-landscapes
-   gui-electrodynamics
-   gui-electrostatics
-   gui-residue
-   gui-hbond
-
-The GUI (graphical user interface) can be invoked with:
+The GUI (graphical user interface) can be invoked by running the following
+command from a terminal:
 
 .. code-block:: bash
 
@@ -89,3 +79,13 @@ Select the appropriate tab and click the image to see detailed usage.
    This may be annoying and bury some the important messages and output from MD DaVis.
    Please pay attention to the terminal used to launch the MD DaVis GUI.
    We will redirect the output to a better interface in a future release.
+
+HDFView
+-------
+
+The HDFView (https://www.hdfgroup.org/downloads/hdfview/) GUI program from
+can be `HDF Group <https://www.hdfgroup.org/>`_ used to inspect and modify
+the HDF files created by MD DaVis. The modified file can be then provided to
+MD DaVis plotting commands. See :ref:`guides/hdf:HDF Files` for details.
+
+.. image:: /_static/hdfview/hdfview-windows.png

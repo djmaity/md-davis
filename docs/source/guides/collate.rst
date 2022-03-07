@@ -3,8 +3,9 @@ md-davis collate
 
 All the data from a simulation are collected into a single HDF5 file for
 easy and organized storage. The benefit of using a common binary format
-like `HDF5 <https://www.hdfgroup.org/solutions/hdf5/>`_ is that data access is much faster than storing in text files
-and later many functions can be written in C, C++ or other languages
+like `HDF5 <https://www.hdfgroup.org/solutions/hdf5/>`_ is that data access
+is much faster than storing in text files and later many functions can be
+written in C, C++ or other languages.
 
 
 

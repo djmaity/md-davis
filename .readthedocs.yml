@@ -13,7 +13,7 @@ sphinx:
 formats: all
 
 conda:
-  environment: docs/doc_environment.yml
+  environment: conda_environments/doc_environment.yml
 
 python:
   version: "3.8"

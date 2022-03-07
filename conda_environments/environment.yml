@@ -1,3 +1,8 @@
+# This file can be used to create a conda virtual environment for MD DaVis
+# and install the necessary dependencies. Use the following command:
+#
+#     conda env create --file environment.yml
+
 name: md-davis
 channels:
   - conda-forge

@@ -11,9 +11,8 @@ compare multiple files.
 MD DaVis provides the command ``xvg`` to plot such files using plotly or
 matplotlib.
 
-The .xvg files are
-space or tab delimited text files with time and data in the first and second
-columns, respectively.
+The .xvg files are space or tab delimited text files with time and data in
+the first and second columns, respectively.
 
 .. code-block::
 
@@ -30,8 +29,6 @@ columns, respectively.
       10.0000000    0.0677038
       20.0000000    0.0837483
       30.0000000    0.0894995
-
-
 
 It is generally intended that the when plotting multiple xvg files, they
 contain the same kind of data. Therefore, the titles and axes labels in the

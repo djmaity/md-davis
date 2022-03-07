@@ -20,6 +20,10 @@ Conventional analysis requires plotting the data each time new properties are co
 
 .. note:: the paths in the input toml file is relative to the location where the md-davis command will be called from. To avoid any confusion try using absolute paths.
 
+Note that each data is optional in the residue property
+plot. Therefore, a plot can be created even if the secondary structure is not
+available, albeit devoid of rich structural information.
+
 How to interact with the plot
 -----------------------------
 

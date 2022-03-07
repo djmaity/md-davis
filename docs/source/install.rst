@@ -4,99 +4,149 @@ Install
 System Requirements
 -------------------
 
-* A 64-bit operating system
-* A Python 3 installation with version ≥ 3.9
+* A 64-bit operating system (We have tested the installation on Ubuntu 20.04,
+  Windows 10, and Windows 11, but any modern operating system should work.)
+* An `Anaconda <https://www.anaconda.com/products/individual>`_
+  or `Miniconda <https://docs.conda.io/en/latest/miniconda.html>`_ Python
+  distribution (3.9 or greater)
+* An internet connection
 
-Conda Installation
-------------------
+Installation Instructions
+-------------------------
 
-The easiest method to install is with
-`Anaconda <https://www.anaconda.com/products/individual>`_ or
-`Miniconda <https://docs.conda.io/en/latest/miniconda.html>`_, which works on all operating systems.
-It is highly recommended to install MD DaVis in a virtual environment.
-The `environment.yml <https://github.com/djmaity/md-davis/blob/master/environment.yml>`_
-is provided to ease the process.
+**Step 1:** Download and install Anaconda
+(https://www.anaconda.com/products/individual)
+or Miniconda (https://docs.conda.io/en/latest/miniconda.html)
+Python distribution.
 
-.. code-block:: bash
+.. image:: /_static/install/Anaconda.png
+   :target: https://www.anaconda.com/products/individual
 
-    conda env create -f environment.yml -n md_davis_env
-
-This automatically creates a conda environment called ``md_davis_env`` with all required dependencies.
-Activate the environment and install MD DaVis in it using:
-
-.. code-block:: bash
-
-    conda activate md_davis_env
-    pip install md-davis
-
-If you don't have `pip <https://pip.pypa.io>`_ installed, this
-`Python installation guide <http://docs.python-guide.org/en/latest/starting/installation/>`_
-can guide you through the process.
-
-Finally, obtain the `Delphi <http://compbio.clemson.edu/delphi>`_ and
-`MSMS <http://mgltools.scripps.edu/downloads#msms>`_ if you intend to perform `electrostatics analysis <user_guides/electrostatics>`_.
-
-Installation in the base conda environment
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-If you do not want to use the `environment.yml <https://github.com/djmaity/md-davis/blob/master/environment.yml>`_
-file or if you want to install it in the base environment. Install mdtraj and pymol before installing md-davis.
+**Step 2:** Create the `conda environment <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html>`_
+with MD DaVis dependencies.
+Open a Terminal or Anaconda prompt (on Windows) and issue the following command:
 
 .. code-block:: bash
 
-    conda install -c conda-forge mdtraj pymol-open-source
-    pip install md-davis
+   conda env create djmaity/md-davis
 
-Linux Installation
-------------------
+This creates a conda environment called ``md-davis`` with all
+required dependencies.
 
-MD DaVis can be installed on Linux with:
-
-.. code-block:: bash
-
-    pip install md-davis
-
-.. note:: PyMOL is required to run MD DaVis, which may be challenging to install in a virtual environment without ``conda``. (see :ref:`install:External Dependencies`)
-
-Windows Installation
---------------------
-
-On Windows, ``pip`` may fail to install MD DaVis due to errors with
-compiling dependencies. Please follow the instructions under :ref:`install:Conda
-Installation`.
-
-Development Version
--------------------
-
-You can obtain the source code by cloning the public repository:
+**Step 3:** Activate the ``md-davis`` environment with:
 
 .. code-block:: bash
 
-    git clone git@github.com:djmaity/md-davis.git
+   conda activate md-davis
 
-or downloading the `tarball <https://github.com/djmaity/md-davis/tarball/master>`_:
-
-.. code-block:: bash
-
-    curl -OL https://github.com/djmaity/md-davis/tarball/master
-
-Once you have a copy of the source, it can be installed with:
+**Step 4:** Install MD DaVis in this environment with pip:
 
 .. code-block:: bash
 
-    python setup.py install
+   pip install md-davis
 
-OR
+**Step 5:** Obtain the
+:ref:`external dependencies <install:External Dependencies>`
+as stated below.
+
+Installation for Development
+----------------------------
+
+**Step 1:** Download and install Anaconda
+(https://www.anaconda.com/products/individual)
+or Miniconda (https://docs.conda.io/en/latest/miniconda.html) Python
+distribution.
+
+**Step 2:** Create the conda environment with MD DaVis dependencies. In this
+case, you should use:
 
 .. code-block:: bash
 
-    pip install path/to/extracted/source/code
+   conda env create djmaity/md-davis-dev
+
+This would create a conda environment called ``md-davis-env`` with
+the core dependencies and install additional libraries for packaging,
+documentation, and linting. You can also change the name of the conda virtual
+environment by modifying the command above:
+
+.. code-block:: bash
+
+   conda env create djmaity/md-davis-dev --name my_env
+
+This will name the conda environment to ``my_env``. Make sure that
+there are no other conda environments with the same name.
+The ``djmaity/md-davis-dev`` in the above commands uses the environment files
+uploaded to https://anaconda.org/djmaity/environments. These are the same files
+`environment.yml <https://github.com/djmaity/md-davis/blob/master/conda_environments/environment.yml>`_
+and `dev_environment.yml <https://github.com/djmaity/md-davis/blob/master/conda_environments/environment.yml>`_
+in the source code, which may also be used to create the conda environment and
+install the dependencies:
+
+.. code-block:: bash
+
+   conda env create --file dev_environment.yml
+
+See https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html
+to learn more about conda environments.
+
+.. note::
+   We recommend using the environment files over installing the dependencies
+   individually because installing all the dependencies together allows conda
+   to resolve the appropriate version of packages to install and avoid
+   package conflicts.
+
+**Step 3:** Activate the conda environment with:
+
+.. code-block:: bash
+
+   conda activate md-davis-dev
+
+Remember to change ``md-davis-dev`` to the appropriate environment name if
+you modify it.
+
+**Step 4:** Obtain a copy of the source code by cloning the public repository:
+
+.. code-block:: bash
+
+   git clone git@github.com:djmaity/md-davis.git
+
+Or, download the `tarball <https://github.com/djmaity/md-davis/tarball/master>`_:
+
+.. code-block:: bash
+
+   curl -OL https://github.com/djmaity/md-davis/tarball/master
+
+**Step 5:** Once you have a copy of the source, it can be installed with:
+
+.. code-block:: bash
+
+   pip install path/to/source/code
+
+The path to the directory containing the ``setup.py`` file has to be provided in
+the command above. You may want to install it as an editable package with:
+
+.. code-block:: bash
+
+   pip install -e path/to/source/code
+
+This will allow changes to the source code to be immediately reflected in the
+installed package.
+
+Or, go to the directory containing the ``setup.py`` file and use:
+
+.. code-block:: bash
+
+   python setup.py install
 
 You can also install the development version directly with:
 
 .. code-block:: bash
 
-    pip install https://github.com/djmaity/md-davis/archive/master.zip
+   pip install https://github.com/djmaity/md-davis/archive/master.zip
+
+**Step 6:** Obtain the
+:ref:`external dependencies <install:External Dependencies>`
+as stated below.
 
 External Dependencies
 ---------------------
@@ -104,67 +154,99 @@ External Dependencies
 GROMACS
 ^^^^^^^
 
-Currently, most analyses have to be performed with GROMACS,
-and the output is provided to MD DaVis for visualization.
-We have successfully used MD DaVis on simulations and analysis performed
-with various GROMACS versions from 5.1.4 to 2021.3.
-Other analysis tools may be used as long as the input to MD DaVis can be appropriately formatted.
+Currently, most analyses have to be performed with GROMACS, and the output is
+provided to MD DaVis for visualization. We have successfully used MD DaVis on
+simulations and analysis performed with various GROMACS versions from 5.1.4
+to 2021.3. Other analysis tools may be used as long as the input to MD DaVis
+can be appropriately formatted. See
+:ref:`introduction:Interfacing MD DaVis to Other Analysis Tools`.
 
 DSSP
 """"
 
 The secondary structure of a trajectory is calculated by the GROMACS tool
-‘do_dssp’, which requires `DSSP <https://github.com/cmbi/dssp>`_.
-The latest and only available version of `DSSP is 2.3.0 <https://github.com/cmbi/dssp>`_.
-The executable is called ‘mkdssp’ now. Help GROMACS find it by any of the following:
+``do_dssp``, which requires `DSSP <https://github.com/cmbi/dssp>`_.
+The latest and only available version of
+`DSSP is 2.3.0 <https://github.com/cmbi/dssp>`_.
+The executable is called ``mkdssp`` now. Help GROMACS find it by any of the
+following means:
 
-* Rename ‘mkdssp’ to ‘dssp,’
-* Make a symlink called ‘dssp’ to ‘mkdssp’
-* Set the DSSP environment
+* Rename ``mkdssp`` to ``dssp``
+* Make a symlink called ``dssp`` to ``mkdssp``
+* Set the ``DSSP`` environment
 
 PyMOL
 ^^^^^
 
-PyMOL is not available in the `python package index <https://pypi.org/>`_.
-Therefore, it cannot be automatically installed with ``pip``.
+You do not need to obtain PyMOL separately if you use the installation methods
+outlined above using ``conda``. Unfortunately, PyMOL is not available in the
+`python package index <https://pypi.org/>`_. Therefore, it cannot be
+automatically installed with ``pip``. However, Open-Source PyMOL and
+Commercial/Educational PyMOL are available in conda channels
+`conda-forge <https://anaconda.org/conda-forge/pymol-open-source>`_
+and `schrodinger <https://anaconda.org/schrodinger>`_, respectively.
 
 Open-Source PyMOL
 """""""""""""""""
 
+The command in **Step 2** automatically installs
 `Open-Source PyMOL <https://github.com/schrodinger/pymol-open-source/>`_
-available from `conda-forge <https://anaconda.org/conda-forge/pymol-open-source>`_
-can be installed with:
+available from
+`conda-forge <https://anaconda.org/conda-forge/pymol-open-source>`_.
+It can also be installed with:
 
 .. code-block:: bash
 
-    conda install -c conda-forge pymol-open-source
+   conda install -c conda-forge pymol-open-source=2.5.0
 
-Alternatively, on Linux, PyMOL can be installed with the system package manager, e.g., ``apt`` in Ubuntu or ``dnf`` in Fedora.
-However, it is not possible to install PyMOL into a virtual environment using this method.
-Therefore, MD DaVis must be installed in the system python as well.
+.. warning::
+   Open-Source PyMOL 2.4.0 has a bug where it cannot open Gaussian cube files.
+   DelPhi to output phimap volumetric data is in this format, which
+   is used in the :ref:`electrostatics <guides/electrostatics:Surface Electrostatic Potential Per Residue>`
+   calculations.
 
-On Windows, if you are not using ``conda``, then pre-built Open-Source PyMOL can be downloaded from
+Alternatively, on Linux, PyMOL can be installed with the system package
+manager, e.g., ``apt`` in Ubuntu or ``dnf`` in Fedora. However, it is not
+possible to install PyMOL into a virtual environment using this method.
+Therefore, MD DaVis must be installed in the system python, which may
+create conflicts with existing python packages on which many system programs
+may depend.
+
+On Windows, if you are not using ``conda``, then pre-built Open-Source PyMOL
+can be downloaded from
 `Christoph Gohlke's page <https://www.lfd.uci.edu/~gohlke/pythonlibs/#pymol-open-source>`_
 distributing unofficial windows binaries for python extension packages.
+However, we have faced issues with using this package with other dependencies
+of MD DaVis.
 
 Commercial/Educational PyMOL
 """"""""""""""""""""""""""""
 
-`Commercial/Educational PyMOL <https://pymol.org/2/buy.html?q=buy>`_ from
-`Schrodinger <https://pymol.org/2/#download>`_ can be installed with:
+The `Commercial/Educational PyMOL <https://pymol.org/2/buy.html?q=buy>`_
+can be used instead of Open-Source PyMOL by installing the
+`md-davis-pymol <https://anaconda.org/djmaity/md-davis-pymol>`_ or
+`md-davis-pymol-dev <https://anaconda.org/djmaity/md-davis-pymol-dev>`_
+environment in **Step 2** of the above-mentioned installation methods:
 
 .. code-block:: bash
 
-    conda install -c schrodinger pymol-bundle
+   conda env create djmaity/md-davis-pymol
+
+Alternatively, it can be installed with:
+
+.. code-block:: bash
+
+   conda install -c schrodinger pymol-bundle
 
 DelPhi and MSMS
 ^^^^^^^^^^^^^^^
 
-Python dependencies are automatically installed.
-However, the electrostatics calculation requires the following two programs,
-which must be obtained separately.
+Python dependencies are automatically installed. However, the electrostatics
+calculation requires the following two programs, which must be obtained
+separately.
 
-* `Delphi C++ version greater than or equal to 8.1 <http://compbio.clemson.edu/delphi>`_
+* `Delphi C++ <http://compbio.clemson.edu/delphi>`_ version greater than or
+  equal to 8.1
 * `MSMS <http://mgltools.scripps.edu/downloads#msms>`_
 
 Uninstall
@@ -174,10 +256,20 @@ MD DaVis can be easily uninstalled like any other python package, with:
 
 .. code-block:: bash
 
-    pip uninstall md-davis
+   pip uninstall md-davis
 
-As with any python package, this does not remove the dependencies installed by MD DaVis.
-That is why it is recommended to install MD DaVis in a virtual environment.
-Then, the virtual environment may be entirely removed without affecting other python packages on the system.
+As with any python package, this does not remove the dependencies installed
+by MD DaVis. That is why installing MD DaVis in a conda environment is
+recommended. Then, the whole virtual environment may be entirely removed without
+affecting other python packages on the system.
 
-.. note:: On Linux, if MD DaVis was installed as root or with ``sudo``, the uninstall command should be run with ``sudo``.
+.. code-block:: bash
+
+    conda env remove --name md-davis
+
+where ``md-davis`` is the name of the conda environment. Modify the command
+to provide the appropriate name for the conda environment if you change it.
+
+.. note::
+   On Linux, although highly discouraged, if MD DaVis was installed as root or
+   with ``sudo``, the uninstall command should also be run with ``sudo``.

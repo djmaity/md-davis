@@ -9,6 +9,7 @@ User Guide
     xvg
     sequence
     collate
+    hdf
     free_energy_landscapes
     electrostatics
     residue_property_plot
