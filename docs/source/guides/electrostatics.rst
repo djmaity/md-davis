@@ -50,7 +50,7 @@ information into the analysis. The steps involved are as follows:
 
 #.  Specify the path to the directory containing the surface potential
     files in the input `TOML <https://toml.io/en/>`_ file used by
-    :ref:`guides/collate:md-davis collate`.
+    :ref:`:ref:`collate <guides/collate:Collate Analysis Data>`.
 
     .. code-block:: toml
 
@@ -58,7 +58,7 @@ information into the analysis. The steps involved are as follows:
             surface_potential = '<OUTPUT_DIR>'
 
 #.  The total and mean electrostatic potential per residue is calculated
-    when the data is :ref:`collated <guides/collate:md-davis collate>` into an HDF file.
+    when the data is :ref:`collated <guides/collate:Collate Analysis Data>` into an HDF file.
 
     .. code-block::
 

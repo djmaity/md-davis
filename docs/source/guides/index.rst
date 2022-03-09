@@ -5,7 +5,6 @@ User Guide
     :maxdepth: 2
 
     quickstart
-    gui
     xvg
     sequence
     collate

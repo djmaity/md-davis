@@ -1,5 +1,5 @@
-md-davis collate
-================
+Collate Analysis Data
+=====================
 
 All the data from a simulation are collected into a single HDF5 file for
 easy and organized storage. The benefit of using a common binary format
@@ -62,7 +62,42 @@ Note the numbers at the end of the ``--rmsf`` options are the start and end time
 
 Additional details are available with ``-h`` option for each MD&nbsp;DaVis command, such as
 
+**Step 2a:** Create a TOML file (input.toml) as shown below specifying the
+output files from Step 1.
+
+.. code-block:: toml
+
+    name = 'protein_name_no_spaces'
+    output = 'protein_data.h5'
+    label = 'Protein from <i>some organism</i>'
+    text_label = 'Protein Name'
+
+    trajectory = 'trajectory.xtc'
+    structure = 'structure.pdb'
+
+    [timeseries]
+        rmsd = 'rmsd.xvg'
+        rg = 'rg.xvg'
+
+    [dihedral]
+        chunk = 101         # Number of frames to read at a time
+
+    [residue_property]
+        secondary_structure = 'sec_str.dat'
+        sasa = 'resarea.xvg'
+
+        [residue_property.rmsf]
+            rmsf_files = 'rmsf.xvg'
+            start = 0               # Starting time for RMSF calculation reference
+            end = 100               # End time for RMSF calculation reference
+
+If the ``chunk`` under ``dihedral`` is provided, MD DaVis will calculate
+backbone dihedral angles for all frames and the torsional flexibility
+(circular standard deviation) of each dihedral angle.
+
+**Step 2b:** Collect all the data from the output files into a single HDF
+file using the following command:
+
 .. code-block:: bash
 
-    md-davis collect -h
-
+    md-davis collate input.toml

@@ -24,6 +24,39 @@ Note that each data is optional in the residue property
 plot. Therefore, a plot can be created even if the secondary structure is not
 available, albeit devoid of rich structural information.
 
+Secondary Structure
+-------------------
+
+``-ssdump`` option will output a file ``sec_str.dat`` containing the secondary
+structure for the full trajectory as single letter codes.
+
++------+----------------------+
+| Code | Secondary structure  |
++======+======================+
+| H    | α-helix              |
++------+----------------------+
+| G    | 3\ :sub:`10`\ -helix |
++------+----------------------+
+| I    | π-helix              |
++------+----------------------+
+| B    | β-bridge             |
++------+----------------------+
+| E    | β strand             |
++------+----------------------+
+| T    | Turn                 |
++------+----------------------+
+| S    | Bend                 |
++------+----------------------+
+| ~    | Loop                 |
++------+----------------------+
+
+This would be processed by MD DaVis to calculate the percentage of occurrence
+of each secondary structure at each residue location.
+
+.. note:: For the GROMACS command ``do_dssp`` to work the DSSP binary must
+    be available on your system. Download DSSP from
+    ftp://ftp.cmbi.ru.nl/pub/software/dssp/
+
 How to interact with the plot
 -----------------------------
 

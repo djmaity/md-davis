@@ -66,7 +66,7 @@ case, you should use:
 
 This would create a conda environment called ``md-davis-env`` with
 the core dependencies and install additional libraries for packaging,
-documentation, and linting. You can also change the name of the conda virtual
+documentation, and linting. You can also change the name of the conda
 environment by modifying the command above:
 
 .. code-block:: bash
@@ -260,7 +260,7 @@ MD DaVis can be easily uninstalled like any other python package, with:
 
 As with any python package, this does not remove the dependencies installed
 by MD DaVis. That is why installing MD DaVis in a conda environment is
-recommended. Then, the whole virtual environment may be entirely removed without
+recommended. Then, the whole conda environment may be entirely removed without
 affecting other python packages on the system.
 
 .. code-block:: bash
@@ -271,5 +271,5 @@ where ``md-davis`` is the name of the conda environment. Modify the command
 to provide the appropriate name for the conda environment if you change it.
 
 .. note::
-   On Linux, although highly discouraged, if MD DaVis was installed as root or
-   with ``sudo``, the uninstall command should also be run with ``sudo``.
+   On Linux, if MD DaVis was installed as root or with ``sudo`` (highly
+   discouraged), the uninstall command should also be run with ``sudo``.
