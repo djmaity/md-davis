@@ -84,7 +84,7 @@ HDFView
 -------
 
 The HDFView (https://www.hdfgroup.org/downloads/hdfview/) GUI program from
-can be `HDF Group <https://www.hdfgroup.org/>`_ used to inspect and modify
+`HDF Group <https://www.hdfgroup.org/>`_ can be used to inspect and modify
 the HDF files created by MD DaVis. The modified file can be then provided to
 MD DaVis plotting commands. See :ref:`guides/hdf:HDF Files` for details.
 
