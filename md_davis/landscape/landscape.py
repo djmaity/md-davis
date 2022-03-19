@@ -285,7 +285,9 @@ class Landscape:
                         font_size=None):
         """ Make 2 subplots """
         if not axis_labels:
-            axis_labels = dict(x='X', y='Y', z='Z')
+            axis_labels = dict(x='RMSD (in nm)',
+                               y='Rg (in nm)',
+                               z='Free Energy (kJ mol<sup>-1</sup>)<br>')
         else:
             axis_labels = eval(axis_labels)
 

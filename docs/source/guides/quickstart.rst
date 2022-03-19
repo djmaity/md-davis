@@ -81,24 +81,38 @@ for more details.
 Step 3: Plot the free energy landscape
 --------------------------------------
 
+You can directly plot the free energy landscape from the RMSD and Rg files
+using the ``md-davis landscape_xvg`` command or the GUI as shown below:
+
+.. image:: /_static/gui/gui-landscape_filled-linux.png
+
+This will create a free energy landscape like the image shown below; click
+the image to open the interactive HTML plot.
+
+.. image:: /_static/landscapes/landscape.png
+   :target: FEL.html
+
+Or, you can plot the free energy landscape from the HDF file created in Step 2.
+
 .. code-block:: bash
 
-    md-davis landscape -T 300 --common --select backbone output1.h5 output2.h5 -s landscapes.h5
+    md-davis landscape -T 300 --common data.h5 -o FEL.html
 
-This command will create an html file with the interactive landscapes. It
-will not open the file like other plotting commands, so check the working
-directory for the output html file.
+This command will create the FEL.html file with the interactive landscape.
+It will not open the file like other plotting commands,
+so check the working directory for the output html file.
 
 Step 4: Plot the residue property plot
 --------------------------------------
 
-**Step 4a:** Create a pickle file with the residue dataframe using:
+**Step 4a:** Create a pickle file (a serialized binary file used to store python
+objects) with the residue dataframe using:
 
 .. code-block:: bash
 
-    md-davis residue protein_data.h5 -o residue_dataframe.p
+    md-davis residue data.h5 -o residue_dataframe.p
 
-**Step 4b:** Plot the residue data pickle file from the previous command using:
+**Step 4b:** Plot the pickle file from the previous command using:
 
 .. code-block:: bash
 

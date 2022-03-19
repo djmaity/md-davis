@@ -61,19 +61,32 @@ def plot_secondary_structure(data, name, figure, axis=None, row=1, column=1, hei
 
 def add_secondary_structure_legend(figure, xloc=0.8, yloc=-0.2, xspace=0, yspace=-0.06):
     dssp_legend = []
+    dssp_shapes = []
     for index, structure in enumerate(secondary_structure.values()):
         dssp_legend.append(
-            dict(x=xloc + index * xspace,
+            dict(x=xloc + index * xspace + 0.03,
                  y=yloc + index * yspace,
                  showarrow=False,
                  text=structure.html,
                  xref='paper',
                  yref='paper',
-                 font=dict(size=24, color=structure.color),
+                 font=dict(size=16),
                  xanchor='left', ax=0, ay=0,
             )
         )
-    return dssp_legend
+
+        dssp_shapes.append(dict(
+            type="rect",
+            x0=xloc + index * xspace,
+            y0=yloc + index * yspace + 0.01,
+            x1=xloc + index * xspace + 0.02,
+            y1=yloc + index * yspace + 0.05,
+            xref='paper',
+            yref='paper',
+            fillcolor=structure.color,
+            opacity=0.3
+        ))
+    return dssp_legend, dssp_shapes
 
 
 def plot_dihedral_sd(dataset, name, figure, twin_axis, row=1, column=1, height=100):
@@ -101,7 +114,7 @@ def plot_dihedral_sd(dataset, name, figure, twin_axis, row=1, column=1, height=1
 
 def main():
     directory = '/home/djmaity/Lab_Home/my_research/research_sorted/acylphosphatase/acylphosphatase_hdf5_data/'
-    fig = tools.make_subplots(rows=1, cols=1)
+    fig = plotly.subplot.make_subplots(rows=1, cols=1)
     count = 1
     for file in os.listdir(directory):
         if file == '2VH7_data_bak.h5':

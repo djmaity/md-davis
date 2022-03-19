@@ -68,7 +68,7 @@ class CollatePanel(wx.lib.scrolledpanel.ScrolledPanel):
         self.structure_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         self.structure_label = wx.StaticText(self, label="Structure")
         self.structure_sizer.Add(window=self.structure_label, proportion=0, flag=wx.ALL, border=10)
-        self.structure_picker = wx.FilePickerCtrl(self, path='', message="Select a structure",
+        self.structure_picker = wx.FilePickerCtrl(self, path='', message="Select structure file",
                                                   wildcard='Structure files (*.pdb;*.gro)|*.pdb;*.gro',
                                                   style=wx.FLP_CHANGE_DIR | wx.FLP_USE_TEXTCTRL)
         self.structure_sizer.Add(window=self.structure_picker, proportion=1, flag=wx.ALL, border=5)
@@ -77,7 +77,7 @@ class CollatePanel(wx.lib.scrolledpanel.ScrolledPanel):
         self.trajectory_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         self.trajectory_label = wx.StaticText(self, label="Trajectory")
         self.trajectory_sizer.Add(window=self.trajectory_label, proportion=0, flag=wx.ALL, border=10)
-        self.trajectory_picker = wx.FilePickerCtrl(self, path='', message="Select a structure",
+        self.trajectory_picker = wx.FilePickerCtrl(self, path='', message="Select trajectory file",
                                                    wildcard='Structure files (*.trr;*.xtc)|*.trr;*.xtc',
                                                    style=wx.FLP_CHANGE_DIR | wx.FLP_USE_TEXTCTRL)
         self.trajectory_sizer.Add(window=self.trajectory_picker, proportion=1, flag=wx.ALL, border=5)
@@ -91,7 +91,7 @@ class CollatePanel(wx.lib.scrolledpanel.ScrolledPanel):
         self.rmsd_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         self.rmsd_label = wx.StaticText(self, label="RMSD")
         self.rmsd_sizer.Add(window=self.rmsd_label, proportion=0, flag=wx.ALL, border=10)
-        self.rmsd_picker = wx.FilePickerCtrl(self, path='', message="Select a RMSD file",
+        self.rmsd_picker = wx.FilePickerCtrl(self, path='', message="Select RMSD file",
                                              style=wx.FLP_CHANGE_DIR | wx.FLP_USE_TEXTCTRL)
         self.rmsd_sizer.Add(window=self.rmsd_picker, proportion=1, flag=wx.ALL, border=5)
         self.time_series_sizer.Add(self.rmsd_sizer, 0, wx.EXPAND, 5)
@@ -99,7 +99,7 @@ class CollatePanel(wx.lib.scrolledpanel.ScrolledPanel):
         self.rg_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         self.rg_label = wx.StaticText(self, label="Rg")
         self.rg_sizer.Add(window=self.rg_label, proportion=0, flag=wx.ALL, border=10)
-        self.rg_picker = wx.FilePickerCtrl(self, path='', message="Select a structure",
+        self.rg_picker = wx.FilePickerCtrl(self, path='', message="Select radius of gyration file",
                                            style=wx.FLP_CHANGE_DIR | wx.FLP_USE_TEXTCTRL)
         self.rg_sizer.Add(window=self.rg_picker, proportion=1, flag=wx.ALL, border=5)
         self.time_series_sizer.Add(self.rg_sizer, 0, wx.EXPAND, 5)
@@ -130,7 +130,7 @@ class CollatePanel(wx.lib.scrolledpanel.ScrolledPanel):
         self.secstr_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         self.secstr_label = wx.StaticText(self, label="DSSP")
         self.secstr_sizer.Add(window=self.secstr_label, proportion=0, flag=wx.ALL, border=10)
-        self.secstr_picker = wx.FilePickerCtrl(self, path='', message="DSSP .dat file",
+        self.secstr_picker = wx.FilePickerCtrl(self, path='', message="Select .dat file from GROMACS do_dssp",
                                                wildcard='DSSP files (*.dat)|*.dat',
                                                style=wx.FLP_CHANGE_DIR | wx.FLP_USE_TEXTCTRL)
         self.secstr_sizer.Add(window=self.secstr_picker, proportion=1, flag=wx.ALL, border=5)
@@ -144,7 +144,7 @@ class CollatePanel(wx.lib.scrolledpanel.ScrolledPanel):
         self.rmsf_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         self.rmsf_label = wx.StaticText(self, label="RMSF")
         self.rmsf_sizer.Add(window=self.rmsf_label, proportion=0, flag=wx.ALL, border=10)
-        self.rmsf_picker = wx.FilePickerCtrl(self, path='', message="RMSF file",
+        self.rmsf_picker = wx.FilePickerCtrl(self, path='', message="Select RMSF file",
                                              style=wx.FLP_CHANGE_DIR | wx.FLP_USE_TEXTCTRL)
         # self.rmsf_picker = MultipleFileBrowseButton(self,  dialogTitle="Select RMSF file", labelText='RMSF',
         #                                     fileMode=wx.FD_MULTIPLE)
@@ -154,7 +154,7 @@ class CollatePanel(wx.lib.scrolledpanel.ScrolledPanel):
         self.sasa_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         self.sasa_label = wx.StaticText(self, label="SASA")
         self.sasa_sizer.Add(window=self.sasa_label, proportion=0, flag=wx.ALL, border=10)
-        self.sasa_picker = wx.FilePickerCtrl(self, path='', message="Select a SASA file",
+        self.sasa_picker = wx.FilePickerCtrl(self, path='', message="Select SASA file",
                                              style=wx.FLP_CHANGE_DIR | wx.FLP_USE_TEXTCTRL)
         self.sasa_sizer.Add(window=self.sasa_picker, proportion=1, flag=wx.ALL, border=5)
         self.residue_sizer.Add(self.sasa_sizer, 0, wx.EXPAND, 5)
@@ -171,7 +171,7 @@ class CollatePanel(wx.lib.scrolledpanel.ScrolledPanel):
         self.output_label = wx.StaticText(self, label="HDF File")
         self.output_sizer.Add(window=self.output_label, proportion=0, flag=wx.ALL, border=10)
         self.output_picker = wx.FilePickerCtrl(
-            self, path='', message="Output HDF file",
+            self, path='', message="Select output HDF file",
             wildcard='HDF file (*.hdf;*.h5;*.hdf5;*.he5)|*.h5;*.hdf5;*.he5;*.hdf',
             style=wx.FLP_SAVE | wx.FLP_CHANGE_DIR | wx.FLP_USE_TEXTCTRL)
         self.output_sizer.Add(window=self.output_picker, proportion=1, flag=wx.ALL, border=5)

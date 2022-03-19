@@ -177,7 +177,7 @@ class LandscapePanel(wx.lib.scrolledpanel.ScrolledPanel):
         self.z_text = wx.StaticText(self, label="Z")
         self.axis_sizer.Add(window=self.z_text, proportion=0, flag=wx.ALL,
                             border=10)
-        self.z_label = wx.TextCtrl(self, value="Free Envergy (in kJ mol<sup>-1</sup>)")
+        self.z_label = wx.TextCtrl(self, value="Free Energy (in kJ mol<sup>-1</sup>)")
         self.axis_sizer.Add(self.z_label, 1, wx.ALL, 5)
 
         self.plot_shape_box = wx.StaticBox(self,
@@ -186,16 +186,24 @@ class LandscapePanel(wx.lib.scrolledpanel.ScrolledPanel):
                                                   orient=wx.HORIZONTAL)
         self.run_sizer.Add(self.plot_shape_sizer, proportion=1,
                            flag=wx.EXPAND | wx.ALL, border=5)
-
+        self.fixed_size_checkbox = wx.CheckBox(self, label='Fixed Size')
+        self.fixed_size_checkbox.Bind(wx.EVT_CHECKBOX, self.on_fixed_size_checkbox)
+        self.plot_shape_sizer.Add(self.fixed_size_checkbox, proportion=0,
+                                  flag=wx.LEFT | wx.ALIGN_CENTER_VERTICAL,
+                                  border=20)
         self.width_text = wx.StaticText(self, label="Width")
+        self.width_text.Show(False)
         self.plot_shape_sizer.Add(window=self.width_text, proportion=0,
                                   flag=wx.ALL, border=10)
         self.width = wx.SpinCtrl(self, value='', min=800, max=10000, initial=1920)
+        self.width.Show(False)
         self.plot_shape_sizer.Add(self.width, 1, wx.ALL, 5)
         self.height_text = wx.StaticText(self, label="Height")
+        self.height_text.Show(False)
         self.plot_shape_sizer.Add(window=self.height_text, proportion=0,
                                   flag=wx.ALL, border=10)
         self.height = wx.SpinCtrl(self, value='', min=600, max=10000, initial=1080)
+        self.height.Show(False)
         self.plot_shape_sizer.Add(self.height, 1, wx.ALL, 5)
 
         self.save_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
@@ -235,6 +243,21 @@ class LandscapePanel(wx.lib.scrolledpanel.ScrolledPanel):
         else:
             self.temperature_label.Show(False)
             self.temperature.Show(False)
+            self.Layout()
+
+    def on_fixed_size_checkbox(self, event):
+        """ Show temperature box if free energy landscape is selected """
+        if self.fixed_size_checkbox.GetValue():
+            self.width_text.Show(True)
+            self.width.Show(True)
+            self.height_text.Show(True)
+            self.height.Show(True)
+            self.Layout()
+        else:
+            self.width_text.Show(False)
+            self.width.Show(False)
+            self.height_text.Show(False)
+            self.height.Show(False)
             self.Layout()
 
     def on_add_button(self, event):
@@ -283,6 +306,13 @@ class LandscapePanel(wx.lib.scrolledpanel.ScrolledPanel):
         else:
             temperature = None
 
+        if self.fixed_size_checkbox.GetValue():
+            width = self.width.GetValue()
+            height = self.height.GetValue()
+        else:
+            width = None
+            height = None
+
         md_davis.landscape.landscape_xvg.landscape_xvg(
             x=[_.GetPath() for _ in self.x_picker_array],
             y=[_.GetPath() for _ in self.y_picker_array],
@@ -299,8 +329,8 @@ class LandscapePanel(wx.lib.scrolledpanel.ScrolledPanel):
             limits=None,
             orthographic=self.orthographic_radio.GetValue(),
             layout=None,
-            width=self.width.GetValue(),
-            height=self.height.GetValue(),
+            width=width,
+            height=height,
             font=None,
             font_size=None,
             dtick=None,

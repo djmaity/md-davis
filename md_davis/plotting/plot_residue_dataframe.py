@@ -416,11 +416,16 @@ def main(pickle_file, output='residue_data.html', title=None,
             })
             first_chain = False
 
-    annotations = plot_hdf5_data.add_secondary_structure_legend(figure=fig, xspace=0.09, yspace=0, xloc=0.1, yloc=-0.2)
+    ss_legend, ss_shapes = plot_hdf5_data.add_secondary_structure_legend(
+        figure=fig, xspace=0.15, yspace=0, xloc=0.01, yloc=-0.21)
+    annotations = ss_legend
 
-    dict(x=0.5, y=0, showarrow=True, text='Residue Index',
-            arrowcolor='rgba(0,0,0,0)',
-            xref='paper', yref='paper', font=dict(size=24), ax=0, ay=50),
+    annotations.append(dict(x=0.5, y=0, showarrow=True, text='Residue Index',
+                            arrowcolor='rgba(0,0,0,0)',
+                            xref='paper', yref='paper', font=dict(size=16),
+                            ax=0, ay=50),
+                       )
+    [fig.add_shape(shape) for shape in ss_shapes]
 
     fig['layout']['annotations'] = annotations
     fig['layout'].update(title=title,
