@@ -449,11 +449,17 @@ def create_hdf(data):
             else:
                 chunk = None
 
+            if 'stride' in data['dihedral']:
+                stride = data['dihedral']['stride']
+            else:
+                stride = 1
+
             time = get_dihedrals(hdf_file=hdf_file,
                                  trajectory=data['trajectory'],
                                  structure=data['structure'],
                                  chunk=chunk,
-                                 atoms=atoms)
+                                 atoms=atoms,
+                                 stride=stride)
 
             # hdf_file.require_dataset('time',
             #                          data=time,
