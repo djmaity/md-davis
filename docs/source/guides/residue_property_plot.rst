@@ -18,7 +18,44 @@ Traditionally, each time the analysis of MD trajectories are compared new statis
 
 Conventional analysis requires plotting the data each time new properties are compared. This repetitive process is alleviated by making overlaid plots of all the informative residue propertie
 
-.. note:: the paths in the input toml file is relative to the location where the md_davis command will be called from. To avoid any confusion try using absolute paths.
+.. note:: the paths in the input toml file is relative to the location where the md-davis command will be called from. To avoid any confusion try using absolute paths.
+
+Note that each data is optional in the residue property
+plot. Therefore, a plot can be created even if the secondary structure is not
+available, albeit devoid of rich structural information.
+
+Secondary Structure
+-------------------
+
+``-ssdump`` option will output a file ``sec_str.dat`` containing the secondary
+structure for the full trajectory as single letter codes.
+
++------+----------------------+
+| Code | Secondary structure  |
++======+======================+
+| H    | α-helix              |
++------+----------------------+
+| G    | 3\ :sub:`10`\ -helix |
++------+----------------------+
+| I    | π-helix              |
++------+----------------------+
+| B    | β-bridge             |
++------+----------------------+
+| E    | β strand             |
++------+----------------------+
+| T    | Turn                 |
++------+----------------------+
+| S    | Bend                 |
++------+----------------------+
+| ~    | Loop                 |
++------+----------------------+
+
+This would be processed by MD DaVis to calculate the percentage of occurrence
+of each secondary structure at each residue location.
+
+.. note:: For the GROMACS command ``do_dssp`` to work the DSSP binary must
+    be available on your system. Download DSSP from
+    ftp://ftp.cmbi.ru.nl/pub/software/dssp/
 
 How to interact with the plot
 -----------------------------
@@ -28,7 +65,7 @@ How to interact with the plot
 
 .. code-block:: bash
 
-    md_davis residue dataframe --prefix name1 output1.h5 data1.p
+    md-davis residue dataframe --prefix name1 output1.h5 data1.p
 
 The optional argument ``-a annotations.json`` can be provided to place a mark at certain residue locations. The contents of ``annotations.json`` should be of the following form:
 
@@ -71,7 +108,7 @@ in CLUSTAL format.
 
 .. code-block:: bash
 
-    md_davis plot residue data1.p data2.p
+    md-davis plot residue data1.p data2.p
 
 
 ..

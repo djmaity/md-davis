@@ -1,20 +1,26 @@
-name: md-davis-dev
+# This conda environment file is for creating the development environment.
+# This includes packaging, linting, and documentation requirements
+# in addition to the core dependencies of MD DaVis. Use the following command:
+#
+#     conda env create --file environment_pymol_dev.yml
+
+name: md-davis-pymol-dev
 channels:
-  - schrodinger
   - conda-forge
-  - defaults
+  - nodefaults
+  - schrodinger
 dependencies:
-  - python>3
+  - python>3.7
   - biopandas
   - biopython
   - click
-  - h5py
+  - h5py>=3.0
   - matplotlib
   - mdtraj
   - numpy
   - pandas
-  - plotly
-  - pymol=2.2.*
+  - plotly>=4.0
+  - pymol-bundle=2.5.0
   - scikit-learn
   - scipy
   - toml
@@ -25,7 +31,7 @@ dependencies:
   - wxpython
 
   # packaging requirements
-  - pyinstaller
+  - cx_freeze
   - setuptools
   - wheel
   - twine
@@ -40,3 +46,4 @@ dependencies:
   - pydata-sphinx-theme
   - sphinx-panels
   - sphinx-click
+  - sphinx-tabs

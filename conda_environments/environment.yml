@@ -1,0 +1,29 @@
+# This file can be used to create a conda virtual environment for MD DaVis
+# and install the necessary dependencies. Use the following command:
+#
+#     conda env create --file environment.yml
+
+name: md-davis
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python>3.7
+  - biopandas
+  - biopython
+  - click
+  - h5py>=3.0
+  - matplotlib
+  - mdtraj
+  - numpy
+  - pandas
+  - plotly>=4.0
+  - pymol-open-source=2.5.0
+  - scikit-learn
+  - scipy
+  - toml
+  - pip
+  - pmw
+  - psutil                # required by plotly for png
+  - openpyxl              # Required by pandas
+  - wxpython

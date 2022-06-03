@@ -19,7 +19,7 @@ def read(*names, **kwargs):
 
 setup(
     name='md_davis',
-    version='0.3.0',
+    version='0.4.1',
     description='A tool for comparative analysis of molecular dynamics '
                 'simulations of proteins.',
     long_description='%s' % (re.compile('^.. start-badges.*^.. end-badges', re.M | re.S).sub('', read('README.md'))),
@@ -27,7 +27,7 @@ setup(
     author='Dibyajyoti Maity',
     author_email='djdibs@gmail.com',
     url='https://github.com/djmaity/md-davis',
-    packages=find_packages(),
+    packages=find_packages(exclude=['tests']),
     py_modules=[os.path.splitext(os.path.basename(path))[0] for path in glob('src/*.py')],
     classifiers=[
         'Development Status :: 4 - Beta',
@@ -36,8 +36,8 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
+        # 'Programming Language :: Python :: 3.7',
+        # 'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
@@ -56,11 +56,10 @@ setup(
     install_requires=['biopandas',
                       'biopython',  # TODO: Refactor dependency
                       'click',
-                      'docopt',  # TODO: Refactor dependency
                       'h5py',
                       'matplotlib',
                       'more_itertools',
-                      'numpy',  # numpy should be before mdtraj
+                      'numpy',
                       'pandas',
                       'plotly',
                       'pmw',
@@ -69,7 +68,6 @@ setup(
                       'toml',
                       'mdtraj',
                       'wxpython'
-                      # 'pymol', # Cannot Install automatically using pip
                       ],
     include_package_data=True,
     setup_requires=['flake8', 'pytest-runner'],

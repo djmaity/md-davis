@@ -70,9 +70,9 @@ containing the two properties of interest.
 
 .. code-block:: bash
 
-    md_davis landscape_xvg -c -T 300 -x rmsd_1.xvg -y rg_1.xvg -n "name_1" -l "FEL for 1"
+    md-davis landscape_xvg -c -T 300 -x rmsd_1.xvg -y rg_1.xvg -n "name_1" -l "FEL for 1"
 
-Here, :ref:`.xvg <md_davis xvg>` the file containing the RMSD and R\ :sub:`G`
+Here, :ref:`.xvg <guides/xvg:md-davis xvg>` the file containing the RMSD and R\ :sub:`G`
 precalculated using GROMACS is provided as the ``-x`` and ``-y`` input files.
 
 While providing other properties or files not created by GROMACS ensure that
@@ -97,7 +97,7 @@ To plot multiple free energy landscapes as subplots just provide the inputs one 
 
 .. code-block:: bash
 
-    md_davis landscape_xvg -c -T 300 -x rmsd_file_1.xvg -y rg_file_1.xvg -n "name_1" -l "Free Energy Landscape for 1" -x rmsd_file_1.xvg -y rg_file_1.xvg -n "name_2" -l "Free Energy Landscape for 2" -x rmsd_file_1.xvg -y rg_file_1.xvg -n "name_3" -l "Free Energy Landscape for 3"
+   md-davis landscape_xvg -c -T 300 -x rmsd_file_1.xvg -y rg_file_1.xvg -n "name_1" -l "Free Energy Landscape for 1" -x rmsd_file_1.xvg -y rg_file_1.xvg -n "name_2" -l "Free Energy Landscape for 2" -x rmsd_file_1.xvg -y rg_file_1.xvg -n "name_3" -l "Free Energy Landscape for 3"
 
 Plot Free Energy Landscapes from HDF Files
 ------------------------------------------
@@ -106,7 +106,7 @@ If the RMSD and R\ :sub:`G`\ have been collated into HDF files for each trajecto
 
 .. code-block:: bash
 
-    md_davis landscape rmsd_rg -c -T 300 file1.h5 file2.h5 file3.h5
+    md-davis landscape rmsd_rg -c -T 300 file1.h5 file2.h5 file3.h5
 
 Plot Free Energy Landscapes Overlaid with Trajectory Points
 -----------------------------------------------------------
@@ -115,7 +115,7 @@ One must save the landscape created by ``landscape_xvg`` or ``landscape`` with t
 
 .. code-block:: bash
 
-    md_davis landscape animation landscapes.h5 -i 0 --static -o trajectory.html
+    md-davis landscape animation landscapes.h5 -i 0 --static -o trajectory.html
 
 
 ## Step 4: Free energy Landscapes
@@ -124,7 +124,7 @@ One must save the landscape created by ``landscape_xvg`` or ``landscape`` with t
 
 .. code-block:: bash
 
-    md_davis landscape rmsd_rg -T 300 --common --select backbone output1.h5 output2.h5 -s landscapes.h5
+    md-davis landscape rmsd_rg -T 300 --common --select backbone output1.h5 output2.h5 -s landscapes.h5
 
 This command will create an html file with the interactive landscapes. It will not open the file like other plotting commands, so check the working directory for the output html file.
 ### Plot free energy landscape overlaid with trajectory points
@@ -133,7 +133,7 @@ One must save the landscape created by the previous command with ``-s`` before t
 
 .. code-block:: bash
 
-    md_davis landscape animation landscapes.h5 -i 0 --static -o trajectory.html
+    md-davis landscape animation landscapes.h5 -i 0 --static -o trajectory.html
 
 
 ### Plot free energy landscape overlaid with trajectory points
@@ -142,7 +142,7 @@ One must save the landscape created by the previous command with ``-s`` before t
 
 .. code-block:: bash
 
-    md_davis landscape animation landscapes.h5 -i 0 --static -o trajectory.html
+    md-davis landscape animation landscapes.h5 -i 0 --static -o trajectory.html
 
 
 .. note::
@@ -151,3 +151,21 @@ One must save the landscape created by the previous command with ``-s`` before t
     Also, zooming a subplot is also not synchronized immediately.
     After zooming a subplot rotate the same subplot to sync the zoom on all
     subplots.
+
+Plot Free Energy Landscapes using the MD DaVis GUI
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The free energy landscapes from xvg files can also be created using the
+Landscape tab in the MD DaVis GUI. Plotting from HDF files and
+animated/overlaid trajectories is not supported using the GUI but shall be
+incorporated soon.
+
+.. tabs::
+
+   .. group-tab:: Linux
+
+      .. image:: /_static/gui/gui-landscape-linux.png
+
+   .. group-tab:: Windows
+
+      .. image:: /_static/gui/gui-landscape-windows.png

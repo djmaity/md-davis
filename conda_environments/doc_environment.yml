@@ -1,0 +1,31 @@
+# This conda environment file is for readthedocs
+
+name: md-davis-doc
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.8
+  - biopandas=0.2.9
+  - biopython=1.79
+  - click=8.0.4
+  - matplotlib=3.5.1
+  - mdtraj=1.9.7
+  - numpy=1.22.2
+  - pandas=1.4.1
+  - plotly=5.6.0
+  - pymol-open-source=2.4.0
+  - scikit-learn=1.0.2
+  - scipy=1.8.0
+  - pip=22.0.3
+  - wxpython=4.1.1
+  - h5py=3.6.0
+  - toml=0.10.2
+
+  # docs requirements
+  - sphinx
+  - myst-parser
+  - pydata-sphinx-theme
+  - sphinx-panels
+  - sphinx-click
+  - sphinx-tabs

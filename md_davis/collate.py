@@ -4,7 +4,6 @@
 """
 
 import os
-import collections
 import pandas
 import toml
 import h5py
@@ -88,7 +87,8 @@ def add_rmsd_rg(hdf_file, rmsd, rg, group_name, dataset,
     rmsd_data = numpy.loadtxt(rmsd, comments=('#', '@'))
     rg_data = numpy.loadtxt(rg, comments=('#', '@'))
     if not numpy.array_equal(rmsd_data[:, 0], rg_data[:, 0]):
-        print('The times in RMSD file do not match those in radius of gyration file')
+        print('The times in RMSD file do not match those in '
+              'radius of gyration file')
     data = numpy.core.records.fromarrays(
         numpy.hstack([rmsd_data, rg_data[:, 1:]]).T,
         names='time, rmsd, rg, rg_x, rg_y, rg_z'
@@ -253,7 +253,8 @@ def get_dihedral_sd(hdf_file, chain_lengths, start=0, end=1000, step=200):
         _, num_angles = numpy.shape(hdf_file[f'/dihedrals/{angle}'])
 
         if sum(chain_lengths) != num_angles:
-            warnings.warn(f'Number of {angle} angles is inconsistent with the number of residues.')
+            warnings.warn(f'Number of {angle} angles is inconsistent '
+                          'with the number of residues.')
         circ_sd = scipy.stats.circstd(
             hdf_file[f'/dihedrals/{angle}'][start:end], axis=0, high=numpy.pi)
         for ch, dih_sd in enumerate(split_chains(circ_sd, chain_lengths)):
@@ -337,10 +338,13 @@ def add_surface_potential(hdf_file, surface_potential):
         avg_df = mean_df[chain].set_index('resSeq')
 
         surface_potential_df = pandas.DataFrame()
-        surface_potential_df['mean_of_total'] = tot_df.mean(skipna=True, axis=1)
-        surface_potential_df['std_of_total'] = tot_df.std(skipna=True, ddof=0, axis=1)
+        surface_potential_df['mean_of_total'] = tot_df.mean(skipna=True,
+                                                            axis=1)
+        surface_potential_df['std_of_total'] = tot_df.std(skipna=True,
+                                                          ddof=0, axis=1)
         surface_potential_df['mean_of_mean'] = avg_df.mean(skipna=True, axis=1)
-        surface_potential_df['std_of_mean'] = avg_df.std(skipna=True, ddof=0, axis=1)
+        surface_potential_df['std_of_mean'] = avg_df.std(skipna=True,
+                                                         ddof=0, axis=1)
         surface_potential_df = surface_potential_df.to_records()
 
         group.require_dataset(chain,
@@ -367,19 +371,24 @@ def create_hdf(data):
         if 'sequence' in data:
             for ch, seq in data['sequence'].items():
                 resi, resn = zip(*seq)
-                group = hdf_file.require_group(f'sequence/chain {ch[6:]}')  # omit 'Chain '
+                # omit 'Chain '
+                group = hdf_file.require_group(f'sequence/chain {ch[6:]}')
                 resi = numpy.array(resi, dtype=numpy.int32)
                 resn = numpy.array(resn, dtype="S3")
-                group.require_dataset('resi', shape=resi.shape, dtype=resi.dtype, data=resi)
-                group.require_dataset('resn', shape=resn.shape, dtype=resn.dtype, data=resn)
+                group.require_dataset('resi', shape=resi.shape,
+                                      dtype=resi.dtype, data=resi)
+                group.require_dataset('resn', shape=resn.shape,
+                                      dtype=resn.dtype, data=resn)
         elif 'structure' in data:
             sequences = md_davis.sequence.get_sequence(data['structure'])
             for ch, seq in sequences.items():
                 group = hdf_file.require_group(f'sequence/chain {ch}')
                 resi = numpy.array(seq[0], dtype=numpy.int32)
                 resn = numpy.array(seq[1], dtype="S3")
-                group.require_dataset('resi', shape=resi.shape, dtype=resi.dtype, data=resi)
-                group.require_dataset('resn', shape=resn.shape, dtype=resn.dtype, data=resn)
+                group.require_dataset('resi', shape=resi.shape,
+                                      dtype=resi.dtype, data=resi)
+                group.require_dataset('resn', shape=resn.shape,
+                                      dtype=resn.dtype, data=resn)
         else:
             print("Note: The amino acid sequence could not be parsed, "
                   "since 'sequence' or 'structure' was not provided in "
@@ -412,8 +421,14 @@ def create_hdf(data):
                                     comment=comment,
                                     )
                 else:
-                    add_rmsd_rg(hdf_file=hdf_file, rmsd=ts['rmsd'], rg=ts['rg'], group_name='timeseries',
-                                dataset='rmsd_rg', time_unit=time_unit, unit=unit, comment=comment)
+                    add_rmsd_rg(hdf_file=hdf_file,
+                                rmsd=ts['rmsd'],
+                                rg=ts['rg'],
+                                group_name='timeseries',
+                                dataset='rmsd_rg',
+                                time_unit=time_unit,
+                                unit=unit,
+                                comment=comment)
 
         if 'residue_property' in data:
             residue = data['residue_property']
@@ -436,7 +451,9 @@ def create_hdf(data):
             #     dipoles=data['residue_property']['--dipoles'])
 
             if 'surface_potential' in data['residue_property']:
-                add_surface_potential(hdf_file=hdf_file, surface_potential=residue['surface_potential'])
+                add_surface_potential(
+                    hdf_file=hdf_file,
+                    surface_potential=residue['surface_potential'])
 
         # Evaluate and add dihedral angles into the HDF5 file
         if 'dihedral' in data:

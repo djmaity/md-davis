@@ -5,9 +5,10 @@ User Guide
     :maxdepth: 2
 
     quickstart
-    install
     xvg
+    sequence
     collate
+    hdf
     free_energy_landscapes
     electrostatics
     residue_property_plot

@@ -16,8 +16,10 @@ Options:
   -c, --center              Show the center in the 3D plot
 """
 
+# TODO: Fix this file
+
 import numpy
-import docopt
+import click
 import h5py
 import plotly.graph_objs as go
 from plotly.offline import plot
@@ -157,39 +159,43 @@ def plot_dipoles3d(dictionary, filename=None, title=None, centroid=False):
         fig.show()
 
 
+CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
-def main(argv):
+
+@click.command(name='sequence', context_settings=CONTEXT_SETTINGS)
+@click.option('-t', '--title', default=None, help='Title for the plot')
+@click.option('-o', '--output', default=None, help="Output filename")
+@click.option('-s', '--size', type=int, default=1000, help='Number of points to plot')
+@click.argument('files')
+@click.option('--three_dimensional', default=None, is_Flag=True, help="Make 3D plot")
+@click.option('-b', '--both', default=None, is_Flag=True, help='Make both a 3D plot and a 2D polar plot')
+@click.option('-c', '--center', default=None, help="Show the center in the 3D plot")
+def main(files, size, output, title, three_dimensional, both):
     """ Plot dipole moment from HDF5 files """
-    if argv:
-        args = docopt.docopt(__doc__, argv=argv)
-    else:
-        args = docopt.docopt(__doc__)
-    size = int(args['--size'])
-    output = args['--output']
-    title = args['--title']
+
     polar_dipoles = {}
     dipoles_dict = {}
-    for fname in args['FILES']:
+    for fname in files:
         hdf_file = h5py.File(fname, 'r')
         data = numpy.asarray(hdf_file['dipole_moment'])
         dipoles = numpy.vstack([sample(data['mu_x'], size=size),
                                 sample(data['mu_y'], size=size),
                                 sample(data['mu_z'], size=size),
                                 ])
-        if args['--3d']:
-            dipoles_dict[ hdf_file.attrs['short_html'] ] = dipoles
+        if three_dimensional:
+            dipoles_dict[hdf_file.attrs['short_html']] = dipoles
         else:
-            polar_dipoles[ hdf_file.attrs['short_html'] ] = polar.spherical_numpy(xyz=dipoles.T).T
+            polar_dipoles[hdf_file.attrs['short_html']] = polar.spherical_numpy(xyz=dipoles.T).T
 
-        if args['--both']:
-            dipoles_dict[ hdf_file.attrs['short_html'] ] = dipoles
+        if both:
+            dipoles_dict[hdf_file.attrs['short_html']] = dipoles
 
-    if args['--3d']:
+    if three_dimensional:
         plot_dipoles3d(dipoles_dict, filename=output, title=title, centroid=args['--center'])
     else:
         plot_dipoles(polar_dipoles, filename=output, title=title)
 
-    if args['--both']:
+    if both:
         plot_dipoles3d(dipoles_dict, filename='3D_' + output, title=title, centroid=args['--center'])
 
 

@@ -1,8 +1,13 @@
-name: md-davis
+# This file can be used to create a conda virtual environment for MD DaVis
+# and install the necessary dependencies. Use the following command:
+#
+#     conda env create --file environment_pymol.yml
+
+name: md-davis-pymol
 channels:
-  - schrodinger
   - conda-forge
-  - defaults
+  - nodefaults
+  - schrodinger
 dependencies:
   - python>3.7
   - biopandas
@@ -14,7 +19,7 @@ dependencies:
   - numpy
   - pandas
   - plotly>=4.0
-  - pymol=2.2.3
+  - pymol-bundle=2.5.0
   - scikit-learn
   - scipy
   - toml

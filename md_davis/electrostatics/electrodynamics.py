@@ -19,15 +19,16 @@ def initialize_pymol(window=False):
 
 
 def get_electrodynamics(electrostatics_directory, name, output, surface,
-                        ss_color, time_step=1, spacing=4, length=10, width=20,
+                        ss_color, time_step=1, spacing=4, length=10, width=1,
                         hide=True, light=False):
     """ Create pymol session showing dynamics of electric field lines.
     DIRECTORY directory containing structures and electrostatics calculation from md_davis electrostatics
     """
+
     cmd = initialize_pymol(hide)
 
-    # cmd.feedback("disable", "all", "actions")
-    # cmd.feedback("disable", "all", "results")
+    cmd.feedback("disable", "all", "actions")
+    cmd.feedback("disable", "all", "results")
 
     cmd.space('cmyk')
     cmd.set('transparency', 0.5)
@@ -49,7 +50,7 @@ def get_electrodynamics(electrostatics_directory, name, output, surface,
     regex = re.compile(r'\d+')
     for root, dirs, files in os.walk(electrostatics_directory):
         for fname in files:
-            if fnmatch.fnmatch(fname, "*.cube"):
+            if fnmatch.fnmatch(fname, "*.cube") or fnmatch.fnmatch(fname, "*.cub"):
                 basename = os.path.splitext(os.path.basename(fname))[0]
                 frame = int(regex.findall(basename)[-1])
 
@@ -104,14 +105,14 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
               help='time step for frames to show')
 @click.option('-l', '--length', default=10, type=float,
               help='length of field lines')
-@click.option('-w', '--width', default=10, type=float,
+@click.option('-w', '--width', default=1, type=float,
               help='length of field lines')
 @click.option('--light/--dark', help='Enable dark or light mode')
 @click.option('-o', '--output', help='Name for saving the PyMOL session', type=click.Path())
 @click.option('--hide', default=True, is_flag=True, help='Hide PyMOL window')
 @click.argument('electrostatics_directory', metavar='DIRECTORY')
 def main(electrostatics_directory, name, output, surface, ss_color,
-         time_step=1, spacing=4, length=10, width=20, hide=True, light=False):
+         time_step=1, spacing=4, length=10, width=1, hide=True, light=False):
     """ Click wrapper for get_electrodynamics. Otherwise GUI was giving an error """
     get_electrodynamics(
         electrostatics_directory=electrostatics_directory,

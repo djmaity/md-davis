@@ -98,12 +98,11 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.option('--height', type=int, metavar='<int>', help='Height of the plot')
 @click.option('--layout', help='Layout of subplots')
 @click.option('--title', type=str, metavar='<str>', help='Title for the figure')
-@click.option('--axis_labels', type=dict,
-              default=dict(x=' <br>RMSD (in  nm)',
-                           y=' <br>Rg (in  nm)',
-                           z='Free Energy (kJ mol<sup>-1</sup>)<br> '),
+@click.option('--axis_labels', default=None,
               help='A dictionary of strings specifying the labels for '
-                   'the x, y and z-axis')
+                   "the x, y and z-axis. For example: "
+                   "dict(x='RMSD (in nm)', y='Rg (in nm)', "
+                   "z='Free Energy (kJ mol<sup>-1</sup>)<br> ')")
 @click.option('--orthographic/--perspective', default=False,
               help='Orthographic projection for 3D plots')
 @click.option('--font', type=str, metavar='<str>', help='Font style')

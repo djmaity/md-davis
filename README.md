@@ -27,48 +27,57 @@ System Requirements
 -------------------
 
 * A 64-bit operating system
-* A Python 3 installation with version ≥ 3.7
+* A Python 3 installation with version ≥ 3.9
 
 Installation
 ------------
 The easiest installation method is with
 [Anaconda](https://www.anaconda.com/products/individual) or
 [Miniconda](https://docs.conda.io/en/latest/miniconda.html).
-It is highly recommended to install MD DaVis in a virtual environment.
-The [environment.yml](https://github.com/djmaity/md-davis/blob/master/environment.yml)
-is provided to ease the process.
+Create a conda environment called `md-davis` with all required dependencies using the following command:
 ```
-conda env create -f environment.yml -n md_davis_env
+conda env create djmaity/md-davis
 ```
-This automatically creates a conda environment called `md_davis_env` with all required dependencies.
-Activate the environment and install MD DaVis in it using:
+Activate the environment with:
 ```
-conda activate md_davis_env
+conda activate md-davis
+```
+Install MD DaVis in this environment using:
+```
 pip install md-davis
 ```
 
 For detailed installation instructions, see:
-[https://md-davis.readthedocs.io/en/latest/install.html](https://md-davis.readthedocs.io/en/latest/install.html)
+[https://md-davis.readthedocs.io/en/latest/install.html](https://md-davis.readthedocs.io/en/latest/guides/install.html)
 
 ### Dependencies
 
-The following dependencies will have to be obtained separately.
-* [Delphi](http://compbio.clemson.edu/delphi)
-* [MSMS](http://mgltools.scripps.edu/downloads#msms)
-* [GROMACS](https://www.gromacs.org)
+The following tools required for full functionality will have to be obtained separately.
+* [Delphi v8.1 or later](http://compbio.clemson.edu/delphi)
+* [DSSP v2.3.0](https://github.com/cmbi/dssp)
+* [MSMS v2.6.1](https://ccsb.scripps.edu/msms/downloads/)
+* [GROMACS v5.1.4 or later](https://www.gromacs.org)
 
 Usage
 -----
 
-If MD DaVis is installed in a virtual environment, it should be activated before using MD DaVis.
-For example, to activate the virtual environment created with conda, use:
+Remember to activate the `md-davis` environment before using MD DaVis.
 ```
-conda activate md_davis_env
+conda activate md-davis
 ```
 
-The MD DaVis CLI can be called with:
+The MD DaVis graphical user interface can be invoked with:
 ```
-md_davis
+md-davis-gui
+```
+The MD DaVis command line tool can be called with:
+```
+md-davis
+```
+The MD DaVis package can be used in a Python script with a standard import 
+statement like:
+```
+import md_davis
 ```
 
 Author

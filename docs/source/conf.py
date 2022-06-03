@@ -13,8 +13,6 @@
 import os
 import sys
 
-import md_davis
-
 sys.path.insert(0, os.path.abspath('../..'))
 
 # -- Project information -----------------------------------------------------
@@ -25,9 +23,7 @@ copyright = '2019, Dibyajyoti Maity'
 author = 'Dibyajyoti Maity'
 
 # The short X.Y version.
-version = md_davis.__version__
-# The full version, including alpha/beta/rc tags.
-release = md_davis.__version__
+version = release = '0.4.1'
 
 # -- General configuration ---------------------------------------------------
 
@@ -46,6 +42,7 @@ extensions = [
     'myst_parser',
     'sphinx_panels',
     'sphinx_click',
+    'sphinx_tabs.tabs',
 ]
 
 autosummary_generate = True  # Turn on sphinx.ext.autosummary
@@ -121,6 +118,7 @@ html_context = {
     "doc_path": "docs/source",
 }
 
+autosectionlabel_prefix_document = True
 
 napoleon_use_ivar = True
 napoleon_use_rtype = False
