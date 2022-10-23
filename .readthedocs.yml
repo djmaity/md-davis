@@ -15,8 +15,7 @@ formats: all
 conda:
   environment: conda_environments/doc_environment.yml
 
-python:
-  version: "3.8"
-  install:
-    - method: pip
-      path: .
+build:
+  os: ubuntu-22.04
+  tools:
+    python: "miniconda3-4.7"

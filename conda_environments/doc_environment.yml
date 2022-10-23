@@ -6,6 +6,7 @@ channels:
   - nodefaults
 dependencies:
   - python=3.8
+  - attrdict
   - biopandas=0.2.9
   - biopython=1.79
   - click=8.0.4
