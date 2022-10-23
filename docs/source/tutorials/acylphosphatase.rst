@@ -135,13 +135,9 @@ Repeat for the remaining trajectories. We will also plot the torsional flexibili
 
     [residue_property]
         secondary_structure = '2VH7_dssp.dat'
+        rmsf = '2VH7_rmsf.xvg'
         sasa = '2VH7_resarea.xvg'
         surface_potential = '2VH7_electrostatics'   # directory containing electrostatic calculations
-
-        [residue_property.rmsf]
-            rmsf_files = '2VH7_rmsf.xvg'
-            start = 0
-            end = 100
 
 Input TOML file for each trajectory is provided with the tutorial files.
 Next, collate all the data using MD DaVis, which can process multiple TOML files and create the respective HDF file.
