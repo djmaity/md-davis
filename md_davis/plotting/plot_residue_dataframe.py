@@ -105,7 +105,7 @@ def annotation_traces(data, annotations, prefix, color='rgb(0,0,0)'):
         sites += [go.Scatter(
             name=prefix + f'{text}',
             x=site.index + 1,
-            y=site.rmsf.values.flatten() * 10,
+            y=site.rmsf.values.flatten(),
             mode='markers',
             hoverinfo='none',
             marker = use_marker
@@ -117,7 +117,8 @@ def annotation_traces(data, annotations, prefix, color='rgb(0,0,0)'):
 def residue_data_trace(figure, data, prefix, ss_axis=None,
                        line_color='rgb(0, 0, 0)',
                        fill_color='rgba(0, 0, 0, 0.4)',
-                       annotation=None, row=1, column=1, showlegend=True):
+                       annotation=None, row=1, column=1, showlegend=True,
+                       show_markers=False, show_error_bars=False):
     """ Create traces for the residue wise data """
     mean_potential_traces = []
     total_potential_traces = []
@@ -146,11 +147,11 @@ def residue_data_trace(figure, data, prefix, ss_axis=None,
             name=prefix + 'Total Surface Potential',
             x=data.index + 1,
             y=potential['mean_of_total'],
-            error_y=dict(type='data', array=potential['std_of_total']),
+            error_y=dict(type='data', array=potential['std_of_total']) if show_error_bars else None,
             line=dict(color=line_color),
             text=hover_text,
             hoverinfo='text+y',
-            mode='lines+markers',
+            mode='lines+markers' if show_markers else 'lines',
             marker_symbol='square',
             legendgroup=prefix + ' Total Surface Potential',
             showlegend=False,
@@ -160,11 +161,11 @@ def residue_data_trace(figure, data, prefix, ss_axis=None,
             name=prefix + 'Mean Surface Potential',
             x=data.index + 1,
             y=potential['mean_of_mean'],
-            error_y=dict(type='data', array=potential['std_of_mean']),
+            error_y=dict(type='data', array=potential['std_of_mean']) if show_error_bars else None,
             line=dict(color=line_color),
             text=hover_text,
             hoverinfo='text+y',
-            mode='lines+markers',
+            mode='lines+markers' if show_markers else 'lines',
             marker_symbol='diamond',
             legendgroup=prefix + ' Mean Surface Potential',
             showlegend=False,
@@ -200,11 +201,11 @@ def residue_data_trace(figure, data, prefix, ss_axis=None,
             name=prefix + 'SASA',
             x=data.index + 1,
             y=sasa['average'],
-            error_y=dict(type='data', array=sasa['standard_deviation']),
+            error_y=dict(type='data', array=sasa['standard_deviation']) if show_error_bars else None,
             line=dict(color=line_color),
             text=hover_text,
             hoverinfo='text+y',
-            mode='lines+markers',
+            mode='lines+markers' if show_markers else 'lines',
             marker_symbol='star',
             legendgroup=prefix + ' SASA',
             showlegend=False,
@@ -219,7 +220,7 @@ def residue_data_trace(figure, data, prefix, ss_axis=None,
             line=dict(color=line_color),
             text=hover_text,
             hoverinfo='text+y',
-            mode='lines+markers',
+            mode='lines+markers' if show_markers else 'lines',
             marker_symbol='triangle-up',
             legendgroup=prefix + ' RMSF',
             showlegend=False,
@@ -237,7 +238,7 @@ def residue_data_trace(figure, data, prefix, ss_axis=None,
             x=x_values[1:-1],   # Omit the first and last angle which do not exist
             y=numpy.degrees(dih_sd[1:-1]),
             line=dict(color=line_color, dash='dashdot'),
-            mode='lines+markers',
+            mode='lines+markers' if show_markers else 'lines',
             text=dih_hover_text[1:-1],
             hoverinfo='text+y',
             legendgroup=prefix + ' Dihedral SD',
@@ -262,6 +263,10 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
 @click.command(name='plot_residue', context_settings=CONTEXT_SETTINGS)
+@click.option('--start', default=None, type=int,
+              help='Starting index of the plot')
+@click.option('--end', default=None, type=int,
+              help='Last index of the plot')
 @click.option('-o', '--output', default='residue_data.html',
               help='output HTML file')
 @click.option('--width', default=None, type=int,
@@ -274,9 +279,14 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
               help="Array of colors for lines")
 @click.option('-f', '--fill_color', type=str, default=None,
               help="Array of colors for shaded error bars")
+@click.option('--show_markers/--hide_markers', default=False,
+              help="Show the markers on the line plots")
+@click.option('--show_error_bars/--hide_error_bars', default=False,
+              help="show error bars for electrostatic potential and SASA")
 @click.argument('pickle_file', type=click.Path(exists=True))
-def main(pickle_file, output='residue_data.html', title=None,
-         width=None, height=None, line_color=None, fill_color=None):
+def main(pickle_file, start=None, end=None, output='residue_data.html', title=None,
+         width=None, height=None, line_color=None, fill_color=None,
+         show_markers=False, show_error_bars=False):
     """ main function """
     pickled_data = pickle.load(open(pickle_file, 'rb'))
 
@@ -323,6 +333,7 @@ def main(pickle_file, output='residue_data.html', title=None,
                                        position=pos, ticks='outside', ticklen=10,
                                        showline=True, matches=f'y{first_y_axis}',
                                        title_text=title_text,
+                                       autorange=True,
                     ),
                 })
             y_axis += 1
@@ -344,6 +355,10 @@ def main(pickle_file, output='residue_data.html', title=None,
 
         first_chain = True
         for i, (chain, res_data) in enumerate(residue_data.items(), start=1):
+
+            if start is not None and end is not None:
+                res_data = res_data.iloc[start:end+1]
+
             ss_ax = '' if j * max_rows + i < 2 else j * max_rows + i
             axis_number = '' if i < 2 else i
 
@@ -356,6 +371,7 @@ def main(pickle_file, output='residue_data.html', title=None,
                 figure=fig, data=res_data, prefix=prefix + ' ', row=i,
                 line_color=line_color, fill_color=fill_color,
                 showlegend=first_chain, annotation=my_annotations,
+                show_markers=show_markers, show_error_bars=show_error_bars,
                 ss_axis=f'y{ss_ax}'
             )
 

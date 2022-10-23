@@ -48,7 +48,7 @@ pip install md-davis
 ```
 
 For detailed installation instructions, see:
-[https://md-davis.readthedocs.io/en/latest/install.html](https://md-davis.readthedocs.io/en/latest/guides/install.html)
+[https://md-davis.readthedocs.io/en/latest/install.html](https://md-davis.readthedocs.io/en/latest/install.html)
 
 ### Dependencies
 
@@ -74,7 +74,7 @@ The MD DaVis command line tool can be called with:
 ```
 md-davis
 ```
-The MD DaVis package can be used in a Python script with a standard import 
+The MD DaVis package can be used in a Python script with a standard import
 statement like:
 ```
 import md_davis
