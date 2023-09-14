@@ -16,15 +16,23 @@ Steps
 
 .. code-block:: bash
 
-    gmx hbond -f trajectory.xtc -s structure.tpr -num hbnum.xvg -hbm hb_matrix -hbn hb_index
+    gmx hbond -f trajectory.trr -s structure.tpr -num hbnum.xvg -hbm hb_matrix -hbn hb_index
 
-To calculate the contacts provide ``--contact`` option. ``gmx hbond`` requires the ``.tpr`` file to be supplied to the ``-s`` option, and other structure formats like ``.pdb`` or ``.gro`` are not accepted. The order of rows in the hb_matrix.xpm image is the same as the order of atoms in the hb_index.ndx file. MD DaVis utilizes this to determine the atoms in each H-bond/contact (rows in the ``.xpm`` file).
+To calculate the contacts provide ``--contact`` option. ``gmx hbond`` requires the ``.tpr`` file to be supplied to the ``-s`` option, and other structure formats like ``.pdb`` or ``.gro`` are not accepted. However, the ``md-davis hbond`` command in the next step requires a ``.pdb`` file. The first frame of the trajectory can be saved in a ``.pdb`` file as follows:
+
+.. code-block:: bash
+
+    gmx trjconv -f trajectory.trr -s stucture.tpr -o structure.pdb -dump 0
+
+The order of rows in the hb_matrix.xpm image is the same as the order of atoms in the hb_index.ndx file. MD DaVis utilizes this to determine the atoms in each H-bond/contact (rows in the ``.xpm`` file).
 
 2. Create and save the H-bonds/contacts data:
 
 .. code-block:: bash
 
-    md-davis hbond -f hb_matrix.xpm --index hb_index.ndx -s structure.tpr --pickle hb_data.p -g hbonds_Protein
+    md-davis hbond -f hb_matrix.xpm --index hb_index.ndx -s structure.pdb --pickle hb_data.p -g hbonds_Protein
+
+
 
 3. Plot the H-bonds/contacts matrix:
 
