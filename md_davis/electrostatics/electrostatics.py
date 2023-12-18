@@ -161,7 +161,8 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
               help='Grid size to use for Delphi calculation')
 @click.option('--surface', is_flag=True,
               help='Calculate electrostatic potential on the surface')
-@click.option('--center', help='Center the grid for Delphi at the origin')
+@click.option('--center', is_flag=True,
+              help='Center the grid for Delphi at the origin')
 @click.option('-o','--output', metavar='PATH', type=click.Path(),
               help='Directory to place the output files.')
 @click.argument('pdb_files', nargs=-1)
