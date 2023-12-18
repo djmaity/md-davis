@@ -53,6 +53,7 @@ main.add_command(md_davis.plotting.plot_hbond.main)
 main.add_command(md_davis.plotting.plot_residue_dataframe.main)
 main.add_command(md_davis.electrostatics.electrostatics.main)
 main.add_command(md_davis.electrostatics.electrodynamics.main)
+main.add_command(md_davis.electrostatics.potential_into_pdb.potential_into_pdb)
 
 
 if __name__ == "__main__":

@@ -38,6 +38,23 @@ fill_color = [
 ]
 
 
+def parse_potential(potential_file):
+    df = pandas.read_csv(potential_file, skiprows=12, delim_whitespace=True, skipfooter=2,
+        dtype={'resSeq': int}, engine='python',
+        names=['name', 'resName', 'chainID', 'resSeq', 'potential',
+            'reaction', 'coulomb', 'Ex', 'Ey', 'Ez'],
+    )
+    potential_dict =  df.groupby(['resSeq', 'resName'])['potential'].sum().to_frame().to_dict()
+
+    resi, labels, pot = [], [], []
+    for res, potential in potential_dict['potential'].items():
+        resSeq, _ = res
+        labels.append(str(res))
+        resi.append(resSeq)
+        pot.append(potential)
+    return resi, labels, pot
+
+
 def main(sim_set):
     if sim_set == 'acylphosphatase':
         active = ((23, 41), (16, 34), (21, 39), (23, 41),

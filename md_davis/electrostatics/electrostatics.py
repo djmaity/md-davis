@@ -112,15 +112,15 @@ def run_delphi(pdb_file, output_directory, output_filename,
     os.remove(f'{output_filename}_tmp.prm')
 
 
-def parse_electrostatic_potential(potential_file):
+def parse_electrostatic_potential(potential_file, atomic_potentials=False):
     df = pandas.read_fwf(potential_file, skiprows=12, skipfooter=2,
                          dtype={'resSeq': int}, engine='python',
                          names=['name', 'resName', 'chainID', 'resSeq',
                                 'potential', 'reaction', 'coulomb',
                                 'Ex', 'Ey', 'Ez'
-                         ],
+                                ],
                          widths=[5, 3, 3, 9, 10, 10, 10, 10, 10, 10]
-    )
+                         )
 
     if df['chainID'].isnull().values.any():
         warnings.warn('Chain ID missing. '
@@ -128,12 +128,17 @@ def parse_electrostatic_potential(potential_file):
                       'Check if the structure had proper chain IDs')
 
     df['chainID'].fillna('A', inplace=True)
+    df_sorted = df.sort_values(by='chainID')
+
     output = {}
     chain = 0
-    for _, data in df.groupby(['chainID'], as_index=False):
-        grouped_df = data.groupby(['resSeq'], as_index=False)['potential']
+    for _, data in df_sorted.groupby(['chainID'], as_index=False):
+        if atomic_potentials:
+            grouped_df = data.groupby(['resSeq', 'name'], as_index=False)['potential']
+        else:
+            grouped_df = data.groupby(['resSeq'], as_index=False)['potential']
         potential = grouped_df.sum()
-        potential.rename(columns={'potential':'total'}, inplace=True)
+        potential.rename(columns={'potential': 'total'}, inplace=True)
         potential['mean'] = grouped_df.mean()['potential']
         output[f'chain {chain}'] = potential
         chain += 1
@@ -156,7 +161,8 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
               help='Grid size to use for Delphi calculation')
 @click.option('--surface', is_flag=True,
               help='Calculate electrostatic potential on the surface')
-@click.option('--center', help='Center the grid for Delphi at the origin')
+@click.option('--center', is_flag=True,
+              help='Center the grid for Delphi at the origin')
 @click.option('-o','--output', metavar='PATH', type=click.Path(),
               help='Directory to place the output files.')
 @click.argument('pdb_files', nargs=-1)
@@ -180,14 +186,14 @@ def main(pdb_files, output, msms, delphi, radius, charge,
                             vert_file, pdb_file, '-o', surface_file])
 
         run_delphi(pdb_file=pdb_file,
-                output_directory=output,
-                output_filename=output_filename,
-                surface=surface_file,
-                delphi_path=delphi,
-                radius_file=radius,
-                charge_file=charge,
-                grid_size=grid_size,
-                center=center,
+                   output_directory=output,
+                   output_filename=output_filename,
+                   surface=surface_file,
+                   delphi_path=delphi,
+                   radius_file=radius,
+                   charge_file=charge,
+                   grid_size=grid_size,
+                   center=center,
         )
 
 
