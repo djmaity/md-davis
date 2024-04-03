@@ -247,7 +247,7 @@ separately.
 
 * `Delphi C++ <http://compbio.clemson.edu/delphi>`_ version greater than or
   equal to 8.1
-* `MSMS <http://mgltools.scripps.edu/downloads#msms>`_
+* `MSMS <https://ccsb.scripps.edu/msms/downloads/>`_
 
 Uninstall
 =========

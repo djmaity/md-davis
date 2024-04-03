@@ -20,12 +20,12 @@ Select the appropriate tab and click the image to see detailed usage.
          .. group-tab:: Linux
 
             .. image:: /_static/gui/gui-landscape-linux.png
-               :target: free_energy_landscapes.html
+               :target: guides/free_energy_landscapes.html#plot-free-energy-landscapes-using-the-md-davis-gui
 
          .. group-tab:: Windows
 
             .. image:: /_static/gui/gui-landscape-windows.png
-               :target: free_energy_landscapes.html
+               :target: guides/free_energy_landscapes.html#plot-free-energy-landscapes-using-the-md-davis-gui
 
    .. tab:: Electrodynamics
 
@@ -34,12 +34,12 @@ Select the appropriate tab and click the image to see detailed usage.
          .. group-tab:: Linux
 
             .. image:: /_static/gui/gui-electrodynamics-linux.png
-               :target: electrostatics.html#electric-field-dynamics
+               :target: guides/electrostatics.html#electric-field-dynamics
 
          .. group-tab:: Windows
 
             .. image:: /_static/gui/gui-electrodynamics-windows.png
-               :target: electrostatics.html#electric-field-dynamics
+               :target: guides/electrostatics.html#electric-field-dynamics
 
    .. tab:: Collate
 
@@ -48,12 +48,12 @@ Select the appropriate tab and click the image to see detailed usage.
          .. group-tab:: Linux
 
             .. image:: /_static/gui/gui-collate-linux.png
-               :target: collate.html
+               :target: guides/collate.html
 
          .. group-tab:: Windows
 
             .. image:: /_static/gui/gui-collate-windows.png
-               :target: collate.html
+               :target: guides/collate.html
 
    .. tab:: Sequence
 
@@ -62,12 +62,12 @@ Select the appropriate tab and click the image to see detailed usage.
          .. group-tab:: Linux
 
             .. image:: /_static/gui/gui-sequence-linux.png
-               :target: sequence.html
+               :target: guides/sequence.html
 
          .. group-tab:: Windows
 
             .. image:: /_static/gui/gui-sequence-windows.png
-               :target: sequence.html
+               :target: guides/sequence.html
 
 .. note::
 

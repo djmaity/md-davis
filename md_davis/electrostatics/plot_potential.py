@@ -8,7 +8,7 @@ import plotly.graph_objs as go
 
 
 def parse_potential(potential_file):
-    df = pandas.read_csv(potential_file, skiprows=12, delim_whitespace=True, skipfooter=2,
+    df = pandas.read_csv(potential_file, skiprows=12, sep='\s+', skipfooter=2,
         dtype={'resSeq': int}, engine='python',
         names=['name', 'resName', 'chainID', 'resSeq', 'potential',
             'reaction', 'coulomb', 'Ex', 'Ey', 'Ez'],
