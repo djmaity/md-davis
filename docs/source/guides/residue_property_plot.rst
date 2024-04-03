@@ -69,7 +69,7 @@ How to interact with the plot
 
 The optional argument ``-a annotations.json`` can be provided to place a mark at certain residue locations. The contents of ``annotations.json`` should be of the following form:
 
-.. code-block:: toml
+.. code-block::
 
     {
         "chain 0": {"Active Site": [23, 41], "Substrate Binding Site": [56]},
@@ -87,7 +87,7 @@ Each type of annotation is rendered with a different mark. Following annotations
 
 **Step 3b:** If your proteins are of different lengths and you need the peaks to be aligned, create a JSON file as shown below.
 
-.. code-block:: toml
+.. code-block::
 
     {
         "alignment": "path/to/alignment_file.clustal_num",
@@ -115,7 +115,7 @@ in CLUSTAL format.
     Annotations
     -----------
 
-    .. code-block:: toml
+    .. code-block::
 
         {
             "chain 0": {"Active Site": [23, 41], "Substrate Binding Site": [56]},
@@ -140,7 +140,7 @@ option in the correct order followed by the start and end times.
 
 The optional argument ``-a annotations.json`` can be provided to place a mark at certain residue locations. The contents of ``annotations.json`` should be of the following form:
 
-.. code-block:: toml
+.. code-block::
 
     {
         "chain 0": {"Active Site": [23, 41], "Substrate Binding Site": [56]},
@@ -158,7 +158,7 @@ Each type of annotation is rendered with a different mark. Following annotations
 
 **Step 3b:** If your proteins are of different lengths and you need the peaks to be aligned, create a JSON file as shown below.
 
-.. code-block:: toml
+.. code-block::
 
     {
         "alignment": "path/to/alignment_file.clustal_num",

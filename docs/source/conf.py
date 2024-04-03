@@ -43,6 +43,7 @@ extensions = [
     'sphinx_panels',
     'sphinx_click',
     'sphinx_tabs.tabs',
+    'sphinx_favicon',
 ]
 
 autosummary_generate = True  # Turn on sphinx.ext.autosummary
@@ -83,29 +84,29 @@ html_css_files = [
     'css/custom.css',
 ]
 html_logo = "_static/MD_DaVis_Logo.png"
+
+favicons = [
+   {
+      "sizes": "16x16",
+      "href": "https://secure.example.com/favicon/favicon-16x16.png",
+   },
+   {
+      "sizes": "32x32",
+      "href": "https://secure.example.com/favicon/favicon-32x32.png",
+   },
+   {
+      "rel": "apple-touch-icon",
+      "sizes": "180x180",
+      "href": "apple-touch-icon-180x180.png",  # use a local file in _static
+   },
+]
+
 html_theme_options = {
     "icon_links": [
         {
             "name": "GitHub",
             "url": "https://github.com/djmaity/md-davis",
             "icon": "fab fa-github-square",
-        },
-    ],
-    "favicons": [
-        {
-            "rel": "icon",
-            "sizes": "16x16",
-            "href": "https://secure.example.com/favicon/favicon-16x16.png",
-        },
-        {
-            "rel": "icon",
-            "sizes": "32x32",
-            "href": "favicon-32x32.png",
-        },
-        {
-            "rel": "apple-touch-icon",
-            "sizes": "180x180",
-            "href": "apple-touch-icon-180x180.png"
         },
     ],
     "navbar_end": ["navbar-icon-links.html"]
