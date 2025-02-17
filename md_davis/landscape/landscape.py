@@ -175,9 +175,9 @@ class Landscape:
 
     @staticmethod
     def minmax(array):
-        min_value, max_value = numpy.Inf, -numpy.Inf
+        min_value, max_value = numpy.inf, -numpy.inf
         for item in array:
-            if item != numpy.NaN:
+            if item != numpy.nan:
                 if item < min_value:
                     min_value = item
                 if item > max_value:
@@ -187,7 +187,7 @@ class Landscape:
     def energy_landscape(self, temperature=300):
         """ Perform Boltzmann inversion to get the energy landscape """
         def boltzmann_inversion(p, p_max, T=300):
-            return numpy.NaN if p <= 0 else -R*T*numpy.log(p/p_max)
+            return numpy.nan if p <= 0 else -R*T*numpy.log(p/p_max)
         boltzmann_inversion = numpy.vectorize(boltzmann_inversion)
 
         z_max = numpy.nanmax(self.zValues)

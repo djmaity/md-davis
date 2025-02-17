@@ -201,7 +201,7 @@ class Contacts():
         atoms2 = sorted(atoms2, key=operator.itemgetter(0, 2, 1))
 
         matrix = numpy.empty(shape=(len(atoms1), len(atoms2)))
-        matrix[:] = numpy.NaN
+        matrix[:] = numpy.nan
         for group, atoms in atom_group2:
             j = atoms2.index(group)
             for index, row in atoms.iterrows():
