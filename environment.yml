@@ -1,0 +1,22 @@
+# Runtime environment for MD DaVis.
+# Create it from the repository root with:
+#   conda env create --file environment.yml
+
+name: md-davis
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python>=3.12,<3.15
+  - pip>=25
+  - biopandas>=0.5.1
+  - biopython>=1.87
+  - h5py>=3.16
+  - matplotlib>=3.11
+  - mdtraj>=1.11
+  - numpy>=2.4
+  - pandas>=2.3
+  - plotly>=6.9
+  - scipy>=1.17
+  - pymol-open-source>=3.1,<4
+  - wxpython>=4.2.4,<5

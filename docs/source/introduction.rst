@@ -22,58 +22,45 @@ the analysis of such simulations accessible to everyone.
 Features of MD DaVis
 --------------------
 
-Click on each panel for more details.
+Choose a feature for a detailed guide.
 
-.. panels::
-   :body: text-center
+.. grid:: 1 2 2 3
+   :gutter: 2
 
-   .. link-button:: guides/free_energy_landscapes
-      :type: ref
-      :text: Free Energy Landscapes
-      :classes: stretched-link font-weight-bold
+   .. grid-item-card:: Free Energy Landscapes
+      :link: guides/free_energy_landscapes
+      :link-type: doc
 
-   .. image:: /_static/free_energy_landscape.png
-      :alt: Free energy landscape
+      .. image:: /_static/free_energy_landscape.png
+         :alt: Free energy landscape
 
-   ---
+   .. grid-item-card:: Residue Properties Plot
+      :link: guides/residue_property_plot
+      :link-type: doc
 
-   .. link-button:: guides/residue_property_plot
-      :type: ref
-      :text: Residue Properties Plot
-      :classes: stretched-link font-weight-bold
+      .. image:: /_static/residue_property_plot.png
+         :alt: Residue property plot
 
-   .. image:: /_static/residue_property_plot.png
-      :alt: Residue property plot
+   .. grid-item-card:: Surface Electrostatics
+      :link: guides/electrostatics
+      :link-type: doc
 
-   ---
+      .. image:: /_static/surface_electrostatics.png
+         :alt: Surface electrostatics
 
-   .. link-button:: guides/electrostatics:Surface Electrostatic Potential Per Residue
-      :type: ref
-      :text: Surface Electrostatics
-      :classes: stretched-link font-weight-bold
+   .. grid-item-card:: Electric Field Dynamics
+      :link: guides/electrostatics
+      :link-type: doc
 
-   .. image:: /_static/surface_electrostatics.png
-      :alt: Surface electrostatics
+      .. image:: /_static/2VH7_electrodynamics.webp
+         :alt: Electric field dynamics
 
-   ---
+   .. grid-item-card:: H-bond / Contact Matrix
+      :link: guides/hbond_or_contact_matrix
+      :link-type: doc
 
-   .. link-button:: guides/electrostatics:Electric Field Dynamics
-      :type: ref
-      :text: Electric Field Dynamics
-      :classes: stretched-link font-weight-bold
-
-   .. image:: /_static/2VH7_electrodynamics.webp
-      :alt: Electric field dynamics
-
-   ---
-
-   .. link-button:: guides/hbond_or_contact_matrix
-      :type: ref
-      :text: H-bond / Contact Matrix
-      :classes: stretched-link font-weight-bold
-
-   .. image:: /_static/2VH7_hbond_matrix.png
-      :alt: H-bond matrix
+      .. image:: /_static/2VH7_hbond_matrix.png
+         :alt: H-bond matrix
 
 Interfacing MD DaVis to Other Analysis Tools
 --------------------------------------------

@@ -15,6 +15,8 @@ import sys
 
 sys.path.insert(0, os.path.abspath('../..'))
 
+from md_davis import __version__
+
 # -- Project information -----------------------------------------------------
 
 
@@ -23,7 +25,7 @@ copyright = '2019, Dibyajyoti Maity'
 author = 'Dibyajyoti Maity'
 
 # The short X.Y version.
-version = release = '0.4.1'
+version = release = __version__
 
 # -- General configuration ---------------------------------------------------
 
@@ -40,8 +42,7 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.viewcode',
     'myst_parser',
-    'sphinx_panels',
-    'sphinx_click',
+    'sphinx_design',
     'sphinx_tabs.tabs',
     'sphinx_favicon',
 ]
@@ -54,7 +55,7 @@ extlinks = {
     'pr': ('https://github.com/djmaity/md_davis/pull/%s', 'PR #'),
 }
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = []
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -73,31 +74,23 @@ html_theme = 'pydata_sphinx_theme'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 html_extra_path = ['_extras']
-html_use_smartypants = True
 html_last_updated_fmt = '%b %d, %Y'
-html_split_index = False
-html_sidebars = {
-   '**': ['search-field.html', 'globaltoc.html', 'sidebar-ethical-ads.html']
-}
-html_short_title = '%s-%s' % (project, version)
-html_css_files = [
-    'css/custom.css',
-]
+html_short_title = f'{project}-{version}'
 html_logo = "_static/MD_DaVis_Logo.png"
 
 favicons = [
    {
       "sizes": "16x16",
-      "href": "https://secure.example.com/favicon/favicon-16x16.png",
+      "href": "favicon-16x16.png",
    },
    {
       "sizes": "32x32",
-      "href": "https://secure.example.com/favicon/favicon-32x32.png",
+      "href": "favicon-32x32.png",
    },
    {
       "rel": "apple-touch-icon",
       "sizes": "180x180",
-      "href": "apple-touch-icon-180x180.png",  # use a local file in _static
+      "href": "apple-touch-icon.png",
    },
 ]
 

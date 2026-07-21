@@ -37,6 +37,8 @@ pip-log.txt
 nosetests.xml
 coverage.xml
 htmlcov
+.ruff_cache/
+docs/_build/
 
 # IDE project files
 .project

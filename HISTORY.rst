@@ -1,6 +1,16 @@
 History
 =======
 
+Unreleased
+----------
+
+* Replace commercial PyMOL distributions with ``pymol-open-source``.
+* Modernize packaging, supported Python versions, and Conda environments.
+* Consolidate duplicated parsing, plotting, GUI, and PyMOL integration code.
+* Reorganize the package into core, analysis, I/O, integration, visualization,
+  CLI, and GUI domains and remove the legacy import hierarchy.
+* Add unit, command-line, packaging, and environment validation tests.
+
 0.1.0 (2019-09-06)
 ------------------
 

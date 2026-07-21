@@ -14,6 +14,7 @@ Documentation
 
    introduction
    install
+   architecture
    guides/index
    tutorials/index
    GUI <gui>

@@ -27,16 +27,16 @@ System Requirements
 -------------------
 
 * A 64-bit operating system
-* A Python 3 installation with version ≥ 3.9
+* Python 3.12, 3.13, or 3.14
 
 Installation
 ------------
 The easiest installation method is with
 [Anaconda](https://www.anaconda.com/products/individual) or
 [Miniconda](https://docs.conda.io/en/latest/miniconda.html).
-Create a conda environment called `md-davis` with all required dependencies using the following command:
+Clone the repository, then create the `md-davis` environment from its checked-in manifest:
 ```
-conda env create djmaity/md-davis
+conda env create --file environment.yml
 ```
 Activate the environment with:
 ```
@@ -44,8 +44,11 @@ conda activate md-davis
 ```
 Install MD DaVis in this environment using:
 ```
-pip install md-davis
+pip install --no-deps --editable .
 ```
+
+The environment installs `pymol-open-source` from conda-forge. Commercial
+PyMOL bundles are not required or supported by the project.
 
 For detailed installation instructions, see:
 [https://md-davis.readthedocs.io/en/latest/install.html](https://md-davis.readthedocs.io/en/latest/install.html)
@@ -79,6 +82,17 @@ statement like:
 ```
 import md_davis
 ```
+
+Repository layout
+-----------------
+
+The Python package is organized by responsibility: `core` contains domain
+logic, `analysis` contains scientific calculations, `io` handles file formats,
+`integrations` isolates external programs, `visualization` owns plotting, and
+`cli`/`gui` provide user interfaces. Imports use these domain packages directly.
+See the
+[architecture guide](https://md-davis.readthedocs.io/en/latest/architecture.html)
+for the complete hierarchy and dependency rules.
 
 Author
 ------

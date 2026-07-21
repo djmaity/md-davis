@@ -1,25 +1,12 @@
-graft ci
-include .bumpversion.cfg
-include .coveragerc
-include .editorconfig
-
-include md_davis/electrostatics/charmm.crg
-include md_davis/electrostatics/charmm.siz
-
-include md_davis/gui/MD_DaVis.ico
-
-include AUTHORS.rst
 include CONTRIBUTING.rst
 include HISTORY.rst
 include LICENSE
-include README.rst
-
-include tox.ini .travis.yml .appveyor.yml .readthedocs.yml .pre-commit-config.yaml
-
-recursive-exclude tests *
+include README.md
+include tox.ini
+recursive-include docs *.bat *.py *.rst *.txt Makefile
+recursive-include md_davis *.crg *.ico *.siz
+recursive-include tests *.py
+prune docs/_build
+prune tests/test_data
 recursive-exclude * __pycache__
-recursive-exclude * *.py[co]
-
-global-exclude *.py[cod] __pycache__/* *.so *.dylib
-
-recursive-exclude docs *
+global-exclude *.py[cod]

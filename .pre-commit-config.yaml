@@ -1,20 +1,19 @@
-# To install the git pre-commit hook run:
-#   pre-commit install
-# To update the pre-commit hooks run:
-#   pre-commit install-hooks
-exclude: '^(\.tox|ci/templates|\.bumpversion\.cfg)(/|$)'
+minimum_pre_commit_version: "4.0.0"
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: master
+    rev: v5.0.0
     hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
+      - id: check-merge-conflict
+      - id: check-toml
+      - id: check-yaml
       - id: debug-statements
-  - repo: https://github.com/timothycrosley/isort
-    rev: master
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.22
     hooks:
-      - id: isort
-  - repo: https://gitlab.com/pycqa/flake8
-    rev: master
-    hooks:
-      - id: flake8
+      - id: ruff-check
+        args: [--fix]
+        files: ^(md_davis/|tests/)
+      - id: ruff-format
+        files: ^(md_davis/|tests/)

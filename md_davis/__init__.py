@@ -1,21 +1,12 @@
-# -*- coding: utf-8 -*-
-"""Top-level package for MD DaVis."""
+"""MD DaVis package metadata.
 
-from md_davis import collate
-from md_davis import plotting
-from md_davis import landscape
-from md_davis import electrostatics
-from md_davis import structure
-from md_davis import common
-from md_davis import hbond
+Feature modules are intentionally not imported here. This keeps ``import
+md_davis`` lightweight and allows the core package to be used without GUI or
+PyMOL integrations being installed.
+"""
 
-import md_davis.residue
-import md_davis.sequence
-import md_davis.xvg
+__author__ = "Dibyajyoti Maity"
+__email__ = "djdibs@gmail.com"
+__version__ = "0.4.1"
 
-__author__ = """Dibyajyoti Maity"""
-__email__ = 'djdibs@gmail.com'
-__version__ = '0.4.1'
-name = "md_davis"
-
-from . import sequence
+__all__ = ["__author__", "__email__", "__version__"]

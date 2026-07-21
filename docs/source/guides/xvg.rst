@@ -52,6 +52,4 @@ Create interactive plot for time series data: root mean squared deviation
    files, they contain the same kind of data. Therefore, the titles and axis
    labels in the last supplied file are used.
 
-.. click:: md_davis.xvg:main
-   :prog: md-davis xvg
-   :nested: full
+Run ``md-davis xvg --help`` for the complete command reference.

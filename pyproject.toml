@@ -1,6 +1,117 @@
 [build-system]
-requires = [
-    "setuptools>=42",
-    "wheel"
-]
+requires = ["setuptools>=80", "wheel>=0.45"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "md-davis"
+dynamic = ["version"]
+description = "Comparative analysis and visualization of protein molecular-dynamics simulations"
+readme = "README.md"
+requires-python = ">=3.12,<3.15"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+  { name = "Dibyajyoti Maity", email = "djdibs@gmail.com" },
+]
+keywords = ["molecular dynamics", "protein", "analysis", "visualization"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: Science/Research",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Scientific/Engineering :: Bio-Informatics",
+  "Topic :: Scientific/Engineering :: Visualization",
+]
+dependencies = [
+  "biopandas>=0.5.1",
+  "biopython>=1.87",
+  "h5py>=3.16.0",
+  "matplotlib>=3.11.1",
+  "mdtraj>=1.11.1.post2",
+  "numpy>=2.4",
+  "pandas>=2.3",
+  "plotly>=6.9.0",
+  "scipy>=1.17",
+]
+
+[project.optional-dependencies]
+gui = ["wxPython>=4.2.4"]
+test = [
+  "pytest>=8.4",
+  "pytest-cov>=6.2",
+]
+docs = [
+  "myst-parser>=4.0",
+  "pydata-sphinx-theme>=0.16",
+  "sphinx>=8.2",
+  "sphinx-design>=0.6",
+  "sphinx-favicon>=1.0",
+  "sphinx-tabs>=3.4",
+]
+dev = [
+  "build>=1.3",
+  "myst-parser>=4.0",
+  "pre-commit>=4.3",
+  "pydata-sphinx-theme>=0.16",
+  "pytest>=8.4",
+  "pytest-cov>=6.2",
+  "ruff>=0.12",
+  "sphinx>=8.2",
+  "sphinx-design>=0.6",
+  "sphinx-favicon>=1.0",
+  "sphinx-tabs>=3.4",
+  "tox>=4.28",
+  "twine>=6.1",
+]
+
+[project.urls]
+Documentation = "https://md-davis.readthedocs.io/"
+Changelog = "https://md-davis.readthedocs.io/en/latest/changelog.html"
+Issues = "https://github.com/djmaity/md-davis/issues"
+Repository = "https://github.com/djmaity/md-davis"
+
+[project.scripts]
+md-davis = "md_davis.cli:main"
+
+[project.gui-scripts]
+md-davis-gui = "md_davis.gui.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["md_davis*"]
+
+[tool.setuptools.dynamic]
+version = { attr = "md_davis.__version__" }
+
+[tool.setuptools.package-data]
+"md_davis.analysis.electrostatics" = ["*.crg", "*.siz"]
+"md_davis.gui" = ["*.ico"]
+
+[tool.pytest.ini_options]
+addopts = ["-ra", "--strict-config", "--strict-markers", "--tb=short"]
+testpaths = ["tests"]
+markers = [
+  "gui: tests requiring wxPython and a display",
+  "integration: slower tests spanning multiple components",
+  "pymol: tests requiring pymol-open-source",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["md_davis"]
+
+[tool.coverage.report]
+show_missing = true
+precision = 2
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+extend-exclude = ["docs/source/_extras"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]
